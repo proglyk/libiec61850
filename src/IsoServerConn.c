@@ -1,4 +1,5 @@
 #include "net_if.h"
+#include "libiec61850/IsoServer.h"
 
 // ќпределение типов
 
@@ -6,6 +7,7 @@
 typedef struct {
   // локальные
   s32_t null_var;
+  IsoServerPtr pxServer;
 } ctx_t;
 
 // ќбъ€влени€ функций
@@ -39,9 +41,10 @@ static void *
   ctx = malloc(sizeof(ctx_t));
   if (!ctx) return NULL;
   
-/*   pxeth->Ied.pxServer->isoServer = IsoServer_create();
+  ctx->pxServer = IsoServer_Create(pdata->slSock);
+  if (!ctx->pxServer) return NULL;
   // настройка
-	IsoServer_setConnectionHandler(pxeth->Ied.pxServer->isoServer, 
+	/*IsoServer_setConnectionHandler(pxeth->Ied.pxServer->isoServer, 
 		isoConnectionIndicationHandler, (void*) pxeth->Ied.pxServer->mmsServer);
 	pxeth->Ied.pxServer->isoServer->tcpPort = pxeth->Ied.ulPort;
 	pxeth->Ied.pxServer->isoServer->tcpIp = pxeth->xNetif.ip_addr.addr;
@@ -68,7 +71,7 @@ static signed long
   // проверка арг-тов
   if (!ctx) return -1;
   
-  // ...
+  IsoServer_ClientConnected(ctx->pxServer);
   
 	//vTaskDelay(250);
 	return 0;
