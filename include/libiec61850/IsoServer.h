@@ -23,11 +23,12 @@ typedef void (*ConnectionIndicationHandler) ( IsoConnectionIndication,
 struct sIsoServer;
 typedef struct sIsoServer *IsoServerPtr;
 
-IsoServerPtr IsoServer_Create(void);
+IsoServerPtr IsoServer_Create(s32_t);
 void         IsoServer_Delete(IsoServerPtr);
 void         IsoServer_Listen(IsoServerPtr);
 void	       IsoServer_setConnectionHandler( IsoServerPtr,
                                              ConnectionIndicationHandler,
                                              void* );
+void	       IsoServer_ClientConnected(IsoServerPtr);
 
 #endif // _ISOSERVER_H_

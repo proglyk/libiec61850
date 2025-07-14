@@ -9,22 +9,21 @@ struct sIsoServer {
 	Thread 											serverThread;
 	ServerSocket2 							pxServSocket;
 	sSocket2										xConnSocket;
-	int 												tcpIp;
-	int 												tcpPort;
-	IsoConnection 							pxIsoConnection; */
+	int 												tcpIp;*/
+	IsoConnectionPtr 						pxConn;
 };
 
 
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 IsoServerPtr
-	IsoServer_create(void) {
+	IsoServer_Create(s32_t socket) {
 /*----------------------------------------------------------------------------*/
-	// с занулёнными байтами
 	IsoServerPtr self = calloc(1, sizeof(struct sIsoServer));
-	
 	self->state = ISO_SVR_STATE_IDLE;
-	//self->tcpPort = 102;
+  
+  self->pxConn = IsoConnection_Create(socket);
+  if (self->pxConn) return NULL;
 
 	return self;
 }
@@ -38,6 +37,14 @@ void
 		free(self);
 		self = NULL;
 	}
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+void
+	IsoServer_ClientConnected(IsoServerPtr self) {
+/*----------------------------------------------------------------------------*/
+  IsoConnection_ClientConnected(self->pxConn);
 }
 
 /**	----------------------------------------------------------------------------
