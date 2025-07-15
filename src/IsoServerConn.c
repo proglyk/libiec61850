@@ -87,11 +87,14 @@ static void
   conn_del(sess_del_cb_ptr_t pFn, void *argv) {
 /*----------------------------------------------------------------------------*/
   ctx_t* ctx = (ctx_t *)argv;
-  
   if (!ctx) return;
   
   // выполнить обратную связь
   if (pFn) pFn();
+  
+  if (ctx->pxServer) {
+    IsoServer_Delete(ctx->pxServer);
+  }
   
   free(ctx);
 }

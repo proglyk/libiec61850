@@ -24,6 +24,7 @@ struct sIsoServer;
 typedef struct sIsoServer *IsoServerPtr;
 
 IsoServerPtr IsoServer_Create(s32_t);
+s32_t        IsoServer_Init(void);
 void         IsoServer_Delete(IsoServerPtr);
 void         IsoServer_Listen(IsoServerPtr);
 void	       IsoServer_setConnectionHandler( IsoServerPtr,
