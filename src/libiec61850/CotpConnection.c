@@ -14,21 +14,21 @@ struct sCotpConnection {
 	ByteBuffer* payload;
 	ByteBuffer* writeBuffer;
 //	ByteStream stream;
-  // связь с уровнями
-  IsoSessionPtr isoSession;
+  // Top layers linkage
+  IsoSessionPtr isoSess;
 };
 
 static void CotpConnection_setTpduSize(CotpConnectionPtr, int);
 
 /**	----------------------------------------------------------------------------
-	* @brief Connection init */
+	* @brief Cotp Connection layer constructor */
 CotpConnectionPtr
 	CotpConnection_Create(s32_t socket, ByteBuffer* payloadBuffer) {
 /*----------------------------------------------------------------------------*/
-	CotpConnectionPtr self = calloc(1, sizeof(struct sCotpConnection));
+	// Self creating
+  CotpConnectionPtr self = calloc(1, sizeof(struct sCotpConnection));
   if (!self) return NULL;
-	
-  // Инит локальные перемен
+  // Self configurating
   self->state = COTP_CON_STOP;
 	self->socket = socket;
 	self->srcRef = -1;
@@ -36,9 +36,9 @@ CotpConnectionPtr
 	self->class = -1;
 	self->options = (CotpOptions) {.tpdu_size = 0, .tsap_id_src = -1, .tsap_id_dst = -1};
 	self->payload = payloadBuffer;
-  
-  // Инит верхние уровни
-  
+  // Top layers creating
+  self->isoSess = IsoSession_Create();
+  if (!self->isoSess) return NULL;
 	
 	/* default TPDU size is maximum size */
 	CotpConnection_setTpduSize(self, COTP_MAX_TPDU_SIZE);
@@ -49,6 +49,16 @@ CotpConnectionPtr
 //	self->stream = ByteStream_create(self->socket, self->writeBuffer);
   
   return self;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief Cotp Connection layer destructor */
+void
+  CotpConnection_Delete(CotpConnectionPtr self) {
+/*----------------------------------------------------------------------------*/
+	if (!self) return;
+  if (self->isoSess) IsoSession_Delete(self->isoSess);
+	free(self); self = NULL;
 }
 
 /**	----------------------------------------------------------------------------

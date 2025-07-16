@@ -9,17 +9,31 @@ struct sIsoPresentation {
 	ContextDefinition context[2];
 	u8_t              nextContextId;
 	ByteBuffer        nextPayload;
-  // связь с уровнями
-  AcseConnectionPtr acseConnection;
+  // Top layers linkage
+  AcseConnectionPtr acseConn;
 };
 
 /**	----------------------------------------------------------------------------
-	* @brief ??? */
+	* @brief Iso Presentation layer constructor */
 IsoPresentationPtr
 	IsoPresentation_Create(void) {
 /*----------------------------------------------------------------------------*/
-	IsoPresentationPtr self = calloc(1, sizeof(struct sIsoPresentation));
+	// Self creating
+  IsoPresentationPtr self = calloc(1, sizeof(struct sIsoPresentation));
   if (!self) return NULL;
+  // Top layers creating
+  self->acseConn = AcseConnection_Create();
+  if (!self->acseConn) return NULL;
   
   return self;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief Iso Presentation layer destructor */
+void
+  IsoPresentation_Delete(IsoPresentationPtr self) {
+/*----------------------------------------------------------------------------*/
+	if (!self) return;
+  if (self->acseConn) AcseConnection_Delete(self->acseConn);
+	free(self); self = NULL;
 }

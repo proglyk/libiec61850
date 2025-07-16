@@ -17,8 +17,8 @@ struct sIsoConnection {
 	void*                  msgRcvdHandlerParameter;
 	s32_t                  socket;
   int                    state;
-  // связь с уровнями
-  CotpConnectionPtr      cotpConnection;
+  // Top layers linkage
+  CotpConnectionPtr      cotpConn;
   
 	
 	//void* session;
@@ -32,13 +32,14 @@ struct sIsoConnection {
 static ByteBuffer receiveBuffer; // TODO разместить потом в куче
 
 /**	----------------------------------------------------------------------------
-	* @brief Connection init */
+	* @brief Iso Connection layer constructor */
 IsoConnectionPtr
 	IsoConnection_Create(s32_t socket) {
 /*----------------------------------------------------------------------------*/
-	IsoConnectionPtr self = calloc(1, sizeof(struct sIsoConnection));
+	// Self creating
+  IsoConnectionPtr self = calloc(1, sizeof(struct sIsoConnection));
   if (!self) return NULL;
-	// Инит тлокальные перемен
+  // Self configurating
   self->socket = socket;
   self->receive_buf = malloc(RECEIVE_BUF_SIZE);
   self->send_buf = malloc(SEND_BUF_SIZE);
@@ -46,8 +47,9 @@ IsoConnectionPtr
 	self->msgRcvdHandlerParameter = NULL;
 	self->state = ISO_CON_STATE_STOPPED;
 	SBuffer_Init(&self->xSbuf, self->send_buf, SEND_BUF_SIZE);
-  // Инит верхние уровни
-  
+  // Top layers creating
+  self->cotpConn = CotpConnection_Create(socket, &receiveBuffer);
+  if (!self->cotpConn) return NULL;
   
 /*   self->xLayer.Cotp.px = calloc(1, sizeof(CotpConnection));
   self->xLayer.Session.px = calloc(1, sizeof(IsoSession));

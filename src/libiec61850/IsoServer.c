@@ -10,20 +10,23 @@ struct sIsoServer {
 	ServerSocket2 							pxServSocket;
 	sSocket2										xConnSocket;
 	int 												tcpIp;*/
-	IsoConnectionPtr 						pxConn;
+	IsoConnectionPtr 						isoConn;
 };
 
 
 /**	----------------------------------------------------------------------------
-	* @brief ??? */
+	* @brief Iso Server layer constructor */
 IsoServerPtr
 	IsoServer_Create(s32_t socket) {
 /*----------------------------------------------------------------------------*/
-	IsoServerPtr self = calloc(1, sizeof(struct sIsoServer));
+	// Self creating
+  IsoServerPtr self = calloc(1, sizeof(struct sIsoServer));
+  if (!self) return NULL;
+  // Self configurating
 	self->state = ISO_SVR_STATE_IDLE;
-  
-  self->pxConn = IsoConnection_Create(socket);
-  if (self->pxConn) return NULL;
+  // Top layers creating
+  self->isoConn = IsoConnection_Create(socket);
+  if (self->isoConn) return NULL;
 
 	return self;
 }
@@ -37,14 +40,14 @@ s32_t
 }
 
 /**	----------------------------------------------------------------------------
-	* @brief ??? */
+	* @brief Iso Server layer destructor */
 void
-	IsoServer_Delete(IsoServerPtr self) {
+IsoServer_Delete(IsoServerPtr self) {
 /*----------------------------------------------------------------------------*/
 	if (!self) return;
   
-	if (self->pxConn) {
-		IsoConnection_Delete(self->pxConn);
+	if (self->isoConn) {
+		IsoConnection_Delete(self->isoConn);
   }
 	free(self); self = NULL;
 }
@@ -52,9 +55,9 @@ void
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 void
-	IsoServer_ClientConnected(IsoServerPtr self) {
+IsoServer_ClientConnected(IsoServerPtr self) {
 /*----------------------------------------------------------------------------*/
-  IsoConnection_ClientConnected(self->pxConn);
+  IsoConnection_ClientConnected(self->isoConn);
 }
 
 /**	----------------------------------------------------------------------------
