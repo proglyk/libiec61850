@@ -1,0 +1,3 @@
+#ifndef _COTPCONNECTION_H_
+#define _COTPCONNECTION_H_
+#endif // _COTPCONNECTION_H_

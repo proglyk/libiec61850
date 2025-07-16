@@ -1,0 +1,3 @@
+#ifndef _ACSECONNECTION_H_
+#define _ACSECONNECTION_H_
+#endif // _ACSECONNECTION_H_
