@@ -3,13 +3,13 @@
 #include "libiec61850/byte_buffer.h"
 
 struct sIsoSession {
-  // локальные
+  // Р»РѕРєР°Р»СЊРЅС‹Рµ
   u16_t callingSessionSelector;
 	u16_t calledSessionSelector;
 	u16_t sessionRequirement;
 	u8_t protocolOptions;
 	ByteBuffer userData;
-  // связь с уровнями
+  // СЃРІСЏР·СЊ СЃ СѓСЂРѕРІРЅСЏРјРё
   IsoPresentationPtr isoPresentation;
 };
 

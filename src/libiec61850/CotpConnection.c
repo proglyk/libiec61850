@@ -3,7 +3,7 @@
 #include "libiec61850/IsoSession.h"
 
 struct sCotpConnection {
-  // локальные
+  // Р»РѕРєР°Р»СЊРЅС‹Рµ
   CotpState state;
   s32_t socket;
  	int srcRef;
@@ -14,7 +14,7 @@ struct sCotpConnection {
 	ByteBuffer* payload;
 	ByteBuffer* writeBuffer;
 //	ByteStream stream;
-  // связь с уровнями
+  // СЃРІСЏР·СЊ СЃ СѓСЂРѕРІРЅСЏРјРё
   IsoSessionPtr isoSession;
 };
 
@@ -28,7 +28,7 @@ CotpConnectionPtr
 	CotpConnectionPtr self = calloc(1, sizeof(struct sCotpConnection));
   if (!self) return NULL;
 	
-  // Инит локальные перемен
+  // РРЅРёС‚ Р»РѕРєР°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅ
   self->state = COTP_CON_STOP;
 	self->socket = socket;
 	self->srcRef = -1;
@@ -37,7 +37,7 @@ CotpConnectionPtr
 	self->options = (CotpOptions) {.tpdu_size = 0, .tsap_id_src = -1, .tsap_id_dst = -1};
 	self->payload = payloadBuffer;
   
-  // Инит верхние уровни
+  // РРЅРёС‚ РІРµСЂС…РЅРёРµ СѓСЂРѕРІРЅРё
   
 	
 	/* default TPDU size is maximum size */

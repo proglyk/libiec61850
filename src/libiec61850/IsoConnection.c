@@ -1,5 +1,6 @@
 #include "libiec61850_conf.h"
 #include "libiec61850/IsoConnection.h"
+#include "libiec61850/CotpConnection.h"
 #include "stdlib.h"
 
 
@@ -9,13 +10,17 @@ static void session_connect(void);
 static void session_data(void);
 
 struct sIsoConnection {
-	uint8_t* receive_buf;
-  uint8_t* send_buf;
+  // локальные
+	uint8_t*               receive_buf;
+  uint8_t*               send_buf;
   MessageReceivedHandler msgRcvdHandler;
-	void* msgRcvdHandlerParameter;
-	s32_t socket;
-  int state;
-	//CotpConnection * cotpConnection;
+	void*                  msgRcvdHandlerParameter;
+	s32_t                  socket;
+  int                    state;
+  // связь с уровнями
+  CotpConnectionPtr      cotpConnection;
+  
+	
 	//void* session;
   //void* presentation;
 	//char* clientAddress;
@@ -23,20 +28,27 @@ struct sIsoConnection {
   SBuffer xSbuf;
 };
 
+// Variables, Constants
+static ByteBuffer receiveBuffer; // TODO разместить потом в куче
+
 /**	----------------------------------------------------------------------------
 	* @brief Connection init */
 IsoConnectionPtr
 	IsoConnection_Create(s32_t socket) {
 /*----------------------------------------------------------------------------*/
 	IsoConnectionPtr self = calloc(1, sizeof(struct sIsoConnection));
-	self->socket = socket;
+  if (!self) return NULL;
+	// Инит тлокальные перемен
+  self->socket = socket;
   self->receive_buf = malloc(RECEIVE_BUF_SIZE);
   self->send_buf = malloc(SEND_BUF_SIZE);
 	self->msgRcvdHandler = NULL;
 	self->msgRcvdHandlerParameter = NULL;
 	self->state = ISO_CON_STATE_STOPPED;
 	SBuffer_Init(&self->xSbuf, self->send_buf, SEND_BUF_SIZE);
-  //
+  // Инит верхние уровни
+  
+  
 /*   self->xLayer.Cotp.px = calloc(1, sizeof(CotpConnection));
   self->xLayer.Session.px = calloc(1, sizeof(IsoSession));
   self->xLayer.Present.px = calloc(1, sizeof(IsoPresentation)); */

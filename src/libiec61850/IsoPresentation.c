@@ -3,13 +3,13 @@
 #include "libiec61850/byte_buffer.h"
 
 struct sIsoPresentation {
-  // локальные
+  // Р»РѕРєР°Р»СЊРЅС‹Рµ
 	u32_t             callingPresentationSelector;
 	u32_t             calledPresentationSelector;
 	ContextDefinition context[2];
 	u8_t              nextContextId;
 	ByteBuffer        nextPayload;
-  // связь с уровнями
+  // СЃРІСЏР·СЊ СЃ СѓСЂРѕРІРЅСЏРјРё
   AcseConnectionPtr acseConnection;
 };
 

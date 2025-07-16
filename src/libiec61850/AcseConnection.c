@@ -2,13 +2,13 @@
 #include "stdlib.h"
 
 struct sAcseConnection {
-  // локальные
+  // Р»РѕРєР°Р»СЊРЅС‹Рµ
 	AcseConnectionState	state;
 	s32_t	           		nextReference;
 	uint8_t* 				    userDataBuffer;
 	s32_t               userDataBufferSize;
 	AcseAuthenticationParameter authentication;
-  // связь с уровнями
+  // СЃРІСЏР·СЊ СЃ СѓСЂРѕРІРЅСЏРјРё
 };
 
 /**	----------------------------------------------------------------------------
