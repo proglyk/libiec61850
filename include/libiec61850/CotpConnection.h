@@ -23,5 +23,6 @@ struct sCotpConnection;
 typedef struct sCotpConnection *CotpConnectionPtr;
 
 CotpConnectionPtr CotpConnection_Create(s32_t, ByteBuffer *);
+void              CotpConnection_Delete(CotpConnectionPtr);
 
 #endif // _COTPCONNECTION_H_

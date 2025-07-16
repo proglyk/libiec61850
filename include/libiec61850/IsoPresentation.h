@@ -12,5 +12,6 @@ struct sIsoPresentation;
 typedef struct sIsoPresentation *IsoPresentationPtr;
 
 IsoPresentationPtr IsoPresentation_Create(void);
+void               IsoPresentation_Delete(IsoPresentationPtr);
 
 #endif // _ISOPRESENTATION_H_

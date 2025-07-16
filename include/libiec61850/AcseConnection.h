@@ -25,5 +25,6 @@ struct sAcseConnection;
 typedef struct sAcseConnection *AcseConnectionPtr;
 
 AcseConnectionPtr AcseConnection_Create(void);
+void              AcseConnection_Delete(AcseConnectionPtr);
 
 #endif // _ACSECONNECTION_H_

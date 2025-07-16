@@ -7,5 +7,6 @@ struct sIsoSession;
 typedef struct sIsoSession *IsoSessionPtr;
 
 IsoSessionPtr IsoSession_Create(void);
+void          IsoSession_Delete(IsoSessionPtr);
 
 #endif // _ISOSESSION_H_

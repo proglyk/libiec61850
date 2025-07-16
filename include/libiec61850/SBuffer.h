@@ -25,17 +25,17 @@ typedef struct {
 typedef SBuffer * SBufferPtr;
 
 
-void  SBuffer_Init(SBuffer* sbuf, u8_t* buf, u16_t maxsize);
-u32_t	SBuffer_GetPayloadSize(SBuffer* sbuf);
-u8_t *SBuffer_GetPayload(SBuffer* sbuf);
-u8_t *SBuffer_GetFront(SBuffer* sbuf);
-u32_t	SBuffer_GetFrontSize(SBuffer* sbuf);
-void	SBuffer_SetFrontSize(SBuffer* sbuf, u32_t size);
-void	SBuffer_SetToFront(SBuffer* sbuf, u8_t value);
-u8_t  SBuffer_GetValue(SBuffer* sbuf, u32_t pos);
-u32_t SBuffer_Shift(SBuffer * self);
-void  SBuffer_Replace(SBuffer* sbuf);
-void  SBuffer_Clear(SBuffer* sbuf);
-s32_t SBuffer_Writer(const void *buffer, u32_t size, void *app_key);
+void  SBuffer_Init(SBuffer *, u8_t *, u16_t);
+u32_t	SBuffer_GetPayloadSize(SBuffer *);
+u8_t *SBuffer_GetPayload(SBuffer *);
+u8_t *SBuffer_GetFront(SBuffer *);
+u32_t	SBuffer_GetFrontSize(SBuffer *);
+void	SBuffer_SetFrontSize(SBuffer *, u32_t);
+void	SBuffer_SetToFront(SBuffer *, u8_t);
+u8_t  SBuffer_GetValue(SBuffer *, u32_t);
+u32_t SBuffer_Shift(SBuffer *);
+void  SBuffer_Replace(SBuffer *);
+void  SBuffer_Clear(SBuffer *);
+s32_t SBuffer_Writer(const void *, u32_t, void *);
 
 #endif /*_SBUFFER_H_*/
