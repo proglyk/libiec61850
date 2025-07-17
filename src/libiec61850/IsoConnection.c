@@ -1,7 +1,8 @@
 #include "libiec61850_conf.h"
 #include "libiec61850/IsoConnection.h"
 #include "libiec61850/CotpConnection.h"
-#include "stdlib.h"
+#include "libiec61850/SBuffer.h"
+#include <stdlib.h>
 
 // Type definitions
 
@@ -20,13 +21,13 @@ struct sIsoConnection {
   int                    state;
   // Linkage with the upper layer
   CotpConnectionPtr      cotpConn;
-  
+  SBufferPtr             sbuf;
 	
 	//void* session;
   //void* presentation;
 	//char* clientAddress;
 	//Resources xLayer;
-  SBuffer xSbuf;
+
 };
 
 // Variables, Constants
@@ -47,7 +48,9 @@ IsoConnectionPtr
 	self->msgRcvdHandler = NULL;
 	self->msgRcvdHandlerParameter = NULL;
 	self->state = ISO_CON_STATE_STOPPED;
-	SBuffer_Init(&self->xSbuf, self->send_buf, SEND_BUF_SIZE);
+  // создаем и линкуем SBuffer
+  self->sbuf = calloc(1, sizeof(struct sSBuffer));
+	SBuffer_Init(self->sbuf, self->send_buf, SEND_BUF_SIZE);
   // Top layers creating
   self->cotpConn = CotpConnection_Create(socket, &receiveBuffer);
   if (!self->cotpConn) return NULL;
@@ -94,6 +97,7 @@ void
   if (self->cotpConn) CotpConnection_Delete(self->cotpConn);
 	if (self->receive_buf) free(self->receive_buf);
   if (self->send_buf) free(self->send_buf);
+  if (self->sbuf) free(self->sbuf);
 	free(self);	self = NULL;
 }
 
@@ -114,19 +118,19 @@ void
 s32_t
 	IsoConnection_ClientConnected(IsoConnectionPtr self) {
 /*----------------------------------------------------------------------------*/
-  CotpIndication sta;
-  if (!self) goto exit;
-  
-  // read header
-  sta = CotpConnection_readHeaderTPKT(self->cotpConn);
-  if (sta != COTP_OK) goto exit;
-  
-  // buffers clear
-  ByteBuffer_wrap(&receiveBuffer, self->receive_buf, 0, RECEIVE_BUF_SIZE);
-  SBuffer_Clear(pxSbuf);
-  
-  // read body
-  sta = CotpConnection_parseIncomingMessage(self->cotpConn);
+//  CotpIndication sta;
+//  if (!self) goto exit;
+//  
+//  // read header
+//  sta = CotpConnection_readHeaderTPKT(self->cotpConn);
+//  if (sta != COTP_OK) goto exit;
+//  
+//  // buffers clear
+//  ByteBuffer_wrap(&receiveBuffer, self->receive_buf, 0, RECEIVE_BUF_SIZE);
+//  SBuffer_Clear(pxSbuf);
+//  
+//  // read body
+//  sta = CotpConnection_parseIncomingMessage(self->cotpConn);
   
   
   return 0;
