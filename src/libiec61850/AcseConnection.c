@@ -1,6 +1,5 @@
 #include "libiec61850/AcseConnection.h"
 #include <stdlib.h>
-#include "libiec61850/SBuffer.h"
 
 // Type definitions
 
@@ -12,7 +11,7 @@ struct sAcseConnection {
 	s32_t               userDataBufferSize;
 	AcseAuthenticationParameter authentication;
   // Linkage with the upper layer
-  
+  SBufferPtr          sbuf;
 };
 
 /**	----------------------------------------------------------------------------

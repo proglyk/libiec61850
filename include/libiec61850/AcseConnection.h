@@ -2,6 +2,7 @@
 #define _ACSECONNECTION_H_
 
 #include "userint.h"
+#include "libiec61850/SBuffer.h"
 
 // Type declarations
 
