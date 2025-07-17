@@ -29,7 +29,7 @@ IsoServerPtr
   // Self configurating
 	self->state = ISO_SVR_STATE_IDLE; 
   // Top layers creating
-  self->isoConn = IsoConnection_Create(socket, );
+  self->isoConn = IsoConnection_Create(socket);
   if (self->isoConn) return NULL;
 
 	return self;

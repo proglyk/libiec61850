@@ -3,6 +3,7 @@
 
 #include "userint.h"
 #include "libiec61850/byte_buffer.h"
+#include "libiec61850/SBuffer.h"
 
 #define ISO_CON_STATE_ERROR		2
 #define ISO_CON_STATE_RUNNING 1

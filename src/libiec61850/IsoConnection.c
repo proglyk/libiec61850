@@ -1,7 +1,6 @@
 #include "libiec61850_conf.h"
 #include "libiec61850/IsoConnection.h"
 #include "libiec61850/CotpConnection.h"
-#include "libiec61850/SBuffer.h"
 #include <stdlib.h>
 
 // Type definitions
@@ -52,7 +51,7 @@ IsoConnectionPtr
   self->sbuf = calloc(1, sizeof(struct sSBuffer));
 	SBuffer_Init(self->sbuf, self->send_buf, SEND_BUF_SIZE);
   // Top layers creating
-  self->cotpConn = CotpConnection_Create(socket, &receiveBuffer);
+  self->cotpConn = CotpConnection_Create(socket, &receiveBuffer, self->sbuf);
   if (!self->cotpConn) return NULL;
   
 /*   self->xLayer.Cotp.px = calloc(1, sizeof(CotpConnection));
