@@ -26,7 +26,7 @@ typedef struct sCotpConnection *CotpConnectionPtr;
 
 // Function declarations
 
-CotpConnectionPtr CotpConnection_Create(s32_t, ByteBuffer *);
+CotpConnectionPtr CotpConnection_Create(s32_t, ByteBuffer *, SBufferPtr);
 void              CotpConnection_Delete(CotpConnectionPtr);
 s32_t             CotpConnection_Do(CotpConnectionPtr);
 
