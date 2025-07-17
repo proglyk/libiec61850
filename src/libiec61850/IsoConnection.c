@@ -3,6 +3,7 @@
 #include "libiec61850/CotpConnection.h"
 #include "stdlib.h"
 
+// Type definitions
 
 static void cotp_connect_indication(void);
 static void cotp_data_indication(void);
@@ -10,14 +11,14 @@ static void session_connect(void);
 static void session_data(void);
 
 struct sIsoConnection {
-  // локальные
+  // Own needs
 	uint8_t*               receive_buf;
   uint8_t*               send_buf;
   MessageReceivedHandler msgRcvdHandler;
 	void*                  msgRcvdHandlerParameter;
 	s32_t                  socket;
   int                    state;
-  // Top layers linkage
+  // Linkage with the upper layer
   CotpConnectionPtr      cotpConn;
   
 	
@@ -55,6 +56,8 @@ IsoConnectionPtr
   self->xLayer.Session.px = calloc(1, sizeof(IsoSession));
   self->xLayer.Present.px = calloc(1, sizeof(IsoPresentation)); */
   
+  self->state = ISO_CON_STATE_RUNNING;
+  
 	return self;
 }
 
@@ -88,6 +91,7 @@ void
 /*   free(self->xLayer.Present.px);
 	free(self->xLayer.Session.px);
   free(self->xLayer.Cotp.px); */
+  if (self->cotpConn) CotpConnection_Delete(self->cotpConn);
 	if (self->receive_buf) free(self->receive_buf);
   if (self->send_buf) free(self->send_buf);
 	free(self);	self = NULL;
@@ -110,10 +114,25 @@ void
 s32_t
 	IsoConnection_ClientConnected(IsoConnectionPtr self) {
 /*----------------------------------------------------------------------------*/
- 
+  CotpIndication sta;
+  if (!self) goto exit;
+  
+  // read header
+  sta = CotpConnection_readHeaderTPKT(self->cotpConn);
+  if (sta != COTP_OK) goto exit;
+  
+  // buffers clear
+  ByteBuffer_wrap(&receiveBuffer, self->receive_buf, 0, RECEIVE_BUF_SIZE);
+  SBuffer_Clear(pxSbuf);
+  
+  // read body
+  sta = CotpConnection_parseIncomingMessage(self->cotpConn);
+  
+  
   return 0;
   
   exit:
+  self->state = ISO_CON_STATE_ERROR;
   return -1;
 }
 
