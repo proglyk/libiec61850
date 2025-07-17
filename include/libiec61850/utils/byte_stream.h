@@ -4,7 +4,7 @@
 //#include "platform_types.h"
 #include "userint.h"
 //#include "socket2.h"
-#include "libiec61850/byte_buffer.h"
+#include "libiec61850/utils/byte_buffer.h"
 
 typedef struct sByteStream {
 	s32_t socket;
