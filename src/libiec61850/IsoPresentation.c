@@ -1,7 +1,6 @@
 #include "libiec61850/IsoPresentation.h"
 #include "libiec61850/AcseConnection.h"
 #include "libiec61850/byte_buffer.h"
-#include "libiec61850/SBuffer.h"
 
 // Type definitions
 
@@ -25,10 +24,11 @@ IsoPresentationPtr
 	// Self creating
   IsoPresentationPtr self = calloc(1, sizeof(struct sIsoPresentation));
   if (!self) return NULL;
-  // Top layers creating
-  self->acseConn = AcseConnection_Create();
-  if (!self->acseConn) return NULL;
+  // линкуем SBuffer
   self->sbuf = sbuf;
+  // Top layers creating
+  self->acseConn = AcseConnection_Create(self->sbuf);
+  if (!self->acseConn) return NULL;
   
   return self;
 }

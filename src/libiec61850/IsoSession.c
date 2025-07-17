@@ -1,7 +1,6 @@
 #include "libiec61850/IsoSession.h"
 #include "libiec61850/IsoPresentation.h"
 #include <string.h>
-#include "libiec61850/SBuffer.h"
 
 // Type definitions
 
@@ -31,10 +30,11 @@ IsoSessionPtr
 	self->sessionRequirement = 0x0002; /* default = duplex functional unit */
 	self->callingSessionSelector = 0x0001;
 	self->calledSessionSelector = 0x0001;
-  // Top layers creating
-  self->isoPresent = IsoPresentation_Create();
-  if (!self->isoPresent) return NULL;
+  // линкуем SBuffer
   self->sbuf = sbuf;
+  // Top layers creating
+  self->isoPresent = IsoPresentation_Create(self->sbuf);
+  if (!self->isoPresent) return NULL;
   
   return self;
 }
@@ -155,5 +155,5 @@ static IsoSessionIndication
 static ByteBuffer*
   IsoSession_getUserData(IsoSessionPtr self) {
 /*----------------------------------------------------------------------------*/
-	return &session->userData;
+	return &self->userData;
 }
