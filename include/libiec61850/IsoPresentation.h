@@ -3,6 +3,8 @@
 
 #include "userint.h"
 
+// Type declarations
+
 typedef struct {
 	uint8_t contextId;
 	uint8_t abstractSyntaxName[10]; /* contains OID */
@@ -11,7 +13,9 @@ typedef struct {
 struct sIsoPresentation;
 typedef struct sIsoPresentation *IsoPresentationPtr;
 
-IsoPresentationPtr IsoPresentation_Create(void);
+// Function declarations
+
+IsoPresentationPtr IsoPresentation_Create(SBufferPtr);
 void               IsoPresentation_Delete(IsoPresentationPtr);
 
 #endif // _ISOPRESENTATION_H_

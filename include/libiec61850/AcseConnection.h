@@ -3,6 +3,8 @@
 
 #include "userint.h"
 
+// Type declarations
+
 typedef enum {
 	AUTH_NONE,
 	AUTH_PASSWORD
@@ -24,7 +26,9 @@ typedef enum eAcseConnectionState {
 struct sAcseConnection;
 typedef struct sAcseConnection *AcseConnectionPtr;
 
-AcseConnectionPtr AcseConnection_Create(void);
+// Function declarations
+
+AcseConnectionPtr AcseConnection_Create(SBufferPtr);
 void              AcseConnection_Delete(AcseConnectionPtr);
 
 #endif // _ACSECONNECTION_H_

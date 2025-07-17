@@ -1,20 +1,24 @@
 #include "libiec61850/AcseConnection.h"
-#include "stdlib.h"
+#include <stdlib.h>
+#include "libiec61850/SBuffer.h"
+
+// Type definitions
 
 struct sAcseConnection {
-  // локальные
+  // Own needs
 	AcseConnectionState	state;
 	s32_t	           		nextReference;
 	uint8_t* 				    userDataBuffer;
 	s32_t               userDataBufferSize;
 	AcseAuthenticationParameter authentication;
-  // связь с уровнями
+  // Linkage with the upper layer
+  
 };
 
 /**	----------------------------------------------------------------------------
 	* @brief Acse Connection layer constructor */
 AcseConnectionPtr
-	AcseConnection_Create(void) {
+	AcseConnection_Create(SBufferPtr sbuf) {
 /*----------------------------------------------------------------------------*/
 	// Self creating
   AcseConnectionPtr self = calloc(1, sizeof(struct sAcseConnection));
@@ -22,9 +26,10 @@ AcseConnectionPtr
   // Self configurating
   self->state = idle;
 	self->nextReference = 0;
-	self->userDataBuffer = NULL;
+	self->userDataBuffer = calloc(40, sizeof(u8_t));
 	self->userDataBufferSize = 0;
 	self->authentication = NULL;
+  self->sbuf = sbuf;
   
   return self;
 }
