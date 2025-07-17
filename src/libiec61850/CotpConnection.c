@@ -1,7 +1,7 @@
 #include "libiec61850_conf.h"
 #include "libiec61850/CotpConnection.h"
 #include "libiec61850/IsoSession.h"
-#include "libiec61850/SBuffer.h"
+#include "libiec61850/utils/byte_stream.h"
 
 // Type definitions
 
@@ -16,11 +16,18 @@ struct sCotpConnection {
 	uint8_t       eot;
 	ByteBuffer*   payload;
 	ByteBuffer*   writeBuffer;
-//	ByteStream stream;
+	ByteStream    stream;
   // Linkage with the upper layer
   IsoSessionPtr isoSess;
   SBufferPtr    sbuf;
 };
+// FIXME Обязательно убрать в упр.структуру
+static int currentBufPos = 0;
+static int fragments = 1;
+static int fragmentPayloadSize;
+static int currentLimit;
+static int lastUnit;
+
 
 static CotpIndication	sendConnectionResponseMessage(CotpConnectionPtr);
 static void setTpduSize(CotpConnectionPtr, int);
@@ -30,6 +37,10 @@ static ByteBuffer *getPayload(CotpConnectionPtr);
 static inline int getConnectionResponseLength(CotpConnectionPtr);
 static CotpIndication parseIncomingMessage(CotpConnectionPtr);
 static CotpIndication	sendSDataMessage(CotpConnectionPtr, SBuffer *);
+static int inline CotpConnection_getTpduSize(CotpConnectionPtr);
+static CotpIndication writeRfc1006Header(CotpConnectionPtr, int);
+static CotpIndication writeDataTpduHeader(CotpConnectionPtr, int);
+static int cotp_parse_CRequest_tpdu(CotpConnectionPtr, u8_t);
 
 // Определения общедоступных (public) функций
 
@@ -49,10 +60,11 @@ CotpConnectionPtr
 	self->class = -1;
 	self->options = (CotpOptions) {.tpdu_size = 0, .tsap_id_src = -1, .tsap_id_dst = -1};
 	self->payload = payloadBuffer;
-  // Top layers creating
-  self->isoSess = IsoSession_Create();
-  if (!self->isoSess) return NULL;
+  // линкуем SBuffer
   self->sbuf = sbuf;
+  // Top layers creating
+  self->isoSess = IsoSession_Create(self->sbuf);
+  if (!self->isoSess) return NULL;
 	
 	/* default TPDU size is maximum size */
 	setTpduSize(self, COTP_MAX_TPDU_SIZE);
@@ -105,7 +117,7 @@ s32_t
       payload = getPayload(self);
       rc = IsoSession_Do(self->isoSess, payload);
       if (rc < 0) goto exit;
-      sta = sendSDataMessage(self, pxSbuf);
+      sta = sendSDataMessage(self, self->sbuf);
       if (sta != COTP_OK) goto exit;
     }
   }
@@ -299,4 +311,80 @@ static inline int
   getConnectionResponseLength(CotpConnectionPtr self) {
 /*----------------------------------------------------------------------------*/
 	return 11 + getOptionsLength(self);
+}
+
+static int inline /* in byte */
+CotpConnection_getTpduSize(CotpConnectionPtr self)
+{
+	return (1 << self->options.tpdu_size);
+}
+
+static CotpIndication
+writeRfc1006Header(CotpConnectionPtr self, int len)
+{
+	if (ByteStream_writeUint8(self->stream, (uint8_t) 0x03) != 1)
+		return COTP_ERROR;
+	if (ByteStream_writeUint8(self->stream, (uint8_t) 0x00) != 1)
+		return COTP_ERROR;
+	if (ByteStream_writeUint8(self->stream, (uint8_t) (len / 0x100)) != 1)
+		return COTP_ERROR;
+	if (ByteStream_writeUint8(self->stream, (uint8_t) (len & 0xff)) != 1)
+		return COTP_ERROR;
+
+	return COTP_OK;
+}
+
+static CotpIndication
+writeDataTpduHeader(CotpConnectionPtr self, int isLastUnit)
+{
+	if (ByteStream_writeUint8(self->stream, (uint8_t) 0x02) != 1)
+		return COTP_ERROR;
+
+	if (ByteStream_writeUint8(self->stream, (uint8_t) 0xf0) != 1)
+			return COTP_ERROR;
+
+	if (isLastUnit) {
+		if (ByteStream_writeUint8(self->stream, (uint8_t) 0x80) != 1)
+				return COTP_ERROR;
+	}
+	else {
+		if (ByteStream_writeUint8(self->stream, (uint8_t) 0x00) != 1)
+				return COTP_ERROR;
+	}
+
+	return COTP_OK;
+}
+
+/*
+    CR TPDU (from RFC 0905):
+
+     1    2        3        4       5   6    7    8    p  p+1...end
+    +--+------+---------+---------+---+---+------+-------+---------+
+    |LI|CR CDT|     DST - REF     |SRC-REF|CLASS |VARIAB.|USER     |
+    |  |1110  |0000 0000|0000 0000|   |   |OPTION|PART   |DATA     |
+    +--+------+---------+---------+---+---+------+-------+---------+
+*/
+
+static int
+cotp_parse_CRequest_tpdu(CotpConnection* self, u8_t len){
+	uint16_t dstRef;
+	uint16_t srcRef;
+	uint8_t class;
+
+	if (ByteStream_readUint16(self->stream, &dstRef) != 2)
+		return -1;
+	else
+		self->dstRef = dstRef;
+
+	if (ByteStream_readUint16(self->stream, &srcRef) != 2)
+		return -1;
+	else
+		self->srcRef = srcRef;
+
+	if (ByteStream_readUint8(self->stream, &class) != 1)
+		return -1;
+	else
+		self->class = class;
+
+	return cotp_parse_options(self, len - 6);
 }
