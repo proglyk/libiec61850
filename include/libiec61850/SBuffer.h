@@ -13,16 +13,16 @@
 	// 			 [-------|-------|---------]
 	//        >Front< >Space< >Payload<
 	//				>				  Max           <
-typedef struct {
+struct sSBuffer {
 	u8_t* pcBuf;
 	struct {
 		u32_t ulMax;
 		u32_t ulFront;
 		u32_t ulSpace;
 	} xSize;
-} SBuffer;
-
-typedef SBuffer * SBufferPtr;
+};
+typedef struct sSBuffer  SBuffer;
+typedef struct sSBuffer *SBufferPtr;
 
 
 void  SBuffer_Init(SBuffer *, u8_t *, u16_t);

@@ -3,6 +3,8 @@
 
 #include "libiec61850/IsoConnection.h"
 
+// Type declarations
+
 typedef enum {
 	ISO_SVR_STATE_IDLE,
 	ISO_SVR_STATE_WAITCON,
@@ -17,11 +19,12 @@ typedef enum {
 } IsoConnectionIndication;
 
 typedef void (*ConnectionIndicationHandler) ( IsoConnectionIndication, 
-                                              void*,
-                                              IsoConnectionPtr );
+                                              void*, IsoConnectionPtr );
 
 struct sIsoServer;
 typedef struct sIsoServer *IsoServerPtr;
+
+// Function declarations
 
 IsoServerPtr IsoServer_Create(s32_t);
 s32_t        IsoServer_Init(void);

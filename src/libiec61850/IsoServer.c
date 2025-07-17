@@ -1,7 +1,10 @@
 #include "libiec61850/IsoServer.h"
 #include "stdlib.h"
 
+// Type definitions
+
 struct sIsoServer {
+  // Own needs
 	IsoServerState 							state;
 	ConnectionIndicationHandler connectionHandler;
 	void* 											connectionHandlerParameter;
@@ -10,6 +13,7 @@ struct sIsoServer {
 	ServerSocket2 							pxServSocket;
 	sSocket2										xConnSocket;
 	int 												tcpIp;*/
+  // Linkage with the upper layer
 	IsoConnectionPtr 						isoConn;
 };
 
@@ -23,9 +27,9 @@ IsoServerPtr
   IsoServerPtr self = calloc(1, sizeof(struct sIsoServer));
   if (!self) return NULL;
   // Self configurating
-	self->state = ISO_SVR_STATE_IDLE;
+	self->state = ISO_SVR_STATE_IDLE; 
   // Top layers creating
-  self->isoConn = IsoConnection_Create(socket);
+  self->isoConn = IsoConnection_Create(socket, );
   if (self->isoConn) return NULL;
 
 	return self;
@@ -45,10 +49,7 @@ void
 IsoServer_Delete(IsoServerPtr self) {
 /*----------------------------------------------------------------------------*/
 	if (!self) return;
-  
-	if (self->isoConn) {
-		IsoConnection_Delete(self->isoConn);
-  }
+	if (self->isoConn) IsoConnection_Delete(self->isoConn);
 	free(self); self = NULL;
 }
 
