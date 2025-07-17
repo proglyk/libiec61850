@@ -4,6 +4,8 @@
 #include "userint.h"
 #include "libiec61850/byte_buffer.h"
 
+// Type declarations
+
 typedef enum {
 	COTP_CON_RUN, COTP_CON_STOP
 } CotpState;
@@ -22,7 +24,10 @@ typedef struct {
 struct sCotpConnection;
 typedef struct sCotpConnection *CotpConnectionPtr;
 
+// Function declarations
+
 CotpConnectionPtr CotpConnection_Create(s32_t, ByteBuffer *);
 void              CotpConnection_Delete(CotpConnectionPtr);
+s32_t             CotpConnection_Do(CotpConnectionPtr);
 
 #endif // _COTPCONNECTION_H_

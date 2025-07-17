@@ -2,8 +2,10 @@
 #include "libiec61850/CotpConnection.h"
 #include "libiec61850/IsoSession.h"
 
+// Type definitions
+
 struct sCotpConnection {
-  // локальные
+  // Own needs
   CotpState state;
   s32_t socket;
  	int srcRef;
@@ -14,11 +16,15 @@ struct sCotpConnection {
 	ByteBuffer* payload;
 	ByteBuffer* writeBuffer;
 //	ByteStream stream;
-  // Top layers linkage
+  // Linkage with the upper layer
   IsoSessionPtr isoSess;
 };
 
 static void CotpConnection_setTpduSize(CotpConnectionPtr, int);
+static CotpIndication CotpConnection_readHeaderTPKT(CotpConnectionPtr);
+static ByteBuffer *CotpConnection_getPayload(CotpConnectionPtr);
+
+// Определения общедоступных (public) функций
 
 /**	----------------------------------------------------------------------------
 	* @brief Cotp Connection layer constructor */
@@ -62,8 +68,66 @@ void
 }
 
 /**	----------------------------------------------------------------------------
+	* @brief Cotp Connection layer destructor */
+static CotpIndication
+  CotpConnection_readHeaderTPKT(CotpConnectionPtr self) {
+/*----------------------------------------------------------------------------*/
+	uint8_t local[2] = {0,0};
+
+	if (ByteStream_read(self->stream, local, 2) < 0)
+		return COTP_ERROR;
+	if (local[0] != 0x03) return COTP_ERROR;
+	if (local[1] != 0x00) return COTP_ERROR;
+
+	return COTP_OK;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief Cotp Connection layer action */
+s32_t
+  CotpConnection_Do(CotpConnectionPtr self) {
+/*----------------------------------------------------------------------------*/
+  CotpIndication sta;
+  ByteBuffer* payload = NULL;
+  
+  // read header
+  sta = CotpConnection_readHeaderTPKT(self->cotpConn);
+  if (sta != COTP_OK) goto exit;
+  
+  // read body
+  sta = CotpConnection_parseIncomingMessage(self->cotpConn);
+  // см.протокол. Инициализация
+  if (sta == COTP_CONNECT_INDICATION) {
+    // ответ только для случая первоначального обращения
+    if (self->state == COTP_CON_STOP) {
+      CotpConnection_sendConnectionResponseMessage(self);
+      self->state = COTP_CON_RUN;
+    }
+  }
+  // Передача данных
+  else if (sta == COTP_DATA_INDICATION) {
+    if (self->state == COTP_CON_RUN) {
+      payload = CotpConnection_getPayload(self);
+      
+    }
+  }
+  // Exception
+  else {
+    goto exit;
+  }
+  
+  return 0;
+  
+  exit:
+  self->state = COTP_CON_STOP;
+  return -1;
+}
+
+// Определения локальных (private) функций
+
+/**	----------------------------------------------------------------------------
 	* @brief Connection init */
-void
+static void
   CotpConnection_setTpduSize(CotpConnectionPtr self, int tpduSize) {
 /*----------------------------------------------------------------------------*/
   int newTpduSize = 1;
@@ -78,4 +142,12 @@ void
     newTpduSize--;
 
   self->options.tpdu_size = newTpduSize;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief Connection init */
+static ByteBuffer*
+  CotpConnection_getPayload(CotpConnectionPtr self) {
+/*----------------------------------------------------------------------------*/
+	return self->payload;
 }
