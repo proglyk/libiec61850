@@ -11,6 +11,8 @@
 
 // COTPCONNECTION
 #define COTP_MAX_TPDU_SIZE (int)(1024+7)
+#define COTP_DATA_HEADER_SIZE 3
+#define COTP_RFC1006_HEADER_SIZE 4
 
 // макс. длина пути переменной в дереве. Это мой костыль, который стоит в 
 // readAccessGooseControlBlock и представляет собой длину буфера variableId, 
