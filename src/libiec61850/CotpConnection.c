@@ -54,7 +54,8 @@ static int cotp_parse_options(CotpConnectionPtr, int);
 /**	----------------------------------------------------------------------------
 	* @brief Cotp Connection layer constructor */
 CotpConnectionPtr
-	CotpConnection_Create(s32_t socket, ByteBuffer* payloadBuffer, SBufferPtr sbuf) {
+	CotpConnection_Create(s32_t socket, ByteBuffer* payloadBuffer,
+                        SBufferPtr sbuf) {
 /*----------------------------------------------------------------------------*/
 	// Self creating
   CotpConnectionPtr self = calloc(1, sizeof(struct sCotpConnection));
@@ -122,8 +123,8 @@ s32_t
   else if (sta == COTP_DATA_INDICATION) {
     if (self->state == COTP_CON_RUN) {
       payload = getPayload(self);
-      rc = IsoSession_Do(self->isoSess, payload);
-      if (rc < 0) goto exit;
+      //rc = IsoSession_Do(self->isoSess, payload);
+      //if (rc < 0) goto exit;
       sta = sendSDataMessage(self, self->sbuf);
       if (sta != COTP_OK) goto exit;
     }
@@ -138,6 +139,14 @@ s32_t
   exit:
   self->state = COTP_CON_STOP;
   return -1;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+void
+	CotpConnection_ThrowOverListener( CotpConnectionPtr self, MsgPassedHandlerPtr handler, void *param ) {
+/*----------------------------------------------------------------------------*/
+  IsoSession_ThrowOverListener(self->isoSess, handler, param);
 }
 
 // Определения локальных (private) функций

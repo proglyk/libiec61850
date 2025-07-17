@@ -2,8 +2,9 @@
 #define _COTPCONNECTION_H_
 
 #include "userint.h"
-#include "libiec61850/byte_buffer.h"
-#include "libiec61850/SBuffer.h"
+#include "libiec61850/utils/byte_buffer.h"
+#include "libiec61850/utils/SBuffer.h"
+#include "libiec61850/utils/common_types.h"
 
 // Type declarations
 
@@ -30,5 +31,6 @@ typedef struct sCotpConnection *CotpConnectionPtr;
 CotpConnectionPtr CotpConnection_Create(s32_t, ByteBuffer *, SBufferPtr);
 void              CotpConnection_Delete(CotpConnectionPtr);
 s32_t             CotpConnection_Do(CotpConnectionPtr);
+void	            CotpConnection_ThrowOverListener(CotpConnectionPtr, MsgPassedHandlerPtr, void *);
 
 #endif // _COTPCONNECTION_H_

@@ -2,7 +2,8 @@
 #define _ISOPRESENTATION_H_
 
 #include "userint.h"
-#include "libiec61850/SBuffer.h"
+#include "libiec61850/utils/SBuffer.h"
+#include "libiec61850/utils/common_types.h"
 
 // Type declarations
 
@@ -11,6 +12,11 @@ typedef struct {
 	uint8_t abstractSyntaxName[10]; /* contains OID */
 } ContextDefinition;
 
+typedef enum {
+	PRESENTATION_OK,
+	PRESENTATION_ERROR
+} IsoPresStatus;
+
 struct sIsoPresentation;
 typedef struct sIsoPresentation *IsoPresentationPtr;
 
@@ -18,5 +24,7 @@ typedef struct sIsoPresentation *IsoPresentationPtr;
 
 IsoPresentationPtr IsoPresentation_Create(SBufferPtr);
 void               IsoPresentation_Delete(IsoPresentationPtr);
+s32_t	             IsoPresentation_parseConnect(IsoPresentationPtr, ByteBuffer *);
+void               IsoPresentation_ThrowOverListener(IsoPresentationPtr, MsgPassedHandlerPtr, void *);
 
 #endif // _ISOPRESENTATION_H_

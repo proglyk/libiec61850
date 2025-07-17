@@ -2,8 +2,9 @@
 #define _ISOCONNECTION_H_
 
 #include "userint.h"
-#include "libiec61850/byte_buffer.h"
-#include "libiec61850/SBuffer.h"
+#include "libiec61850/utils/byte_buffer.h"
+#include "libiec61850/utils/SBuffer.h"
+#include "libiec61850/utils/common_types.h"
 
 #define ISO_CON_STATE_ERROR		2
 #define ISO_CON_STATE_RUNNING 1
@@ -14,7 +15,7 @@
 struct sIsoConnection;
 typedef struct sIsoConnection *IsoConnectionPtr;
 
-typedef void (*MessageReceivedHandler) (void *, ByteBuffer *, SBuffer *);
+//typedef void (*MessageReceivedHandler) (void *, ByteBuffer *, SBuffer *);
 
 // Function declarations
 
@@ -23,8 +24,8 @@ s32_t            IsoConnection_Init(IsoConnectionPtr);
 void	           IsoConnection_Deinit(IsoConnectionPtr);
 void	           IsoConnection_Delete(IsoConnectionPtr);
 s32_t	           IsoConnection_ClientConnected(IsoConnectionPtr);
-void             IsoConnection_installListener( IsoConnectionPtr,
-                                                MessageReceivedHandler,
+void             IsoConnection_InstallListener( IsoConnectionPtr,
+                                                MsgPassedHandlerPtr,
                                                 void* );
 
 #endif // _ISOCONNECTION_H_

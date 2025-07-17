@@ -14,8 +14,8 @@ struct sIsoConnection {
   // Own needs
 	uint8_t*               receive_buf;
   uint8_t*               send_buf;
-  MessageReceivedHandler msgRcvdHandler;
-	void*                  msgRcvdHandlerParameter;
+  //MessageReceivedHandler msgRcvdHandler;
+	//void*                  msgRcvdHandlerParameter;
 	s32_t                  socket;
   int                    state;
   // Linkage with the upper layer
@@ -44,8 +44,8 @@ IsoConnectionPtr
   self->socket = socket;
   self->receive_buf = malloc(RECEIVE_BUF_SIZE);
   self->send_buf = malloc(SEND_BUF_SIZE);
-	self->msgRcvdHandler = NULL;
-	self->msgRcvdHandlerParameter = NULL;
+	//self->msgRcvdHandler = NULL;
+	//self->msgRcvdHandlerParameter = NULL;
 	self->state = ISO_CON_STATE_STOPPED;
   // создаем и линкуем SBuffer
   self->sbuf = calloc(1, sizeof(struct sSBuffer));
@@ -102,34 +102,24 @@ void
 
 /**	----------------------------------------------------------------------------
 	* @brief Connection init */
-void
-	IsoConnection_installListener( IsoConnectionPtr self,
-                                 MessageReceivedHandler handler,
-                                 void* parameter )
-{
-/*----------------------------------------------------------------------------*/
-	self->msgRcvdHandler = handler;
-	self->msgRcvdHandlerParameter = parameter;
-}
-
-/**	----------------------------------------------------------------------------
-	* @brief Connection init */
 s32_t
 	IsoConnection_ClientConnected(IsoConnectionPtr self) {
 /*----------------------------------------------------------------------------*/
-//  CotpIndication sta;
-//  if (!self) goto exit;
-//  
-//  // read header
-//  sta = CotpConnection_readHeaderTPKT(self->cotpConn);
-//  if (sta != COTP_OK) goto exit;
-//  
-//  // buffers clear
-//  ByteBuffer_wrap(&receiveBuffer, self->receive_buf, 0, RECEIVE_BUF_SIZE);
-//  SBuffer_Clear(pxSbuf);
-//  
-//  // read body
-//  sta = CotpConnection_parseIncomingMessage(self->cotpConn);
+ //CotpIndication sta;
+ s32_t rc;
+ if (!self) goto exit;
+ 
+ // read header
+ //sta = CotpConnection_readHeaderTPKT(self->cotpConn);
+ //if (sta != COTP_OK) goto exit;
+ 
+ // buffers clear
+ ByteBuffer_wrap(&receiveBuffer, self->receive_buf, 0, RECEIVE_BUF_SIZE);
+ SBuffer_Clear(self->sbuf);
+ 
+ // read body
+ //sta = CotpConnection_parseIncomingMessage(self->cotpConn);
+ rc = CotpConnection_Do(self->cotpConn);
   
   
   return 0;
@@ -139,3 +129,11 @@ s32_t
   return -1;
 }
 
+/**	----------------------------------------------------------------------------
+	* @brief Connection init */
+void
+	IsoConnection_InstallListener( IsoConnectionPtr self,
+                               MsgPassedHandlerPtr handler, void *param ) {
+/*----------------------------------------------------------------------------*/
+  CotpConnection_ThrowOverListener(self->cotpConn, handler, param);
+}

@@ -2,9 +2,14 @@
 #define _ACSECONNECTION_H_
 
 #include "userint.h"
-#include "libiec61850/SBuffer.h"
+#include "libiec61850/utils/SBuffer.h"
+#include "libiec61850/utils/common_types.h"
 
 // Type declarations
+
+typedef enum eAcseIndication {
+	ACSE_ERROR, ACSE_ASSOCIATE, ACSE_ASSOCIATE_FAILED, ACSE_OK
+} AcseIndication;
 
 typedef enum {
 	AUTH_NONE,
@@ -31,5 +36,7 @@ typedef struct sAcseConnection *AcseConnectionPtr;
 
 AcseConnectionPtr AcseConnection_Create(SBufferPtr);
 void              AcseConnection_Delete(AcseConnectionPtr);
+s32_t             AcseConnection_parseMessage(AcseConnectionPtr, ByteBuffer *);
+void              AcseConnection_InstallListener(AcseConnectionPtr, MsgPassedHandlerPtr, void *);
 
 #endif // _ACSECONNECTION_H_

@@ -52,16 +52,18 @@ void
 /**	----------------------------------------------------------------------------
 	* @brief Iso Session layer action */
 s32_t
-  IsoSession_Do(IsoSessionPtr self, ByteBuffer *buf) {
+  IsoSession_Do(IsoSessionPtr self, ByteBuffer *buf, IsoSessRequestType type) {
 /*----------------------------------------------------------------------------*/
   IsoSessionIndication sta;
   ByteBuffer* sessionUserData;
+  s32_t rc;
   // read body
   sta = IsoSession_parseMessage(self, buf);
   sessionUserData = IsoSession_getUserData(self);
   // см.протокол.
   if (sta == SESSION_CONNECT) {
-    
+    rc = IsoPresentation_parseConnect(self->isoPresent, sessionUserData);
+    if (rc < 0) goto exit;
   }
   // см.протокол.
   else if (sta == SESSION_DATA) {
@@ -81,6 +83,14 @@ s32_t
   exit:
   //self->state = SESSION_ERROR;
   return -1;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+void
+	IsoSession_ThrowOverListener( IsoSessionPtr self, MsgPassedHandlerPtr handler, void *param ) {
+/*----------------------------------------------------------------------------*/
+  IsoPresentation_ThrowOverListener(self->isoPresent, handler, param);
 }
 
 // Определения локальных (private) функций
