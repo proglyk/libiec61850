@@ -555,7 +555,7 @@ cotp_parse_options(CotpConnectionPtr self, int opt_len){
 			read_bytes++;
 			//self->options.tpdu_size = (int16_t) uint8_value;
 			int requestedTpduSize = (1 << uint8_value);
-      CotpConnection_setTpduSize(self, requestedTpduSize);
+      setTpduSize(self, requestedTpduSize);
 			break;
 		case 0xc1:
 			if (option_len == 2) {

@@ -53,7 +53,7 @@ void
 /**	----------------------------------------------------------------------------
 	* @brief Iso Session layer action */
 s32_t
-  IsoSession_Process(IsoSessionPtr self, ByteBuffer *buf, IsoSessRequestType type) {
+  IsoSession_Process(IsoSessionPtr self, ByteBuffer *buf) {
 /*----------------------------------------------------------------------------*/
   IsoSessionIndication sta;
   ByteBuffer* sessionUserData;

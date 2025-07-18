@@ -1,4 +1,4 @@
-#include "libiec61850/SBuffer.h"
+#include "libiec61850/utils/SBuffer.h"
 #include "string.h"
 
 /**	----------------------------------------------------------------------------

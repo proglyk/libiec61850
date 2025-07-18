@@ -21,7 +21,7 @@ struct sIsoPresentation {
 };
 
 static IsoPresStatus parseConnectPdu(IsoPresentationPtr,  ByteBuffer *);
-static IsoPresStatus parseUserData(IsoPresentationPtr, ByteBuffer *);IsoPresentationIndication
+static IsoPresStatus parseUserData(IsoPresentationPtr, ByteBuffer *);
 static IsoPresStatus createSUserData(IsoPresentationPtr, SBuffer *);
 
 /**	----------------------------------------------------------------------------
@@ -95,10 +95,10 @@ s32_t
   IsoPresStatus sta = parseUserData(self, buffer);
   if (sta != PRESENTATION_OK) return -1;
   
-  if ( self->xLayer.Present.px->nextContextId == 3 ) {
+  if ( self->nextContextId == 3 ) {
     ByteBuffer *mmsConfRequest = &( self->nextPayload );
     self->msgPassedHandler( self->msgPassedParam, mmsConfRequest, self->sbuf );
-    createSUserData(self->xLayer.Present.px, pxSbuf);
+    createSUserData(self, self->sbuf);
   }
   
   return 0;
@@ -229,7 +229,7 @@ static IsoPresStatus
 }
 
 static IsoPresStatus
-	createSUserData(IsoPresentation* self, SBuffer * sbuf) {
+	createSUserData(IsoPresentationPtr self, SBuffer *sbuf) {
 	
 	//int lenght =  ByteBuffer_getSize(writeBuffer);
 	int lenght = 0;

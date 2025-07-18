@@ -12,9 +12,10 @@ typedef enum {
 	SESSION_OK,	SESSION_ERROR, SESSION_CONNECT,	SESSION_GIVE_TOKEN,	SESSION_DATA
 } IsoSessionIndication;
 
-typedef enum {
+// TODO удалть, зря добавил
+/* typedef enum {
   SESS_REQ_CONNECT, SESS_REQ_DATA
-} IsoSessRequestType;
+} IsoSessRequestType; */
 
 struct sIsoSession;
 typedef struct sIsoSession *IsoSessionPtr;
@@ -23,7 +24,7 @@ typedef struct sIsoSession *IsoSessionPtr;
 
 IsoSessionPtr IsoSession_Create(SBufferPtr);
 void          IsoSession_Delete(IsoSessionPtr);
-s32_t         IsoSession_Process(IsoSessionPtr, ByteBuffer *buf, IsoSessRequestType);
+s32_t         IsoSession_Process(IsoSessionPtr, ByteBuffer *);
 void          IsoSession_ThrowOverListener(IsoSessionPtr, MsgPassedHandlerPtr, void *);
 
 #endif // _ISOSESSION_H_
