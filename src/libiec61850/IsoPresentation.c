@@ -10,7 +10,7 @@ struct sIsoPresentation {
   // Own needs
 	u32_t             callingPresentationSelector;
 	u32_t             calledPresentationSelector;
-	ContextDefinition context[2];
+	CtxDef            context[2];
 	u8_t              nextContextId;
   // Layer buffer
 	ByteBuffer        nextPayload;
@@ -21,22 +21,22 @@ struct sIsoPresentation {
   void               *msgPassedParam;
 };
 
-static IsoPresStatus parseConnectPdu(IsoPresentationPtr, ByteBuffer *);
-static IsoPresStatus parseUserData(IsoPresentationPtr, ByteBuffer *);
-static IsoPresStatus createSUserData(IsoPresentationPtr, SBuffer *);
+static IsoPresStatus parseConnectPdu(IsoPresPtr, ByteBuffer *);
+static IsoPresStatus parseUserData(IsoPresPtr, ByteBuffer *);
+static IsoPresStatus createSUserData(IsoPresPtr, SBuffer *);
 static int calcLengthOfBERLengthField(int value);
 // blindly copied from origin
-static IsoPresStatus setContextDefinition(IsoPresentationPtr, int, ContextListSeq_t *);
+static IsoPresStatus setContextDefinition(IsoPresPtr, int, ContextListSeq_t *);
 static int parseBERLengthField(uint8_t *, int, int *);
 static int encodeBERLengthField(uint8_t *, int, int);
 
 /**	----------------------------------------------------------------------------
 	* @brief Iso Presentation layer constructor */
-IsoPresentationPtr
+IsoPresPtr
 	IsoPresentation_Create(SBufferPtr sbuf) {
 /*----------------------------------------------------------------------------*/
 	// Self creating
-  IsoPresentationPtr self = calloc(1, sizeof(struct sIsoPresentation));
+  IsoPresPtr self = calloc(1, sizeof(struct sIsoPresentation));
   if (!self) return NULL;
   // линкуем SBuffer
   self->sbuf = sbuf;
@@ -50,7 +50,7 @@ IsoPresentationPtr
 /**	----------------------------------------------------------------------------
 	* @brief Iso Presentation layer destructor */
 void
-  IsoPresentation_Delete(IsoPresentationPtr self) {
+  IsoPresentation_Delete(IsoPresPtr self) {
 /*----------------------------------------------------------------------------*/
 	if (!self) return;
   if (self->acseConn) AcseConnection_Delete(self->acseConn);
@@ -60,9 +60,8 @@ void
 /**	----------------------------------------------------------------------------
 	* @brief Connection init */
 void
-	IsoPresentation_InstallListener( IsoPresentationPtr self,
-                                  MsgPassedHandlerPtr handler,
-                                  void* param ) {
+	IsoPresentation_InstallListener( IsoPresPtr self, MsgPassedHandlerPtr handler,
+                                   void* param ) {
 /*----------------------------------------------------------------------------*/
 	self->msgPassedHandler = handler;
 	self->msgPassedParam = param;
@@ -71,8 +70,7 @@ void
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 void
-	IsoPresentation_ThrowOverListener( IsoPresentationPtr self, 
-                                     MsgPassedHandlerPtr handler,
+	IsoPresentation_ThrowOverListener( IsoPresPtr self, MsgPassedHandlerPtr handler,
                                      void *param ) {
 /*----------------------------------------------------------------------------*/
   AcseConnection_InstallListener(self->acseConn, handler, param);
@@ -81,7 +79,7 @@ void
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 s32_t
-  IsoPresentation_Connect(IsoPresentationPtr self, ByteBuffer *buffer) {
+  IsoPresentation_Connect(IsoPresPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
 	// ???
   IsoPresStatus sta = parseConnectPdu(self, buffer);
@@ -94,7 +92,7 @@ s32_t
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 s32_t
-  IsoPresentation_ProcessData(IsoPresentationPtr self, ByteBuffer *buffer) {
+  IsoPresentation_ProcessData(IsoPresPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
   if (!self->msgPassedHandler) return -1;
   // ???
@@ -115,7 +113,7 @@ s32_t
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 static IsoPresStatus
-  parseConnectPdu(IsoPresentationPtr self, ByteBuffer *buffer) {
+  parseConnectPdu(IsoPresPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
 	CPType_t* cptype = 0;
 	asn_dec_rval_t rval;
@@ -195,7 +193,7 @@ static IsoPresStatus
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 static IsoPresStatus
-  parseUserData(IsoPresentationPtr self, ByteBuffer *buffer) {
+  parseUserData(IsoPresPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
  	int length = buffer->size;
 	uint8_t* buf = buffer->buffer;
@@ -234,9 +232,11 @@ static IsoPresStatus
 	return PRESENTATION_OK;
 }
 
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
 static IsoPresStatus
-	createSUserData(IsoPresentationPtr self, SBuffer *sbuf) {
-	
+	createSUserData(IsoPresPtr self, SBuffer *sbuf) {
+/*----------------------------------------------------------------------------*/
 	//int lenght =  ByteBuffer_getSize(writeBuffer);
 	int lenght = 0;
 	//uint8_t* buf = ByteBuffer_getBuffer(writeBuffer);
@@ -289,7 +289,7 @@ static int
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 static IsoPresStatus
-  setContextDefinition( IsoPresentationPtr self, int index,
+  setContextDefinition( IsoPresPtr self, int index,
                                 ContextListSeq_t *member ) {
 /*----------------------------------------------------------------------------*/
 	if (member->abstractsyntaxname.size > 9) {
@@ -309,9 +309,11 @@ static IsoPresStatus
 	return PRESENTATION_OK;
 }
 
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
 static int
-parseBERLengthField(uint8_t* buffer, int pos, int* length)
-{
+  parseBERLengthField(uint8_t* buffer, int pos, int* length) {
+/*----------------------------------------------------------------------------*/
 	int len;
 
 	if (buffer[pos] & 0x80)
@@ -333,9 +335,11 @@ parseBERLengthField(uint8_t* buffer, int pos, int* length)
 	return pos + 1 + len;
 }
 
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
 static int
-encodeBERLengthField(uint8_t* buffer, int pos, int value)
-{
+  encodeBERLengthField(uint8_t* buffer, int pos, int value) {
+/*----------------------------------------------------------------------------*/
 	if (value < 128) {
 		buffer[pos++] = (uint8_t) value;
 		return pos;

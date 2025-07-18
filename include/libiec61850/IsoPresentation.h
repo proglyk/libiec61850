@@ -10,7 +10,7 @@
 typedef struct {
 	uint8_t contextId;
 	uint8_t abstractSyntaxName[10]; /* contains OID */
-} ContextDefinition;
+} CtxDef;
 
 typedef enum {
 	PRESENTATION_OK,
@@ -18,15 +18,15 @@ typedef enum {
 } IsoPresStatus;
 
 struct sIsoPresentation;
-typedef struct sIsoPresentation *IsoPresentationPtr;
+typedef struct sIsoPresentation *IsoPresPtr;
 
 // Function declarations
 
-IsoPresentationPtr IsoPresentation_Create(SBufferPtr);
-void               IsoPresentation_Delete(IsoPresentationPtr);
-s32_t	             IsoPresentation_Connect(IsoPresentationPtr, ByteBuffer *);
-s32_t	             IsoPresentation_ProcessData(IsoPresentationPtr, ByteBuffer *);
-void               IsoPresentation_InstallListener(IsoPresentationPtr, MsgPassedHandlerPtr, void *);
-void               IsoPresentation_ThrowOverListener(IsoPresentationPtr, MsgPassedHandlerPtr, void *);
+IsoPresPtr IsoPresentation_Create(SBufferPtr);
+void       IsoPresentation_Delete(IsoPresPtr);
+s32_t      IsoPresentation_Connect(IsoPresPtr, ByteBuffer *);
+s32_t      IsoPresentation_ProcessData(IsoPresPtr, ByteBuffer *);
+void       IsoPresentation_InstallListener(IsoPresPtr, MsgPassedHandlerPtr, void *);
+void       IsoPresentation_ThrowOverListener(IsoPresPtr, MsgPassedHandlerPtr, void *);
 
 #endif // _ISOPRESENTATION_H_
