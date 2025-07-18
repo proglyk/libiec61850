@@ -133,7 +133,7 @@ s32_t
 	* @brief Connection init */
 void
 	IsoConnection_InstallListener( IsoConnectionPtr self,
-                               MsgPassedHandlerPtr handler, void *param ) {
+                               PassedHandlerPtr handler, void *param ) {
 /*----------------------------------------------------------------------------*/
   CotpConnection_ThrowOverListener(self->cotpConn, handler, param);
 }

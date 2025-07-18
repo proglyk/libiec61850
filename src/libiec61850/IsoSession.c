@@ -97,7 +97,7 @@ s32_t
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 void
-	IsoSession_ThrowOverListener( IsoSessPtr self, MsgPassedHandlerPtr handler, void *param ) {
+	IsoSession_ThrowOverListener( IsoSessPtr self, PassedHandlerPtr handler, void *param ) {
 /*----------------------------------------------------------------------------*/
   IsoPresentation_InstallListener(self->isoPres, handler, param);
   IsoPresentation_ThrowOverListener(self->isoPres, handler, param);

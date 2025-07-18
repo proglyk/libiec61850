@@ -25,7 +25,7 @@ void	           IsoConnection_Deinit(IsoConnectionPtr);
 void	           IsoConnection_Delete(IsoConnectionPtr);
 s32_t	           IsoConnection_ClientConnected(IsoConnectionPtr);
 void             IsoConnection_InstallListener( IsoConnectionPtr,
-                                                MsgPassedHandlerPtr,
+                                                PassedHandlerPtr,
                                                 void* );
 
 #endif // _ISOCONNECTION_H_

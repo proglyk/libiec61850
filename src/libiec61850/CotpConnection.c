@@ -18,7 +18,7 @@ struct sCotpConnection {
 	ByteBuffer*   writeBuffer;
 	ByteStream    stream;
   // Linkage with the upper layer
-  IsoSessionPtr isoSess;
+  IsoSessPtr    isoSess;
   SBufferPtr    sbuf;
 };
 // FIXME Обязательно убрать в упр.структуру
@@ -144,7 +144,7 @@ s32_t
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 void
-	CotpConnection_ThrowOverListener( CotpConnectionPtr self, MsgPassedHandlerPtr handler, void *param ) {
+	CotpConnection_ThrowOverListener( CotpConnectionPtr self, PassedHandlerPtr handler, void *param ) {
 /*----------------------------------------------------------------------------*/
   IsoSession_ThrowOverListener(self->isoSess, handler, param);
 }
