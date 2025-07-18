@@ -90,7 +90,7 @@ s32_t
   if (sta != PRESENTATION_OK) return -1;
   //
   // TODO AcseConnection_parseMessage(self->acseConn, self->nextPayload);
-  rc = AcseConnection_Connect(self->acseConn, self->nextPayload);
+  rc = AcseConnection_Connect(self->acseConn, &self->nextPayload);
   if (rc < 0) return -1;
   // 
   codeSCPAMessage(self->sbuf);

@@ -1,5 +1,6 @@
 #include "libiec61850/AcseConnection.h"
 #include <stdlib.h>
+#include "libiec61850/iso8650/ACSEapdu.h"
 
 // Type definitions
 
@@ -22,6 +23,12 @@ struct sAcseConnection {
 static AcseIndication parseMessage(AcseConnectionPtr, ByteBuffer *);
 static AcseIndication createSAssociateResponseMessage( AcseConnectionPtr,	
                                                        SBuffer * );
+static AcseIndication parseAarqPdu(AcseConnectionPtr, AARQapdu_t *);
+static void	writer(asn_TYPE_descriptor_t *, ACSEapdu_t*, SBuffer *);
+
+static uint8_t appContextNameMms[] = {0x28, 0xca, 0x22, 0x02, 0x03};
+static uint8_t berOid[2] = {0x51, 0x01};
+static asn_enc_rval_t rval;
 
 /**	----------------------------------------------------------------------------
 	* @brief Acse Connection layer constructor */
@@ -148,7 +155,7 @@ static AcseIndication
 	assocInfo->list.array[0]->directreference->size = 2;
 	assocInfo->list.array[0]->directreference->buf = berOid;
 
-	assocInfo->list.array[0]->indirectreference = &(connection->nextReference);
+	assocInfo->list.array[0]->indirectreference = &(self->nextReference);
 
 	assocInfo->list.array[0]->encoding.present = encoding_PR_singleASN1type;
 	assocInfo->list.array[0]->encoding.choice.singleASN1type.size = 
@@ -170,4 +177,55 @@ static AcseIndication
 	free(pdu);
 
 	return rval.encoded;
+}
+
+static AcseIndication
+parseAarqPdu(AcseConnectionPtr self, AARQapdu_t* aarq)
+{
+	//if (checkAuthentication(self, aarq) == false)
+	//	return ACSE_ASSOCIATE_FAILED;
+
+	if (aarq->userinformation->list.count == 1) {
+		Myexternal_t* external = aarq->userinformation->list.array[0];
+
+		if (external->indirectreference == 0)
+			return ACSE_ERROR;
+		else {
+			if (external->encoding.present != encoding_PR_singleASN1type)
+				return ACSE_ERROR;
+			else {
+				uint8_t* userDataBuffer = external->encoding.choice.singleASN1type.buf;
+				int userDataBufferSize = external->encoding.choice.singleASN1type.size;
+
+				self->userDataBufferSize = userDataBufferSize;
+
+				//if (self->userDataBuffer != NULL)
+				//	free(self->userDataBuffer);
+
+				//self->userDataBuffer = malloc(userDataBufferSize);
+				memcpy(self->userDataBuffer, userDataBuffer, userDataBufferSize);
+			}
+			self->nextReference = *(external->indirectreference);
+		}
+
+		return ACSE_ASSOCIATE;
+	}
+	else
+		return ACSE_ERROR;
+}
+
+static void
+	writer(asn_TYPE_descriptor_t * pxType, ACSEapdu_t* pxApdu, SBuffer * pxSbuf) {
+	
+	//pxSbuf->ulFrontLenght = 0;
+	der_encode(pxType, pxApdu, (asn_app_consume_bytes_f *)SBuffer_Writer, (void*) pxSbuf);
+	
+	// т.к der_encode записывает в начало массива помимо заголовка acse еще и
+	// содержимое mms, которое уже находилось в массиве в конце, то нужно просто
+	// представить, что массив пустой и толкать данные в самый конец, затирая пред.
+	
+	SBuffer_Replace(pxSbuf);
+	//pxSbuf->ulSize = 0;
+	//pxSbuf->ulSpace = pxSbuf->ulMaxSize;
+	//SBuffer_Shift(pxSbuf, pxSbuf->ulFrontLenght);
 }
