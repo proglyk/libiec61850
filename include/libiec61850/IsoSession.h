@@ -23,7 +23,7 @@ typedef struct sIsoSession *IsoSessionPtr;
 
 IsoSessionPtr IsoSession_Create(SBufferPtr);
 void          IsoSession_Delete(IsoSessionPtr);
-s32_t         IsoSession_Do(IsoSessionPtr, ByteBuffer *buf, IsoSessRequestType);
+s32_t         IsoSession_Process(IsoSessionPtr, ByteBuffer *buf, IsoSessRequestType);
 void          IsoSession_ThrowOverListener(IsoSessionPtr, MsgPassedHandlerPtr, void *);
 
 #endif // _ISOSESSION_H_

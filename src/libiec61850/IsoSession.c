@@ -18,6 +18,7 @@ struct sIsoSession {
 
 static IsoSessionIndication IsoSession_parseMessage(IsoSessionPtr, ByteBuffer *);
 static ByteBuffer *IsoSession_getUserData(IsoSessionPtr);
+static long	createSDataSpdu(SBuffer *);
 
 /**	----------------------------------------------------------------------------
 	* @brief Iso Session layer constructor */
@@ -52,7 +53,7 @@ void
 /**	----------------------------------------------------------------------------
 	* @brief Iso Session layer action */
 s32_t
-  IsoSession_Do(IsoSessionPtr self, ByteBuffer *buf, IsoSessRequestType type) {
+  IsoSession_Process(IsoSessionPtr self, ByteBuffer *buf, IsoSessRequestType type) {
 /*----------------------------------------------------------------------------*/
   IsoSessionIndication sta;
   ByteBuffer* sessionUserData;
@@ -62,15 +63,15 @@ s32_t
   sessionUserData = IsoSession_getUserData(self);
   // см.протокол.
   if (sta == SESSION_CONNECT) {
-    rc = IsoPresentation_parseConnect(self->isoPresent, sessionUserData);
+    rc = IsoPresentation_Connect(self->isoPresent, sessionUserData);
     if (rc < 0) goto exit;
+    //IsoSession_createSAcceptSpdu(self->xLayer.Session.px, pxSbuf);
   }
   // см.протокол.
   else if (sta == SESSION_DATA) {
-//    if (self->state == COTP_CON_RUN) {
-//      payload = CotpConnection_getPayload(self);
-//      
-//    }
+    rc = IsoPresentation_ProcessData(self->isoPresent, sessionUserData);
+    if (rc < 0) goto exit;
+    createSDataSpdu(self->sbuf);
   }
   // Exception
   else {
@@ -90,6 +91,7 @@ s32_t
 void
 	IsoSession_ThrowOverListener( IsoSessionPtr self, MsgPassedHandlerPtr handler, void *param ) {
 /*----------------------------------------------------------------------------*/
+  IsoPresentation_InstallListener(self->isoPresent, handler, param);
   IsoPresentation_ThrowOverListener(self->isoPresent, handler, param);
 }
 
@@ -161,9 +163,23 @@ static IsoSessionIndication
 }
 
 /**	----------------------------------------------------------------------------
-	* @brief Iso Session layer action */
+	* @brief ??? */
 static ByteBuffer*
   IsoSession_getUserData(IsoSessionPtr self) {
 /*----------------------------------------------------------------------------*/
 	return &self->userData;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+static long
+	createSDataSpdu(SBuffer* buffer) {
+/*----------------------------------------------------------------------------*/
+	SBuffer_SetToFront(buffer, 0x01);/* GiveToken SPDU */
+	SBuffer_SetToFront(buffer, 0x00);
+	SBuffer_SetToFront(buffer, 0x01); /* Data SPDU */
+	SBuffer_SetToFront(buffer, 0x00);
+	
+	SBuffer_Shift(buffer);
+	return 1;
 }
