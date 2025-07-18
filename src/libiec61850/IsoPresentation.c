@@ -1,7 +1,8 @@
 #include "libiec61850/IsoPresentation.h"
 #include "libiec61850/AcseConnection.h"
 #include "libiec61850/utils/byte_buffer.h"
-//#include "libiec61850/iso8823/CPType.h"
+#include "libiec61850/iso8823/CPType.h"
+#include <string.h>
 
 // Type definitions
 
@@ -20,9 +21,14 @@ struct sIsoPresentation {
   void               *msgPassedParam;
 };
 
-static IsoPresStatus parseConnectPdu(IsoPresentationPtr,  ByteBuffer *);
+static IsoPresStatus parseConnectPdu(IsoPresentationPtr, ByteBuffer *);
 static IsoPresStatus parseUserData(IsoPresentationPtr, ByteBuffer *);
 static IsoPresStatus createSUserData(IsoPresentationPtr, SBuffer *);
+static int calcLengthOfBERLengthField(int value);
+// blindly copied from origin
+static IsoPresStatus setContextDefinition(IsoPresentationPtr, int, ContextListSeq_t *);
+static int parseBERLengthField(uint8_t *, int, int *);
+static int encodeBERLengthField(uint8_t *, int, int);
 
 /**	----------------------------------------------------------------------------
 	* @brief Iso Presentation layer constructor */
@@ -111,7 +117,7 @@ s32_t
 static IsoPresStatus
   parseConnectPdu(IsoPresentationPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
-	/* CPType_t* cptype = 0;
+	CPType_t* cptype = 0;
 	asn_dec_rval_t rval;
   int pdvListEntries;
   int decodedOctets;
@@ -121,15 +127,15 @@ static IsoPresStatus
   rval = ber_decode(NULL, &asn_DEF_CPType, (void**)&cptype,
     ByteBuffer_getBuffer(buffer), ByteBuffer_getSize(buffer));
   if (rval.code != RC_OK){
-    if (ISO8823_DEBUG) printf("iso_presentation.c: broken CPType encoding at "
-      "byte %ld\r\n",	(long) rval.consumed);
+    //if (ISO8823_DEBUG) printf("iso_presentation.c: broken CPType encoding at "
+    //  "byte %ld\r\n",	(long) rval.consumed);
 		goto error;
   }
 
 	decodedOctets = rval.consumed;
 	if (cptype->modeSelector.modeValue != (long)modeValue_normalmode) {
-		if (ISO8823_DEBUG) printf("iso_presentation.c: only normal mode"
-      "supported!");
+		//if (ISO8823_DEBUG) printf("iso_presentation.c: only normal mode"
+    //  "supported!");
 		goto error;
 	}
 //  if (ISO8823_DEBUG) printf("modeSelector:= %02x\r\n",
@@ -138,8 +144,8 @@ static IsoPresStatus
 	pdvListEntries =
     cptype->normalModeParameters->contextDefinitionList->list.count;
 	if (pdvListEntries != 2) {
-		if (ISO8823_DEBUG) printf("iso_presentation: 2 pdv list items required"
-      " found: %i\r\n", pdvListEntries);
+		//if (ISO8823_DEBUG) printf("iso_presentation: 2 pdv list items required"
+    //  " found: %i\r\n", pdvListEntries);
 		goto error;
 	}
 //  if (ISO8823_DEBUG) printf("pdvListEntries:= %02d\r\n", pdvListEntries);
@@ -150,7 +156,7 @@ static IsoPresStatus
 		ContextListSeq_t* member =
 				cptype->normalModeParameters->contextDefinitionList->list.array[i];
 
-		if (isoPres_setContextDefinition(self, i, member) == PRESENTATION_ERROR)
+		if (setContextDefinition(self, i, member) == PRESENTATION_ERROR)
 			goto error;
 	}
 
@@ -169,8 +175,8 @@ static IsoPresStatus
 		ByteBuffer_wrap(&(self->nextPayload),buffer->buffer + (decodedOctets -
       userDataSize), userDataSize, userDataSize);
 	} else {
-		if (ISO8823_DEBUG) printf("iso_presentation.c: Unsupported user data: "
-      "simply encoded data\r\n");
+		//if (ISO8823_DEBUG) printf("iso_presentation.c: Unsupported user data: "
+    //  "simply encoded data\r\n");
 		goto error;
 	}
 
@@ -182,7 +188,7 @@ static IsoPresStatus
   asn_DEF_CPType.free_struct(&asn_DEF_CPType, cptype, 0);
   return PRESENTATION_OK;
   error:
-  asn_DEF_CPType.free_struct(&asn_DEF_CPType, cptype, 0); */
+  asn_DEF_CPType.free_struct(&asn_DEF_CPType, cptype, 0);
   return PRESENTATION_ERROR;
 }
 
@@ -191,7 +197,7 @@ static IsoPresStatus
 static IsoPresStatus
   parseUserData(IsoPresentationPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
-/* 	int length = buffer->size;
+ 	int length = buffer->size;
 	uint8_t* buf = buffer->buffer;
 
 	if (length < 9)
@@ -223,7 +229,7 @@ static IsoPresStatus
 
 	pos = parseBERLengthField(buf, pos, &userDataLength);
 
-	ByteBuffer_wrap(&(self->nextPayload), buf + pos, userDataLength, userDataLength); */
+	ByteBuffer_wrap(&(self->nextPayload), buf + pos, userDataLength, userDataLength);
 
 	return PRESENTATION_OK;
 }
@@ -263,4 +269,87 @@ static IsoPresStatus
 	//ByteBuffer_append(writeBuffer, ByteBuffer_getBuffer(payload), payloadLength);
 
 	return PRESENTATION_OK;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+static int
+  calcLengthOfBERLengthField(int value) {
+/*----------------------------------------------------------------------------*/
+	if (value < 128)
+		return 1;
+	if (value < 0x100)
+		return 2;
+	if (value < 0x10000) {
+		return 3;
+	}
+	return -1;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+static IsoPresStatus
+  setContextDefinition( IsoPresentationPtr self, int index,
+                                ContextListSeq_t *member ) {
+/*----------------------------------------------------------------------------*/
+	if (member->abstractsyntaxname.size > 9) {
+		//if (ISO8823_DEBUG) printf("iso_presentation.c: ASN OID size to large.\r\n");
+		return PRESENTATION_ERROR;
+	}
+
+	self->context[index].contextId =
+			(uint8_t)member->presentationcontextidentifier;
+
+	self->context[index].abstractSyntaxName[0] =
+			 member->abstractsyntaxname.size;
+
+	memcpy(self->context[index].abstractSyntaxName + 1,
+			member->abstractsyntaxname.buf, member->abstractsyntaxname.size);
+
+	return PRESENTATION_OK;
+}
+
+static int
+parseBERLengthField(uint8_t* buffer, int pos, int* length)
+{
+	int len;
+
+	if (buffer[pos] & 0x80)
+		len = buffer[pos] & 0x7f;
+	else
+		len = 0;
+
+	if (length != NULL) {
+		if (len == 0)
+			*length = buffer[pos];
+		else if (len == 1) {
+			*length = buffer[pos + 1];
+		}
+		else {
+			*length = (buffer[pos + 1] * 0x100) + buffer[pos + 2];
+		}
+	}
+
+	return pos + 1 + len;
+}
+
+static int
+encodeBERLengthField(uint8_t* buffer, int pos, int value)
+{
+	if (value < 128) {
+		buffer[pos++] = (uint8_t) value;
+		return pos;
+	}
+	if (value < 0x100) {
+		buffer[pos++] = (uint8_t) 0x81;
+		buffer[pos++] = (uint8_t) value;
+		return pos;
+	}
+	if (value < 0x10000) {
+		buffer[pos++] = (uint8_t) 0x82;
+		buffer[pos++] = (uint8_t) (value / 0x100);
+		buffer[pos++] = (uint8_t) (value & 0xff);
+		return pos;
+	}
+	return -1;
 }

@@ -12,11 +12,6 @@ typedef enum {
 	SESSION_OK,	SESSION_ERROR, SESSION_CONNECT,	SESSION_GIVE_TOKEN,	SESSION_DATA
 } IsoSessionIndication;
 
-// TODO удалть, зря добавил
-/* typedef enum {
-  SESS_REQ_CONNECT, SESS_REQ_DATA
-} IsoSessRequestType; */
-
 struct sIsoSession;
 typedef struct sIsoSession *IsoSessionPtr;
 
