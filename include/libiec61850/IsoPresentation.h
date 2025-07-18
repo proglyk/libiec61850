@@ -26,7 +26,7 @@ IsoPresPtr IsoPresentation_Create(SBufferPtr);
 void       IsoPresentation_Delete(IsoPresPtr);
 s32_t      IsoPresentation_Connect(IsoPresPtr, ByteBuffer *);
 s32_t      IsoPresentation_ProcessData(IsoPresPtr, ByteBuffer *);
-void       IsoPresentation_InstallListener(IsoPresPtr, MsgPassedHandlerPtr, void *);
-void       IsoPresentation_ThrowOverListener(IsoPresPtr, MsgPassedHandlerPtr, void *);
+void       IsoPresentation_InstallListener(IsoPresPtr, PassedHandlerPtr, void *);
+void       IsoPresentation_ThrowOverListener(IsoPresPtr, PassedHandlerPtr, void *);
 
 #endif // _ISOPRESENTATION_H_

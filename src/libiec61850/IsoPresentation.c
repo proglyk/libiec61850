@@ -2,6 +2,7 @@
 #include "libiec61850/AcseConnection.h"
 #include "libiec61850/utils/byte_buffer.h"
 #include "libiec61850/iso8823/CPType.h"
+#include "libiec61850/iso8823/CPAPPDU.h"
 #include <string.h>
 
 // Type definitions
@@ -17,8 +18,8 @@ struct sIsoPresentation {
   // Linkage with the upper layer
   AcseConnectionPtr acseConn;
   SBufferPtr        sbuf;
-  MsgPassedHandlerPtr msgPassedHandler;
-  void               *msgPassedParam;
+  PassedHandlerPtr  msgPassedHandler;
+  void             *msgPassedParam;
 };
 
 static IsoPresStatus parseConnectPdu(IsoPresPtr, ByteBuffer *);
@@ -29,6 +30,8 @@ static int calcLengthOfBERLengthField(int value);
 static IsoPresStatus setContextDefinition(IsoPresPtr, int, ContextListSeq_t *);
 static int parseBERLengthField(uint8_t *, int, int *);
 static int encodeBERLengthField(uint8_t *, int, int);
+static void	writer(asn_TYPE_descriptor_t *, CPAPPDU_t *, SBuffer *);
+static IsoPresStatus codeSCPAMessage(SBuffer* sbuf);
 
 /**	----------------------------------------------------------------------------
 	* @brief Iso Presentation layer constructor */
@@ -60,7 +63,7 @@ void
 /**	----------------------------------------------------------------------------
 	* @brief Connection init */
 void
-	IsoPresentation_InstallListener( IsoPresPtr self, MsgPassedHandlerPtr handler,
+	IsoPresentation_InstallListener( IsoPresPtr self, PassedHandlerPtr handler,
                                    void* param ) {
 /*----------------------------------------------------------------------------*/
 	self->msgPassedHandler = handler;
@@ -70,7 +73,7 @@ void
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 void
-	IsoPresentation_ThrowOverListener( IsoPresPtr self, MsgPassedHandlerPtr handler,
+	IsoPresentation_ThrowOverListener( IsoPresPtr self, PassedHandlerPtr handler,
                                      void *param ) {
 /*----------------------------------------------------------------------------*/
   AcseConnection_InstallListener(self->acseConn, handler, param);
@@ -81,11 +84,17 @@ void
 s32_t
   IsoPresentation_Connect(IsoPresPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
-	// ???
+	s32_t rc;
+  // ???
   IsoPresStatus sta = parseConnectPdu(self, buffer);
   if (sta != PRESENTATION_OK) return -1;
   //
   // TODO AcseConnection_parseMessage(self->acseConn, self->nextPayload);
+  rc = AcseConnection_Connect(self->acseConn, self->nextPayload);
+  if (rc < 0) return -1;
+  // 
+  codeSCPAMessage(self->sbuf);
+  
   return 0;
 }
 
@@ -140,7 +149,7 @@ static IsoPresStatus
 //  	cptype->modeSelector.modeValue);
 
 	pdvListEntries =
-    cptype->normalModeParameters->contextDefinitionList->list.count;
+    cptype->normalModeParameters.contextDefinitionList->list.count;
 	if (pdvListEntries != 2) {
 		//if (ISO8823_DEBUG) printf("iso_presentation: 2 pdv list items required"
     //  " found: %i\r\n", pdvListEntries);
@@ -152,17 +161,17 @@ static IsoPresStatus
 	int i;
 	for (i = 0; i < pdvListEntries; i++) {
 		ContextListSeq_t* member =
-				cptype->normalModeParameters->contextDefinitionList->list.array[i];
+				cptype->normalModeParameters.contextDefinitionList->list.array[i];
 
 		if (setContextDefinition(self, i, member) == PRESENTATION_ERROR)
 			goto error;
 	}
 
-	if (cptype->normalModeParameters->userData->present ==
+	if (cptype->normalModeParameters.userData->present ==
     Userdata_PR_fullyencodeddata){
-		dataListEntries = cptype->normalModeParameters->userData->choice.
+		dataListEntries = cptype->normalModeParameters.userData->choice.
       fullyencodeddata.list.count;
-		PDVlist_t* pdvListEntry = cptype->normalModeParameters->userData->choice.
+		PDVlist_t* pdvListEntry = cptype->normalModeParameters.userData->choice.
       fullyencodeddata.list.array[0];
 		userDataSize = pdvListEntry->presentationdatavalues.choice.singleASN1type.
       size;
@@ -356,4 +365,112 @@ static int
 		return pos;
 	}
 	return -1;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+static IsoPresStatus 
+	codeSCPAMessage(SBuffer* sbuf) {
+/*----------------------------------------------------------------------------*/
+	CPAPPDU_t* cpatype;
+
+  cpatype = calloc(1, sizeof(CPAPPDU_t));
+
+  cpatype->modeSelector.modeValue = modeValue_normalmode;
+
+  //cpatype->normalModeParameters = calloc(1, sizeof(struct normalModeParameters));
+
+  OCTET_STRING_t* respondingSelector = calloc(1, sizeof(OCTET_STRING_t));
+
+  respondingSelector->size = 4;
+  respondingSelector->buf = calloc(1, 4);
+  respondingSelector->buf[0] = 0;
+  respondingSelector->buf[1] = 0;
+  respondingSelector->buf[2] = 0;
+  respondingSelector->buf[3] = 1;
+
+  ContextDefResList_t* pdvResultList = calloc(1, sizeof(ContextDefResList_t));
+
+  pdvResultList->list.count = 2;
+
+  pdvResultList->list.array = calloc(2, sizeof(ContextDefResListSeq_t*));
+
+  pdvResultList->list.array[0] = calloc(1, sizeof(ContextDefResListSeq_t));
+
+  pdvResultList->list.array[0]->result = result_acceptance;
+
+  pdvResultList->list.array[0]->providerreason = 0;
+
+  OBJECT_IDENTIFIER_t* transfersyntax = calloc(1, sizeof(OBJECT_IDENTIFIER_t));
+
+  transfersyntax->size = 2;
+  transfersyntax->buf = calloc(2, sizeof(uint8_t));
+  transfersyntax->buf[0] = 0x51;
+  transfersyntax->buf[1] = 0x01;
+
+  pdvResultList->list.array[0]->transfersyntaxname = transfersyntax;
+
+  pdvResultList->list.array[1] = calloc(1, sizeof(ContextDefResListSeq_t));
+
+	pdvResultList->list.array[1]->result = result_acceptance;
+
+  pdvResultList->list.array[1]->providerreason = 0;
+
+  transfersyntax = calloc(1, sizeof(OBJECT_IDENTIFIER_t));
+
+	transfersyntax->size = 2;
+	transfersyntax->buf = calloc(2, sizeof(uint8_t));
+	transfersyntax->buf[0] = 0x51;
+	transfersyntax->buf[1] = 0x01;
+
+	pdvResultList->list.array[1]->transfersyntaxname = transfersyntax;
+
+  cpatype->normalModeParameters.protocolVersion = 0; //protocolversion;
+	cpatype->normalModeParameters.respondingSelector = respondingSelector;
+  cpatype->normalModeParameters.contextDefResList = pdvResultList;
+  cpatype->normalModeParameters.requirements = 0;
+  cpatype->normalModeParameters.userSessionRequirements = 0;
+
+  Userdata_t* userdata = calloc(1, sizeof(Userdata_t));
+
+  userdata->present = Userdata_PR_fullyencodeddata;
+  userdata->choice.fullyencodeddata.list.count=1;
+  userdata->choice.fullyencodeddata.list.array = calloc(1, sizeof(struct PDVlist*));
+
+  struct PDVlist* pdvList = calloc(1, sizeof(struct PDVlist));
+
+  pdvList->transfersyntaxname = 0;
+  pdvList->presentationcontextidentifier = 1; /* 1 - ACSE */
+  pdvList->presentationdatavalues.present = presentationdatavalues_PR_singleASN1type;
+
+  /* Copy apdu buffer - required for free_struct to work properly */
+	uint8_t* apduCopy = calloc(SBuffer_GetPayloadSize(sbuf), sizeof(uint8_t));
+  memcpy(apduCopy, SBuffer_GetPayload(sbuf), SBuffer_GetPayloadSize(sbuf));
+
+	pdvList->presentationdatavalues.choice.singleASN1type.size = SBuffer_GetPayloadSize(sbuf);
+  pdvList->presentationdatavalues.choice.singleASN1type.buf = apduCopy;
+
+  userdata->choice.fullyencodeddata.list.array[0] = pdvList;
+  cpatype->normalModeParameters.userData = userdata;
+
+	writer(&asn_DEF_CPAPPDU, cpatype, sbuf);
+
+  asn_DEF_CPAPPDU.free_struct(&asn_DEF_CPAPPDU, cpatype, 0);
+  
+  return 0;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+static void
+	writer(asn_TYPE_descriptor_t * pxType, CPAPPDU_t* pxCpappdu, SBuffer * pxSbuf) {
+/*----------------------------------------------------------------------------*/
+	//pxSbuf->ulFrontLenght = 0;
+	der_encode(pxType, pxCpappdu, (asn_app_consume_bytes_f *)SBuffer_Writer, (void*) pxSbuf);
+	
+	// т.к der_encode записывает в начало массива помимо заголовка ppdu еще и
+	// содержимое acse+mms, которое уже находилось в массиве в конце, то нужно
+	// просто представить, что массив пустой и толкать данные в самый конец, 
+	// затирая предыдущие данные
+	SBuffer_Replace(pxSbuf);
 }
