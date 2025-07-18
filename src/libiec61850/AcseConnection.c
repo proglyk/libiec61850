@@ -7,14 +7,16 @@ struct sAcseConnection {
   // Own needs
 	AcseConnectionState	state;
 	s32_t	           		nextReference;
-	u8_t               *userDataBuffer;
-	s32_t               userDataBufferSize;
 	AcseAuthenticationParameter authentication;
+  // Layer Buffer
+  u8_t               *userDataBuffer;
+	s32_t               userDataBufferSize;
+  ByteBuffer          mmsInitRequest;
   // Linkage with the upper layer
   SBufferPtr          sbuf;
   MsgPassedHandlerPtr msgPassedHandler;
   void               *msgPassedParam;
-  ByteBuffer          mmsInitRequest;
+  
 };
 
 /**	----------------------------------------------------------------------------

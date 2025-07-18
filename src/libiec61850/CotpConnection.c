@@ -101,7 +101,7 @@ s32_t
   CotpConnection_Do(CotpConnectionPtr self) {
 /*----------------------------------------------------------------------------*/
   CotpIndication sta;
-  ByteBuffer* payload = NULL;
+  ByteBuffer* cotpPayload = NULL;
   s32_t rc;
   
   // read header
@@ -122,9 +122,9 @@ s32_t
   // Передача данных
   else if (sta == COTP_DATA_INDICATION) {
     if (self->state == COTP_CON_RUN) {
-      payload = getPayload(self);
-      //rc = IsoSession_Do(self->isoSess, payload);
-      //if (rc < 0) goto exit;
+      cotpPayload = getPayload(self);
+      rc = IsoSession_Process(self->isoSess, cotpPayload);
+      if (rc < 0) goto exit;
       sta = sendSDataMessage(self, self->sbuf);
       if (sta != COTP_OK) goto exit;
     }
