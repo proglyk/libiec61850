@@ -24,7 +24,9 @@ typedef struct sIsoPresentation *IsoPresentationPtr;
 
 IsoPresentationPtr IsoPresentation_Create(SBufferPtr);
 void               IsoPresentation_Delete(IsoPresentationPtr);
-s32_t	             IsoPresentation_parseConnect(IsoPresentationPtr, ByteBuffer *);
+s32_t	             IsoPresentation_Connect(IsoPresentationPtr, ByteBuffer *);
+s32_t	             IsoPresentation_ProcessData(IsoPresentationPtr, ByteBuffer *);
+void               IsoPresentation_InstallListener(IsoPresentationPtr, MsgPassedHandlerPtr, void *);
 void               IsoPresentation_ThrowOverListener(IsoPresentationPtr, MsgPassedHandlerPtr, void *);
 
 #endif // _ISOPRESENTATION_H_

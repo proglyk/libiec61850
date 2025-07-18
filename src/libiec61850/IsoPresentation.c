@@ -11,13 +11,18 @@ struct sIsoPresentation {
 	u32_t             calledPresentationSelector;
 	ContextDefinition context[2];
 	u8_t              nextContextId;
+  // Layer buffer
 	ByteBuffer        nextPayload;
   // Linkage with the upper layer
   AcseConnectionPtr acseConn;
   SBufferPtr        sbuf;
+  MsgPassedHandlerPtr msgPassedHandler;
+  void               *msgPassedParam;
 };
 
 static IsoPresStatus parseConnectPdu(IsoPresentationPtr,  ByteBuffer *);
+static IsoPresStatus parseUserData(IsoPresentationPtr, ByteBuffer *);IsoPresentationIndication
+static IsoPresStatus createSUserData(IsoPresentationPtr, SBuffer *);
 
 /**	----------------------------------------------------------------------------
 	* @brief Iso Presentation layer constructor */
@@ -47,23 +52,55 @@ void
 }
 
 /**	----------------------------------------------------------------------------
+	* @brief Connection init */
+void
+	IsoPresentation_InstallListener( IsoPresentationPtr self,
+                                  MsgPassedHandlerPtr handler,
+                                  void* param ) {
+/*----------------------------------------------------------------------------*/
+	self->msgPassedHandler = handler;
+	self->msgPassedParam = param;
+}
+
+/**	----------------------------------------------------------------------------
 	* @brief ??? */
 void
-	IsoPresentation_ThrowOverListener( IsoPresentationPtr self, MsgPassedHandlerPtr handler, void *param ) {
+	IsoPresentation_ThrowOverListener( IsoPresentationPtr self, 
+                                     MsgPassedHandlerPtr handler,
+                                     void *param ) {
 /*----------------------------------------------------------------------------*/
   AcseConnection_InstallListener(self->acseConn, handler, param);
 }
 
 /**	----------------------------------------------------------------------------
-	* @brief Iso Presentation layer destructor */
+	* @brief ??? */
 s32_t
-  IsoPresentation_parseConnect(IsoPresentationPtr self, ByteBuffer *buffer) {
+  IsoPresentation_Connect(IsoPresentationPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
 	// ???
   IsoPresStatus sta = parseConnectPdu(self, buffer);
   if (sta != PRESENTATION_OK) return -1;
   //
   // TODO AcseConnection_parseMessage(self->acseConn, self->nextPayload);
+  return 0;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+s32_t
+  IsoPresentation_ProcessData(IsoPresentationPtr self, ByteBuffer *buffer) {
+/*----------------------------------------------------------------------------*/
+  if (!self->msgPassedHandler) return -1;
+  // ???
+  IsoPresStatus sta = parseUserData(self, buffer);
+  if (sta != PRESENTATION_OK) return -1;
+  
+  if ( self->xLayer.Present.px->nextContextId == 3 ) {
+    ByteBuffer *mmsConfRequest = &( self->nextPayload );
+    self->msgPassedHandler( self->msgPassedParam, mmsConfRequest, self->sbuf );
+    createSUserData(self->xLayer.Present.px, pxSbuf);
+  }
+  
   return 0;
 }
 
@@ -147,4 +184,83 @@ static IsoPresStatus
   error:
   asn_DEF_CPType.free_struct(&asn_DEF_CPType, cptype, 0); */
   return PRESENTATION_ERROR;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+static IsoPresStatus
+  parseUserData(IsoPresentationPtr self, ByteBuffer *buffer) {
+/*----------------------------------------------------------------------------*/
+/* 	int length = buffer->size;
+	uint8_t* buf = buffer->buffer;
+
+	if (length < 9)
+		return PRESENTATION_ERROR;
+
+	if (buf[0] != 0x61)
+		return PRESENTATION_ERROR;
+
+	int pos = 1;
+	pos = parseBERLengthField(buf, pos, NULL);
+
+	if (buf[pos++] != 0x30)
+		return PRESENTATION_ERROR;
+
+	pos = parseBERLengthField(buf, pos, NULL);
+
+	if (buf[pos++] != 0x02)
+		return PRESENTATION_ERROR;
+
+	if (buf[pos++] != 0x01)
+		return PRESENTATION_ERROR;
+
+	self->nextContextId = buf[pos++];
+
+	if (buf[pos++] != 0xa0)
+		return PRESENTATION_ERROR;
+
+	int userDataLength;
+
+	pos = parseBERLengthField(buf, pos, &userDataLength);
+
+	ByteBuffer_wrap(&(self->nextPayload), buf + pos, userDataLength, userDataLength); */
+
+	return PRESENTATION_OK;
+}
+
+static IsoPresStatus
+	createSUserData(IsoPresentation* self, SBuffer * sbuf) {
+	
+	//int lenght =  ByteBuffer_getSize(writeBuffer);
+	int lenght = 0;
+	//uint8_t* buf = ByteBuffer_getBuffer(writeBuffer);
+	uint8_t* buf = SBuffer_GetFront(sbuf);
+
+	//int payloadLength = ByteBuffer_getSize(payload);
+	int payloadLength = SBuffer_GetPayloadSize(sbuf);
+
+	int userDataLengthFieldSize = calcLengthOfBERLengthField(payloadLength);
+	int pdvListLength = payloadLength + (userDataLengthFieldSize + 4);
+
+	int pdvListLengthFieldSize = calcLengthOfBERLengthField(pdvListLength);
+	int presentationLength = pdvListLength + (pdvListLengthFieldSize + 1);
+
+	// int presentationLengthFieldSize = calcLengthOfBERLengthField(totalLength);
+	buf[lenght++] = (uint8_t) 0x61;
+	lenght = encodeBERLengthField(buf, lenght, presentationLength);
+	buf[lenght++] = (uint8_t) 0x30;
+	lenght = encodeBERLengthField(buf, lenght, pdvListLength);
+	buf[lenght++] = (uint8_t) 0x02;
+	buf[lenght++] = (uint8_t) 0x01;
+	buf[lenght++] = (uint8_t) self->nextContextId;
+	buf[lenght++] = (uint8_t) 0xa0;
+	lenght = encodeBERLengthField(buf, lenght, payloadLength);
+
+	SBuffer_SetFrontSize(sbuf, lenght);
+	SBuffer_Shift(sbuf);
+	//ByteBuffer_setSize(writeBuffer, lenght);
+
+	//ByteBuffer_append(writeBuffer, ByteBuffer_getBuffer(payload), payloadLength);
+
+	return PRESENTATION_OK;
 }
