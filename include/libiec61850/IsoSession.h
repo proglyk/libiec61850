@@ -10,16 +10,16 @@
 
 typedef enum {
 	SESSION_OK,	SESSION_ERROR, SESSION_CONNECT,	SESSION_GIVE_TOKEN,	SESSION_DATA
-} IsoSessionIndication;
+} IsoSessStatus;
 
 struct sIsoSession;
-typedef struct sIsoSession *IsoSessionPtr;
+typedef struct sIsoSession *IsoSessPtr;
 
 // Function declarations
 
-IsoSessionPtr IsoSession_Create(SBufferPtr);
-void          IsoSession_Delete(IsoSessionPtr);
-s32_t         IsoSession_Process(IsoSessionPtr, ByteBuffer *);
-void          IsoSession_ThrowOverListener(IsoSessionPtr, MsgPassedHandlerPtr, void *);
+IsoSessPtr IsoSession_Create(SBufferPtr);
+void       IsoSession_Delete(IsoSessPtr);
+s32_t      IsoSession_Process(IsoSessPtr, ByteBuffer *);
+void       IsoSession_ThrowOverListener(IsoSessPtr, MsgPassedHandlerPtr, void *);
 
 #endif // _ISOSESSION_H_
