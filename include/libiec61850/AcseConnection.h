@@ -36,7 +36,7 @@ typedef struct sAcseConnection *AcseConnectionPtr;
 
 AcseConnectionPtr AcseConnection_Create(SBufferPtr);
 void              AcseConnection_Delete(AcseConnectionPtr);
-s32_t             AcseConnection_parseMessage(AcseConnectionPtr, ByteBuffer *);
-void              AcseConnection_InstallListener(AcseConnectionPtr, MsgPassedHandlerPtr, void *);
+s32_t             AcseConnection_Connect(AcseConnectionPtr, ByteBuffer *);
+void              AcseConnection_InstallListener(AcseConnectionPtr, PassedHandlerPtr, void *);
 
 #endif // _ACSECONNECTION_H_

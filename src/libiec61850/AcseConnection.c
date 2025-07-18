@@ -14,10 +14,14 @@ struct sAcseConnection {
   ByteBuffer          mmsInitRequest;
   // Linkage with the upper layer
   SBufferPtr          sbuf;
-  MsgPassedHandlerPtr msgPassedHandler;
+  PassedHandlerPtr    msgPassedHandler;
   void               *msgPassedParam;
   
 };
+
+static AcseIndication parseMessage(AcseConnectionPtr, ByteBuffer *);
+static AcseIndication createSAssociateResponseMessage( AcseConnectionPtr,	
+                                                       SBuffer * );
 
 /**	----------------------------------------------------------------------------
 	* @brief Acse Connection layer constructor */
@@ -53,7 +57,7 @@ void
 	* @brief Connection init */
 void
 	AcseConnection_InstallListener( AcseConnectionPtr self,
-                                  MsgPassedHandlerPtr handler,
+                                  PassedHandlerPtr handler,
                                   void* param )
 {
 /*----------------------------------------------------------------------------*/
@@ -64,17 +68,39 @@ void
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 s32_t
-  AcseConnection_parseMessage(AcseConnectionPtr self, ByteBuffer *message) {
+  AcseConnection_Connect(AcseConnectionPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
-  AcseIndication indication = ACSE_ASSOCIATE_FAILED;
-/* 	ACSEapdu_t* acseApdu = 0;
+	if (!self->msgPassedHandler) return -1;
+  // ???
+  AcseIndication sta = parseMessage(self, buffer);
+  if (sta != ACSE_ASSOCIATE) return -1;
+  
+  //
+  ByteBuffer_wrap( &self->mmsInitRequest, self->userDataBuffer,
+                    self->userDataBufferSize, self->userDataBufferSize );
+  self->msgPassedHandler( self->msgPassedParam, &self->mmsInitRequest, self->sbuf );
+  if (SBuffer_GetPayloadSize(self->sbuf) <= 0) return -1;
+  
+  // ответ
+  createSAssociateResponseMessage(self, self->sbuf);
+  
+  return 0;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+AcseIndication
+  parseMessage(AcseConnectionPtr self, ByteBuffer *message) {
+/*----------------------------------------------------------------------------*/
+	ACSEapdu_t* acseApdu = 0;
+	AcseIndication indication;
 	asn_dec_rval_t rval;
 
-	// Decoder return value
+	/* Decoder return value  */
 	rval = ber_decode(NULL, &asn_DEF_ACSEapdu, (void**) &acseApdu,
 		(void*) message->buffer, message->size);
 
-// print message XER encoded (XML)
+	/* print message XER encoded (XML) */
 //	if (ISO8650_DEBUG) xer_fprint(stdout, &asn_DEF_ACSEapdu, acseApdu);
 
 	if (acseApdu->present == ACSEapdu_PR_aarq) {
@@ -85,23 +111,63 @@ s32_t
 	}
 	else
 		indication = ACSE_ERROR;
-	asn_DEF_ACSEapdu.free_struct(&asn_DEF_ACSEapdu, acseApdu, 0); */
-  
-  //
-  if (indication != ACSE_ASSOCIATE) return -1;
-  
-  //
-  if (self->msgPassedHandler) {
-      //
-    ByteBuffer_wrap( &self->mmsInitRequest,
-                     self->userDataBuffer,
-                     self->userDataBufferSize,
-                     self->userDataBufferSize );
-    //
-    self->msgPassedHandler( self->msgPassedParam,
-                            &self->mmsInitRequest,
-                            self->sbuf );
-  }
-  
-	return 0;
+
+	asn_DEF_ACSEapdu.free_struct(&asn_DEF_ACSEapdu, acseApdu, 0);
+
+	return indication;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+static AcseIndication
+  createSAssociateResponseMessage(AcseConnectionPtr self, SBuffer* payload) {
+/*----------------------------------------------------------------------------*/
+	ACSEapdu_t* pdu = calloc(1, sizeof(ACSEapdu_t));
+
+	pdu->present = ACSEapdu_PR_aare;
+
+	pdu->choice.aare.applicationcontextname.buf = appContextNameMms;
+	pdu->choice.aare.applicationcontextname.size = 5;
+
+	pdu->choice.aare.result = Associateresult_accepted;
+
+	pdu->choice.aare.resultsourcediagnostic.present =
+			Associatesourcediagnostic_PR_acseserviceuser;
+
+	pdu->choice.aare.resultsourcediagnostic.choice.acseserviceuser =
+			acseserviceuser_null;
+
+	Associationinformation_t* assocInfo =
+			calloc(1, sizeof(Associationinformation_t));
+
+	assocInfo->list.count = 1;
+	assocInfo->list.array = calloc(1, sizeof(struct MyExternal*));
+	assocInfo->list.array[0] = calloc(1, sizeof(struct Myexternal));
+
+	assocInfo->list.array[0]->directreference = calloc(1, sizeof(OBJECT_IDENTIFIER_t));
+	assocInfo->list.array[0]->directreference->size = 2;
+	assocInfo->list.array[0]->directreference->buf = berOid;
+
+	assocInfo->list.array[0]->indirectreference = &(connection->nextReference);
+
+	assocInfo->list.array[0]->encoding.present = encoding_PR_singleASN1type;
+	assocInfo->list.array[0]->encoding.choice.singleASN1type.size = 
+		SBuffer_GetPayloadSize(payload);
+	assocInfo->list.array[0]->encoding.choice.singleASN1type.buf = 
+		SBuffer_GetPayload(payload);
+
+
+	pdu->choice.aare.userinformation = assocInfo;
+	
+	writer(&asn_DEF_ACSEapdu, pdu, payload);
+	
+
+	/* free data structure */
+	free(assocInfo->list.array[0]->directreference);
+	free(assocInfo->list.array[0]);
+	free(assocInfo->list.array);
+	free(assocInfo);
+	free(pdu);
+
+	return rval.encoded;
 }
