@@ -42,7 +42,7 @@ struct Userdata;
 /* CPType */
 typedef struct CPType {
 	ModeSelector_t	 modeSelector;
-	struct normalModeParameters {
+	struct {
 		ProtocolVersion_t	*protocolVersion	/* DEFAULT {version1} */;
 		OCTET_STRING_t	*callingSelector	/* OPTIONAL */;
 		OCTET_STRING_t	*calledSelector	/* OPTIONAL */;
@@ -54,7 +54,7 @@ typedef struct CPType {
 		
 		/* Context for parsing across buffer boundaries */
 		asn_struct_ctx_t _asn_ctx;
-	} *normalModeParameters;
+	} normalModeParameters;
 	
 	/* Presence bitmask: ASN_SET_ISPRESENT(pCPType, CPType_PR_x) */
 	unsigned int _presence_map

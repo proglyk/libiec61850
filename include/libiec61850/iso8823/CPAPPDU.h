@@ -40,18 +40,17 @@ struct Userdata;
 
 /* CPAPPDU */
 typedef struct CPAPPDU {
-	ModeSelector_t	 modeSelector;
-	struct normalModeParameters {
+	ModeSelector_t	 modeSelector;  
+  struct {
 		ProtocolVersion_t	*protocolVersion	/* DEFAULT {version 1} */;
 		OCTET_STRING_t	*respondingSelector	/* OPTIONAL */;
 		struct ContextDefResList	*contextDefResList	/* OPTIONAL */;
 		Requirements_t	*requirements	/* OPTIONAL */;
 		UserSessionRequirements_t	*userSessionRequirements	/* OPTIONAL */;
 		struct Userdata	*userData	/* OPTIONAL */;
-		
 		/* Context for parsing across buffer boundaries */
 		asn_struct_ctx_t _asn_ctx;
-	} *normalModeParameters;
+	} normalModeParameters;
 	
 	/* Presence bitmask: ASN_SET_ISPRESENT(pCPAPPDU, CPAPPDU_PR_x) */
 	unsigned int _presence_map
