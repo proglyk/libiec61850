@@ -1,25 +1,25 @@
 #include "net_if.h"
 #include "libiec61850/IsoServer.h"
 
-// Îïðåäåëåíèå òèïîâ
+// ÐžÐ¿Ñ€ÐµÐ´ÐµÐ»ÐµÐ½Ð¸Ðµ Ñ‚Ð¸Ð¿Ð¾Ð²
 
-// Òèï óïð. ñòðóêòóðû
+// Ð¢Ð¸Ð¿ ÑƒÐ¿Ñ€. ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñ‹
 typedef struct {
-  // ëîêàëüíûå
+  // Ð»Ð¾ÐºÐ°Ð»ÑŒÐ½Ñ‹Ðµ
   s32_t null_var;
   IsoServerPtr pxServer;
 } ctx_t;
 
-// Îáúÿâëåíèÿ ôóíêöèé
+// ÐžÐ±ÑŠÑÐ²Ð»ÐµÐ½Ð¸Ñ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¹
 
-// Ñîçäàíèå, èíèöèàëèçàöèÿ è óäàëåíèå ýêçåìïëÿðà óïð. ñòðóêòóðû
+// Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ, Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð¸ ÑƒÐ´Ð°Ð»ÐµÐ½Ð¸Ðµ ÑÐºÐ·ÐµÐ¼Ð¿Ð»ÑÑ€Ð° ÑƒÐ¿Ñ€. ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñ‹
 static void *conn_init(sess_init_cb_ptr_t, net_if_data_t *, void*);
 static signed long conn_do(void*);
 static void  conn_del(sess_del_cb_ptr_t, void*);
 
-// Ïåðåìåííûå, êîíñòàíòû
+// ÐŸÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ðµ, ÐºÐ¾Ð½ÑÑ‚Ð°Ð½Ñ‚Ñ‹
 
-// Ðåàëèçàöèÿ èíòåðôåéñà net_if
+// Ð ÐµÐ°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹ÑÐ° net_if
 const net_if_fn_t xFnSrvUpvs = {
   .pvUpperInit =   (upper_init_ptr_t)NULL/* upvs_srv_init */,
   .pvUpper =       (void *)NULL/* &xBroker */,
@@ -43,12 +43,12 @@ static void *
   
   ctx->pxServer = IsoServer_Create(pdata->slSock);
   if (!ctx->pxServer) return NULL;
-  // íàñòðîéêà
+  // Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ°
 	/*IsoServer_setConnectionHandler(pxeth->Ied.pxServer->isoServer, 
 		isoConnectionIndicationHandler, (void*) pxeth->Ied.pxServer->mmsServer);
 	pxeth->Ied.pxServer->isoServer->tcpPort = pxeth->Ied.ulPort;
 	pxeth->Ied.pxServer->isoServer->tcpIp = pxeth->xNetif.ip_addr.addr;
-  // 1. çàïóñòèòü ïîòîê ied
+  // 1. Ð·Ð°Ð¿ÑƒÑÑ‚Ð¸Ñ‚ÑŒ Ð¿Ð¾Ñ‚Ð¾Ðº ied
 	xTaskCreate((void (*)(void*))IsoServer_Listen2, "Ied", (15*configMINIMAL_STACK_SIZE), 
 		pxeth->Ied.pxServer->isoServer, makeFreeRtosPriority(osPriorityIdle), 
 		&(pxeth->Ied.pvHandle));
@@ -59,16 +59,16 @@ static void *
 
 /**	----------------------------------------------------------------------------
 	* @brief 
-	* @param sock: Ñîêåò ïîäêëþ÷åíèÿ.
-	* @param ptr: Óêàçàòåëü íà óïð.ñòðóêòóðó. //TODO Íàäî íîâûé 
-	* @retval error: Ñòàòóñ âûïîëíåíèÿ. */
+	* @param sock: Ð¡Ð¾ÐºÐµÑ‚ Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ.
+	* @param ptr: Ð£ÐºÐ°Ð·Ð°Ñ‚ÐµÐ»ÑŒ Ð½Ð° ÑƒÐ¿Ñ€.ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñƒ. //TODO ÐÐ°Ð´Ð¾ Ð½Ð¾Ð²Ñ‹Ð¹ 
+	* @retval error: Ð¡Ñ‚Ð°Ñ‚ÑƒÑ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ñ. */
 static signed long
   conn_do(void* argv) {
 /*----------------------------------------------------------------------------*/
   s32_t rc;
   ctx_t *ctx = (ctx_t *)argv;
   
-  // ïðîâåðêà àðã-òîâ
+  // Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð°Ñ€Ð³-Ñ‚Ð¾Ð²
   if (!ctx) return -1;
   
   IsoServer_ClientConnected(ctx->pxServer);
@@ -77,7 +77,7 @@ static signed long
 	return 0;
   
   exit:
-  // âûõîä â ñëó÷àå ïîòåðè ñâÿçè
+  // Ð²Ñ‹Ñ…Ð¾Ð´ Ð² ÑÐ»ÑƒÑ‡Ð°Ðµ Ð¿Ð¾Ñ‚ÐµÑ€Ð¸ ÑÐ²ÑÐ·Ð¸
   return -1;
 }
 
@@ -89,7 +89,7 @@ static void
   ctx_t* ctx = (ctx_t *)argv;
   if (!ctx) return;
   
-  // âûïîëíèòü îáðàòíóþ ñâÿçü
+  // Ð²Ñ‹Ð¿Ð¾Ð»Ð½Ð¸Ñ‚ÑŒ Ð¾Ð±Ñ€Ð°Ñ‚Ð½ÑƒÑŽ ÑÐ²ÑÐ·ÑŒ
   if (pFn) pFn();
   
   if (ctx->pxServer) {
