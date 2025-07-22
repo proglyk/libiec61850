@@ -2,7 +2,7 @@
 
 static int internet_config( void );
 
-// Внешний код - Сервер UPVS
+// Р’РЅРµС€РЅРёР№ РєРѕРґ - РЎРµСЂРІРµСЂ UPVS
 extern net_if_fn_t xFnSrvIec61850;
 static IsoServerPld_t xPldMms;
 // static IsoServerPld_t xPldMms = {
@@ -44,7 +44,7 @@ static int internet_config(void) {
     goto exit;
   }
   
-	// запуск
+	// Р·Р°РїСѓСЃРє
 	net__run(net__inst());
   return 0;
   
