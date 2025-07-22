@@ -6,8 +6,6 @@
 struct sIsoServer {
   // Own needs
 	IsoServerState 							state;
-	ConnectionIndicationHandler connectionHandler;
-	void* 											connectionHandlerParameter;
 /* 	AcseAuthenticationParameter authParameter;
 	Thread 											serverThread;
 	ServerSocket2 							pxServSocket;
@@ -21,7 +19,8 @@ struct sIsoServer {
 /**	----------------------------------------------------------------------------
 	* @brief Iso Server layer constructor */
 IsoServerPtr
-	IsoServer_Create(s32_t socket) {
+	IsoServer_Create( s32_t socket, IndicationHandler handler,
+                    void *parameter ) {
 /*----------------------------------------------------------------------------*/
 	// Self creating
   IsoServerPtr self = calloc(1, sizeof(struct sIsoServer));
@@ -29,8 +28,9 @@ IsoServerPtr
   // Self configurating
 	self->state = ISO_SVR_STATE_IDLE; 
   // Top layers creating
-  self->isoConn = IsoConnection_Create(socket);
+  self->isoConn = IsoConnection_Create(socket, handler, parameter);
   if (self->isoConn) return NULL;
+  // Set connection handler to Mms server instance
 
 	return self;
 }
@@ -59,15 +59,4 @@ void
 IsoServer_ClientConnected(IsoServerPtr self) {
 /*----------------------------------------------------------------------------*/
   IsoConnection_ClientConnected(self->isoConn);
-}
-
-/**	----------------------------------------------------------------------------
-	* @brief ??? */
-void
-	IsoServer_setConnectionHandler(IsoServerPtr self,
-                                 ConnectionIndicationHandler handler,
-                                 void* parameter) {
-/*----------------------------------------------------------------------------*/
-	self->connectionHandler = handler;
-	self->connectionHandlerParameter = parameter;
 }

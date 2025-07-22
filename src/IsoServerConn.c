@@ -1,5 +1,5 @@
 #include "net_if.h"
-#include "libiec61850/IsoServer.h"
+#include "IsoServerConn.h"
 
 // Определение типов
 
@@ -7,7 +7,7 @@
 typedef struct {
   // локальные
   s32_t null_var;
-  IsoServerPtr pxServer;
+  IsoServerPtr isoServer;
 } ctx_t;
 
 // Объявления функций
@@ -36,21 +36,29 @@ static void *
   conn_init(sess_init_cb_ptr_t pFn, net_if_data_t *pdata, void* pvPld) {
 /*----------------------------------------------------------------------------*/
   ctx_t *ctx;
-  if (!pdata) return NULL;
+  if (!pdata || !pvPld) return NULL;
   
   ctx = malloc(sizeof(ctx_t));
   if (!ctx) return NULL;
   
-  ctx->pxServer = IsoServer_Create(pdata->slSock);
-  if (!ctx->pxServer) return NULL;
+  IsoServerPld_t *pld = (IsoServerPld_t *)pvPld;
+  ctx->isoServer = IsoServer_Create( pdata->slSock, 
+                                     pld->pvMmsHandler, pld->pvMmsPayload );
+  if (!ctx->isoServer) return NULL;
+  
+  // устанавливаем функтор обработчика MMS
+  //IsoServerPld_t *pld = (IsoServerPld_t *)pvPld;
+  //IsoServer_setConnectionHandler( ctx->isoServer, 
+  //                                pld->pvMmsHandler, pld->pvMmsPayload);  
+  
   // настройка
-	/*IsoServer_setConnectionHandler(pxeth->Ied.pxServer->isoServer, 
-		isoConnectionIndicationHandler, (void*) pxeth->Ied.pxServer->mmsServer);
-	pxeth->Ied.pxServer->isoServer->tcpPort = pxeth->Ied.ulPort;
-	pxeth->Ied.pxServer->isoServer->tcpIp = pxeth->xNetif.ip_addr.addr;
+	/*IsoServer_setConnectionHandler(pxeth->Ied.isoServer->isoServer, 
+		isoConnectionIndicationHandler, (void*) pxeth->Ied.isoServer->mmsServer);
+	pxeth->Ied.isoServer->isoServer->tcpPort = pxeth->Ied.ulPort;
+	pxeth->Ied.isoServer->isoServer->tcpIp = pxeth->xNetif.ip_addr.addr;
   // 1. запустить поток ied
 	xTaskCreate((void (*)(void*))IsoServer_Listen2, "Ied", (15*configMINIMAL_STACK_SIZE), 
-		pxeth->Ied.pxServer->isoServer, makeFreeRtosPriority(osPriorityIdle), 
+		pxeth->Ied.isoServer->isoServer, makeFreeRtosPriority(osPriorityIdle), 
 		&(pxeth->Ied.pvHandle));
   pxeth->Ied.usState = SVR_RUNNING; */
 
@@ -71,7 +79,7 @@ static signed long
   // проверка арг-тов
   if (!ctx) return -1;
   
-  IsoServer_ClientConnected(ctx->pxServer);
+  IsoServer_ClientConnected(ctx->isoServer);
   
 	//vTaskDelay(250);
 	return 0;
@@ -92,8 +100,8 @@ static void
   // выполнить обратную связь
   if (pFn) pFn();
   
-  if (ctx->pxServer) {
-    IsoServer_Delete(ctx->pxServer);
+  if (ctx->isoServer) {
+    IsoServer_Delete(ctx->isoServer);
   }
   
   free(ctx);

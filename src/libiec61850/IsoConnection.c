@@ -14,14 +14,13 @@ struct sIsoConnection {
   // Own needs
 	uint8_t*               receive_buf;
   uint8_t*               send_buf;
-  //MessageReceivedHandler msgRcvdHandler;
-	//void*                  msgRcvdHandlerParameter;
 	s32_t                  socket;
   int                    state;
   // Linkage with the upper layer
   CotpConnectionPtr      cotpConn;
   SBufferPtr             sbuf;
-	
+  IndicationHandler      connHandler;
+	void* 								 connHandlerParameter;
 	//void* session;
   //void* presentation;
 	//char* clientAddress;
@@ -35,17 +34,16 @@ static ByteBuffer receiveBuffer; // TODO разместить потом в ку
 /**	----------------------------------------------------------------------------
 	* @brief Iso Connection layer constructor */
 IsoConnectionPtr
-	IsoConnection_Create(s32_t socket) {
+	IsoConnection_Create(s32_t socket, IndicationHandler handler, void *parameter) {
 /*----------------------------------------------------------------------------*/
-	// Self creating
+	// Self creating and configurating
   IsoConnectionPtr self = calloc(1, sizeof(struct sIsoConnection));
   if (!self) return NULL;
-  // Self configurating
   self->socket = socket;
+  self->connHandler = handler;
+	self->connHandlerParameter = parameter;
   self->receive_buf = malloc(RECEIVE_BUF_SIZE);
   self->send_buf = malloc(SEND_BUF_SIZE);
-	//self->msgRcvdHandler = NULL;
-	//self->msgRcvdHandlerParameter = NULL;
 	self->state = ISO_CON_STATE_STOPPED;
   // создаем и линкуем SBuffer
   self->sbuf = calloc(1, sizeof(struct sSBuffer));
@@ -53,6 +51,9 @@ IsoConnectionPtr
   // Top layers creating
   self->cotpConn = CotpConnection_Create(socket, &receiveBuffer, self->sbuf);
   if (!self->cotpConn) return NULL;
+  // Notify the Mms server connection about some event
+  self->connHandler( ISO_CONNECTION_OPENED,
+                     self->connHandlerParameter, self);
   
 /*   self->xLayer.Cotp.px = calloc(1, sizeof(CotpConnection));
   self->xLayer.Session.px = calloc(1, sizeof(IsoSession));
@@ -93,6 +94,8 @@ void
 /*   free(self->xLayer.Present.px);
 	free(self->xLayer.Session.px);
   free(self->xLayer.Cotp.px); */
+  self->connHandler( ISO_CONNECTION_CLOSED,
+                     self->connHandlerParameter, self);
   if (self->cotpConn) CotpConnection_Delete(self->cotpConn);
 	if (self->receive_buf) free(self->receive_buf);
   if (self->send_buf) free(self->send_buf);

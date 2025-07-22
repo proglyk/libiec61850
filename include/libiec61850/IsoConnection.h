@@ -15,17 +15,21 @@
 struct sIsoConnection;
 typedef struct sIsoConnection *IsoConnectionPtr;
 
+typedef enum { ISO_CONNECTION_OPENED,	ISO_CONNECTION_CLOSED
+} IsoConnIndication;
+typedef void (*IndicationHandler) ( IsoConnIndication, 
+                                    void*, IsoConnectionPtr );
+
 //typedef void (*MessageReceivedHandler) (void *, ByteBuffer *, SBuffer *);
 
 // Function declarations
 
-IsoConnectionPtr IsoConnection_Create(s32_t);
+IsoConnectionPtr IsoConnection_Create(s32_t, IndicationHandler, void *);
 s32_t            IsoConnection_Init(IsoConnectionPtr);
 void	           IsoConnection_Deinit(IsoConnectionPtr);
 void	           IsoConnection_Delete(IsoConnectionPtr);
 s32_t	           IsoConnection_ClientConnected(IsoConnectionPtr);
 void             IsoConnection_InstallListener( IsoConnectionPtr,
-                                                PassedHandlerPtr,
-                                                void* );
+                                                PassedHandlerPtr, void* );
 
 #endif // _ISOCONNECTION_H_
