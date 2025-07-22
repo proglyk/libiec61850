@@ -1,0 +1,3 @@
+[submodule "lib/net"]
+	path = lib/net
+	url = https://github.com/proglyk/net
