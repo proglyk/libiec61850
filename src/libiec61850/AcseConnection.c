@@ -1,5 +1,4 @@
 #include "libiec61850/AcseConnection.h"
-#include "libiec61850/mms/mms_server.h"
 #include <stdlib.h>
 #include "libiec61850/iso8650/ACSEapdu.h"
 
@@ -7,18 +6,18 @@
 
 struct sAcseConnection {
   // Own needs
-	AcseConnectionState	state;
-	s32_t	           		nextReference;
+	AcseConnectionState	 state;
+	s32_t	           		 nextReference;
 	AcseAuthenticationParameter authentication;
   // Layer Buffer
-  u8_t               *userDataBuffer;
-	s32_t               userDataBufferSize;
-  ByteBuffer          mmsInitRequest;
+  u8_t                *userDataBuffer;
+	s32_t                userDataBufferSize;
+  ByteBuffer           mmsInitRequest;
   // Linkage with the upper layer
-  MmsServer           mmsServ;
-  SBufferPtr          sbuf;
-  PassedHandlerPtr    msgPassedHandler;
-  void               *msgPassedParam;
+  MmsServerConnection *mmsConn;
+  SBufferPtr           sbuf;
+  PassedHandlerPtr     msgPassedHandler;
+  void                *msgPassedParam;
   
 };
 
@@ -50,8 +49,9 @@ AcseConnectionPtr
   self->msgPassedHandler = NULL;
   self->msgPassedParam = NULL;
   // Top layers creating
-  self->mmsServ = MmsServer_create(/* self->sbuf */);
-  if (!self->mmsServ) return NULL;
+  self->mmsConn = MmsServerConnection_init(NULL, NULL/* mmsServer */);
+  if (!self->mmsConn) return NULL;
+  //Map_addEntry(NULL, /* mmsServer->openConnections, */ NULL, self->mmsConn);
   
   return self;
 }
@@ -62,19 +62,20 @@ void
   AcseConnection_Delete(AcseConnectionPtr self) {
 /*----------------------------------------------------------------------------*/
 	if (!self) return;
-  if (self->mmsServ) {
-    MmsServer_Deinit(self->mmsServ);
-    MmsServer_destroy(self->mmsServ);
+  if (self->mmsConn) {
+    //MmsServer_Deinit(self->mmsServ);
+    //MmsServer_destroy(self->mmsServ);
+    MmsServerConnection_destroy(self->mmsConn);
   }
 	free(self); self = NULL;
 }
 
 /**	----------------------------------------------------------------------------
 	* @brief Connection init */
-MmsServer
-	AcseConnection_getMms( AcseConnectionPtr self ) {
+MmsServerConnection *
+	AcseConnection_getMmsConn( AcseConnectionPtr self ) {
 /*----------------------------------------------------------------------------*/
-	return self->mmsServ;
+	return self->mmsConn;
 }
 
 /**	----------------------------------------------------------------------------
@@ -94,7 +95,7 @@ void
 s32_t
   AcseConnection_Connect(AcseConnectionPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
-	if (!self->msgPassedHandler) return -1;
+	//if (!self->msgPassedHandler) return -1;
   // ???
   AcseIndication sta = parseMessage(self, buffer);
   if (sta != ACSE_ASSOCIATE) return -1;
@@ -102,7 +103,10 @@ s32_t
   //
   ByteBuffer_wrap( &self->mmsInitRequest, self->userDataBuffer,
                     self->userDataBufferSize, self->userDataBufferSize );
-  self->msgPassedHandler( self->msgPassedParam, &self->mmsInitRequest, self->sbuf );
+  //self->msgPassedHandler( self->msgPassedParam, &self->mmsInitRequest, self->sbuf );
+  MmsServerConnection_parseMessage( self->mmsConn, &self->mmsInitRequest, 
+                                    self->sbuf );
+  
   if (SBuffer_GetPayloadSize(self->sbuf) <= 0) return -1;
   
   // ответ

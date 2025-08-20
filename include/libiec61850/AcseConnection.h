@@ -4,6 +4,7 @@
 #include "userint.h"
 #include "libiec61850/utils/SBuffer.h"
 #include "libiec61850/utils/common_types.h"
+#include "libiec61850/mms/mms_server_conn.h"
 
 // Type declarations
 
@@ -38,5 +39,6 @@ AcseConnectionPtr AcseConnection_Create(SBufferPtr);
 void              AcseConnection_Delete(AcseConnectionPtr);
 s32_t             AcseConnection_Connect(AcseConnectionPtr, ByteBuffer *);
 void              AcseConnection_InstallListener(AcseConnectionPtr, PassedHandlerPtr, void *);
+MmsServerConnection *AcseConnection_getMmsConn( AcseConnectionPtr self );
 
 #endif // _ACSECONNECTION_H_

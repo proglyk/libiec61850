@@ -103,14 +103,16 @@ s32_t
 s32_t
   IsoPresentation_ProcessData(IsoPresPtr self, ByteBuffer *buffer) {
 /*----------------------------------------------------------------------------*/
-  if (!self->msgPassedHandler) return -1;
+  //if (!self->msgPassedHandler) return -1;
   // ???
   IsoPresStatus sta = parseUserData(self, buffer);
   if (sta != PRESENTATION_OK) return -1;
   
   if ( self->nextContextId == 3 ) {
     ByteBuffer *mmsConfRequest = &( self->nextPayload );
-    self->msgPassedHandler( self->msgPassedParam, mmsConfRequest, self->sbuf );
+    //self->msgPassedHandler( self->msgPassedParam, mmsConfRequest, self->sbuf );
+    MmsServerConnection_parseMessage( AcseConnection_getMmsConn(self->acseConn),
+                                      mmsConfRequest, self->sbuf );
     createSUserData(self, self->sbuf);
   }
   
