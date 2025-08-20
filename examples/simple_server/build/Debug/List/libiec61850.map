@@ -1,0 +1,180 @@
+###############################################################################
+#
+# IAR ELF Linker V8.40.2.214/W32 for ARM                  14/Jul/2025  08:55:43
+# Copyright 2007-2019 IAR Systems AB.
+#
+#    Output file  =
+#        D:\proglyk\projects\iec61850\1 libiec61850 на базе
+#        net\build\EWARM\Debug\Exe\libiec61850.out
+#    Map file     =
+#        D:\proglyk\projects\iec61850\1 libiec61850 на базе
+#        net\build\EWARM\Debug\List\libiec61850.map
+#    Command line =
+#        -f C:\Users\IA656~1.PRO\AppData\Local\Temp\EWF0D1.tmp
+#        ("D:\proglyk\projects\iec61850\1 libiec61850 на базе
+#        net\build\EWARM\Debug\Obj\main.o" --no_out_extension -o
+#        "D:\proglyk\projects\iec61850\1 libiec61850 на базе
+#        net\build\EWARM\Debug\Exe\libiec61850.out" --redirect
+#        _Printf=_PrintfFullNoMb --redirect _Scanf=_ScanfFullNoMb --map
+#        "D:\proglyk\projects\iec61850\1 libiec61850 на базе
+#        net\build\EWARM\Debug\List\libiec61850.map" --config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench
+#        8.3\arm\config\linker\ST\stm32f407xG.icf" --redirect
+#        malloc=pvPortMalloc --redirect free=vPortFree --redirect
+#        calloc=pvPortCalloc --redirect realloc=pvPortRealloc --semihosting
+#        --entry __iar_program_start --vfe --text_out locale)
+#
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__SystemLibrary = DLib
+__dlib_version  = 6
+
+
+*******************************************************************************
+*** HEAP SELECTION
+***
+
+The basic heap was selected because no calls to memory allocation
+functions were found in the application outside of system library
+functions, and there are calls to deallocation functions in the
+application.
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A0":  place at address 0x800'0000 { ro section .intvec };
+"P1":  place in [from 0x800'0000 to 0x80f'ffff] { ro };
+define block CSTACK with size = 8K, alignment = 8 { };
+define block HEAP with size = 8K, alignment = 8 { };
+"P4":  place in [from 0x2000'0000 to 0x2001'bfff] |
+                [from 0x2001'c000 to 0x2001'ffff] {
+          rw, block CSTACK, block HEAP };
+
+No sections matched the following patterns:
+
+  ro section application_specific_ro  in "P2"
+  rw                                  in "P4"
+  section .backup_sram                in "P5"
+  section .ccram                      in "P3"
+
+
+  Section   Kind         Address    Size  Object
+  -------   ----         -------    ----  ------
+"A0":                               0x40
+  .intvec   ro code   0x800'0000    0x40  vector_table_M.o [4]
+                    - 0x800'0040    0x40
+
+"P1":                               0x7c
+  .text     ro code   0x800'0040    0x22  fpinit_M.o [3]
+  .text     ro code   0x800'0062     0x2  vector_table_M.o [4]
+  .text     ro code   0x800'0064    0x1e  cmain.o [4]
+  .text     ro code   0x800'0082     0x4  low_level_init.o [2]
+  .text     ro code   0x800'0086     0x4  main.o [1]
+  .text     ro code   0x800'008a     0x4  exit.o [2]
+  .text     ro code   0x800'0090     0xa  cexit.o [4]
+  .text     ro code   0x800'009c    0x14  exit.o [5]
+  .text     ro code   0x800'00b0     0xc  cstartup_M.o [4]
+                    - 0x800'00bc    0x7c
+
+"P4":                             0x2000
+  CSTACK             0x2000'0000  0x2000  <Block>
+    CSTACK  uninit   0x2000'0000  0x2000  <Block tail>
+                   - 0x2000'2000  0x2000
+
+Unused ranges:
+
+         From           To      Size
+         ----           --      ----
+   0x800'00bc   0x80f'ffff  0xf'ff44
+  0x2000'2000  0x2001'bfff  0x1'a000
+  0x2001'c000  0x2001'ffff    0x4000
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module            ro code  rw data
+    ------            -------  -------
+command line/config:
+    ----------------------------------
+    Total:
+
+D:\proglyk\projects\iec61850\1 libiec61850 на базе net\build\EWARM\Debug\Obj: [1]
+    main.o                  4
+    ----------------------------------
+    Total:                  4
+
+dl7M_tln.a: [2]
+    exit.o                  4
+    low_level_init.o        4
+    ----------------------------------
+    Total:                  8
+
+m7M_tls.a: [3]
+    fpinit_M.o             34
+    ----------------------------------
+    Total:                 34
+
+rt7M_tl.a: [4]
+    cexit.o                10
+    cmain.o                30
+    cstartup_M.o           12
+    vector_table_M.o       66
+    ----------------------------------
+    Total:                118
+
+shb_l.a: [5]
+    exit.o                 20
+    ----------------------------------
+    Total:                 20
+
+    Gaps                    4
+    Linker created               8'192
+--------------------------------------
+    Grand Total:          188    8'192
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                     Address  Size  Type      Object
+-----                     -------  ----  ----      ------
+?main                  0x800'0065        Code  Gb  cmain.o [4]
+CSTACK$$Base          0x2000'0000         --   Gb  - Linker created -
+CSTACK$$Limit         0x2000'2000         --   Gb  - Linker created -
+Region$$Table$$Base           0x0         --   Gb  - Linker created -
+Region$$Table$$Limit          0x0         --   Gb  - Linker created -
+__cmain                0x800'0065        Code  Gb  cmain.o [4]
+__exit                 0x800'009d  0x14  Code  Gb  exit.o [5]
+__iar_init_vfp         0x800'0041        Code  Gb  fpinit_M.o [3]
+__iar_program_start    0x800'00b1        Code  Gb  cstartup_M.o [4]
+__low_level_init       0x800'0083   0x4  Code  Gb  low_level_init.o [2]
+__vector_table         0x800'0000        Data  Gb  vector_table_M.o [4]
+_call_main             0x800'0071        Code  Gb  cmain.o [4]
+_exit                  0x800'0091        Code  Gb  cexit.o [4]
+_main                  0x800'007f        Code  Gb  cmain.o [4]
+exit                   0x800'008b   0x4  Code  Gb  exit.o [2]
+main                   0x800'0087   0x4  Code  Gb  main.o [1]
+
+
+[1] = D:\proglyk\projects\iec61850\1 libiec61850 на базе net\build\EWARM\Debug\Obj
+[2] = dl7M_tln.a
+[3] = m7M_tls.a
+[4] = rt7M_tl.a
+[5] = shb_l.a
+
+    188 bytes of readonly  code memory
+  8'192 bytes of readwrite data memory
+
+Errors: none
+Warnings: none
