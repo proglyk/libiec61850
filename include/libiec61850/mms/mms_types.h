@@ -1,0 +1,51 @@
+#ifndef MMS_TYPES_H_
+#define MMS_TYPES_H_
+
+#include <stdint.h>
+//#include "ied/utility/ber_integer.h"
+//#include "ied/mms/mms_domain.h"
+
+
+#define DEFAULT_MAX_SERV_OUTSTANDING_CALLING 5
+#define DEFAULT_MAX_SERV_OUTSTANDING_CALLED 5
+#define DEFAULT_DATA_STRUCTURE_NESTING_LEVEL 10
+#define DEFAULT_MAX_PDU_SIZE 65000
+
+
+typedef enum {
+	MMS_VALUE_OK,
+	MMS_VALUE_ACCESS_DENIED,
+	MMS_VALUE_VALUE_INVALID
+} MmsValueIndication;
+
+typedef enum {
+	MMS_ERROR, MMS_INITIATE, MMS_CONFIRMED_REQUEST, MMS_OK, MMS_CONCLUDE
+} MmsIndication;
+
+//CHANGE VER_0_2_0
+/*typedef enum {
+	MMS_NAMED_VARIABLE,
+	MMS_NAMED_VARIABLE_LIST
+} MmsObjectClass;*/
+
+/* typedef enum {
+	MMS_ARRAY,
+	MMS_STRUCTURE,
+	MMS_BOOLEAN,
+	MMS_BIT_STRING,
+	MMS_INTEGER,
+	MMS_UNSIGNED,
+	MMS_FLOAT,
+	MMS_OCTET_STRING,
+	MMS_VISIBLE_STRING,
+	MMS_GENERALIZED_TIME,
+	MMS_BINARY_TIME,
+	MMS_BCD,
+	MMS_OBJ_ID,
+	MMS_STRING,
+	MMS_UTC_TIME,
+	MMS_DATA_ACCESS_ERROR	//CHANGE _V_0_3_1_
+} MmsType; */
+
+
+#endif /* MMS_TYPES_H_ */

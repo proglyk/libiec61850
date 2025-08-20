@@ -1,7 +1,7 @@
 //#include "mms_server.h"
-#include "libiec61850/MmsServerConnection.h"
-#include "libiec61850/ied/mms/mms_common.h"
-#include "libiec61850/ied/mms/mms_server.h"
+#include "libiec61850/mms/mms_server_conn.h"
+#include "libiec61850/mms/mms_common.h"
+#include "libiec61850/mms/mms_server.h"
 
 
 /**	----------------------------------------------------------------------------
@@ -24,6 +24,34 @@ MmsServer_create(void/* IsoServer isoServer, MmsDevice* device*/) {
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 void
+  MmsServer_Init(MmsServer self) {
+/*----------------------------------------------------------------------------*/
+  MmsServerConnection* mmsCon;
+  
+  mmsCon = MmsServerConnection_init(0, self);
+  //Map_addEntry(self->openConnections, conn, mmsCon);
+  // if (self->connectionHandler != NULL)
+    // self->connectionHandler(self->connectionHandlerParameter,
+        // mmsCon, MMS_SERVER_NEW_CONNECTION);
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+void
+  MmsServer_Deinit(MmsServer self) {
+/*----------------------------------------------------------------------------*/
+  MmsServerConnection* mmsCon;
+  
+  //MmsServerConnection* mmsCon = (MmsServerConnection*) Map_removeEntry(mmsServer->openConnections, conn, false);
+  // if (mmsServer->connectionHandler != NULL)
+      // mmsServer->connectionHandler(mmsServer->connectionHandlerParameter,
+        // mmsCon, MMS_SERVER_CONNECTION_CLOSED);
+  if (mmsCon != NULL)	MmsServerConnection_destroy(mmsCon);
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief ??? */
+void
 MmsServer_destroy(MmsServer self) {
 /*----------------------------------------------------------------------------*/
 	//Map_deleteDeep(self->openConnections, false, closeConnection);
@@ -32,13 +60,14 @@ MmsServer_destroy(MmsServer self) {
 	free(self);
 }
 
+static void isoConnectionIndicationHandler( IsoConnIndication, void* );
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 void
   isoConnectionIndicationHandler( IsoConnIndication indication,
                                   void* parameter/*, IsoConnectionPtr conn*/) {
 /*----------------------------------------------------------------------------*/
-	MmsServer mmsServer = (MmsServer) parameter;
+/* 	MmsServer mmsServer = (MmsServer) parameter;
 	MmsServerConnection* mmsCon;
 
 	if (indication == ISO_CONNECTION_OPENED) {
@@ -53,5 +82,5 @@ void
 				mmsServer->connectionHandler(mmsServer->connectionHandlerParameter,
 					mmsCon, MMS_SERVER_CONNECTION_CLOSED);
 		if (mmsCon != NULL)	MmsServerConnection_destroy(mmsCon);
-	}
+	} */
 }

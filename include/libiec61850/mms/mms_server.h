@@ -5,7 +5,7 @@
 /*#include "ied/mms/mms_device.h"
 #include "ied/map.h"*/
 #include "libiec61850/IsoConnection.h"
-#include "ied/mms/mms_common.h"
+#include "libiec61850/mms/mms_common.h"
 #include <stdbool.h>
 
 // typedef MmsValue* (*ReadVariableHandler) (void* parameter, MmsDomain* domain, char*
@@ -38,24 +38,23 @@ struct sMmsServer {
 	//Semaphore modelMutex;
 };
 
-/*
+
 struct sMmsServerConnection {
 	int maxServOutstandingCalling;
 	int maxServOutstandingCalled;
 	int dataStructureNestingLevel;
 	int maxPduSize; // local detail
-	IsoConnection isoConnection;
+	//IsoConnection isoConnection;
 	MmsServer server;
   // aa-specific named variable lists
-	LinkedList namedVariableLists;
+	//LinkedList namedVariableLists;
 };
 
-*/
-
 MmsServer	MmsServer_create(void/* IsoServerPtr, MmsDevice * */);
-//void MmsServer_destroy(MmsServer);
-void isoConnectionIndicationHandler( IsoConnIndication, void* );
-		
+void      MmsServer_destroy(MmsServer);
+void	    MmsServer_Init( MmsServer );
+void	    MmsServer_Deinit( MmsServer );
+
 /*void
 	MmsServer_insertIntoCache(MmsServer self, MmsDomain* domain, char* itemId, 
 		MmsValue* value);

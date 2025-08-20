@@ -1,4 +1,5 @@
 #include "libiec61850/AcseConnection.h"
+#include "libiec61850/mms/mms_server.h"
 #include <stdlib.h>
 #include "libiec61850/iso8650/ACSEapdu.h"
 
@@ -14,6 +15,7 @@ struct sAcseConnection {
 	s32_t               userDataBufferSize;
   ByteBuffer          mmsInitRequest;
   // Linkage with the upper layer
+  MmsServer           mmsServ;
   SBufferPtr          sbuf;
   PassedHandlerPtr    msgPassedHandler;
   void               *msgPassedParam;
@@ -47,6 +49,9 @@ AcseConnectionPtr
   self->sbuf = sbuf;
   self->msgPassedHandler = NULL;
   self->msgPassedParam = NULL;
+  // Top layers creating
+  self->mmsServ = MmsServer_create(/* self->sbuf */);
+  if (!self->mmsServ) return NULL;
   
   return self;
 }
@@ -57,7 +62,19 @@ void
   AcseConnection_Delete(AcseConnectionPtr self) {
 /*----------------------------------------------------------------------------*/
 	if (!self) return;
+  if (self->mmsServ) {
+    MmsServer_Deinit(self->mmsServ);
+    MmsServer_destroy(self->mmsServ);
+  }
 	free(self); self = NULL;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief Connection init */
+MmsServer
+	AcseConnection_getMms( AcseConnectionPtr self ) {
+/*----------------------------------------------------------------------------*/
+	return self->mmsServ;
 }
 
 /**	----------------------------------------------------------------------------

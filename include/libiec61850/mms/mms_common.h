@@ -16,8 +16,8 @@ typedef struct sMmsNamedVariableList* MmsNamedVariableList;
 
 typedef struct sMmsServerConnection MmsServerConnection;
 // temp
-struct sMmsServerConnection {
-	void* null;
-};
+//struct sMmsServerConnection {
+//	void* null;
+//};
 
 #endif /* _MMS_COMMON_H_ */
