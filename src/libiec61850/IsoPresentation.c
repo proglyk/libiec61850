@@ -1,8 +1,8 @@
 #include "libiec61850/IsoPresentation.h"
 #include "libiec61850/AcseConnection.h"
 #include "libiec61850/utils/byte_buffer.h"
-#include "libiec61850/iso8823/CPType.h"
-#include "libiec61850/iso8823/CPAPPDU.h"
+#include "iso8823/CPType.h"
+#include "iso8823/CPAPPDU.h"
 #include <string.h>
 
 // Type definitions

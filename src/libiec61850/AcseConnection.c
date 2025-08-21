@@ -1,6 +1,6 @@
 #include "libiec61850/AcseConnection.h"
 #include <stdlib.h>
-#include "libiec61850/iso8650/ACSEapdu.h"
+#include "iso8650/ACSEapdu.h"
 
 // Type definitions
 
