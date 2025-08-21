@@ -1,0 +1,5 @@
+1. listOfAccessResult включается в виде 
+		#include "asn_iso9506/user/listOfAccessResult.h" 
+	в след. файлах :
+		InformationReport.h
+		ReadResponse.h
