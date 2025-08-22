@@ -2396,6 +2396,9 @@
             <file>
                 <name>$PROJ_DIR$\..\src\sys\system_stm32f4xx.c</name>
             </file>
+            <file>
+                <name>$PROJ_DIR$\..\src\sys\time_hal.c</name>
+            </file>
         </group>
         <file>
             <name>$PROJ_DIR$\..\src\debug3.c</name>
@@ -2408,42 +2411,96 @@
         <name>lib</name>
         <group>
             <name>HAL</name>
+            <group>
+                <name>src</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\2 Separately compiled libraries\7 HAL\src\stm32f4xx_hal_eth.c</name>
+                </file>
+            </group>
+        </group>
+    </group>
+    <group>
+        <name>src</name>
+        <group>
+            <name>libiec61850</name>
+            <group>
+                <name>ied</name>
+            </group>
+            <group>
+                <name>mms</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\mms\mms_server.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\mms\mms_server_common.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\mms\mms_server_conn.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\mms\mms_service_read.c</name>
+                </file>
+            </group>
+            <group>
+                <name>utils</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\utils\byte_buffer.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\utils\byte_stream.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\utils\linked_list.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\utils\SBuffer.c</name>
+                </file>
+            </group>
             <file>
-                <name>$PROJ_DIR$\..\..\..\lib\HAL\stm32f4xx_hal_eth.c</name>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\AcseConnection.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\CotpConnection.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\IsoConnection.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\IsoPresentation.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\IsoServer.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\IsoSession.c</name>
             </file>
         </group>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\IsoServerConn.c</name>
+        </file>
     </group>
     <group>
         <name>third</name>
         <group>
-            <name>core</name>
+            <name>net</name>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\core\source\list.c</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\core\source\queue.c</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net_clt.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\core\source\tasks.c</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net_conn.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\core\source\timers.c</name>
-            </file>
-        </group>
-        <group>
-            <name>port</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\port\heap_4.c</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net_eth.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\port\port.c</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net_netif.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\port\portasm.s</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net_srv.c</name>
             </file>
         </group>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\cmsis_os.c</name>
-        </file>
     </group>
 </project>

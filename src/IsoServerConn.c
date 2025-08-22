@@ -20,7 +20,7 @@ static void  conn_del(sess_del_cb_ptr_t, void*);
 // Переменные, константы
 
 // Реализация интерфейса net_if
-const net_if_fn_t xFnSrvUpvs = {
+const net_if_fn_t xFnSrvIec61850 = {
   .pvUpperInit =   (upper_init_ptr_t)NULL/* upvs_srv_init */,
   .pvUpper =       (void *)NULL/* &xBroker */,
   .ppvSessInit =   (sess_init_ptr_t)conn_init,

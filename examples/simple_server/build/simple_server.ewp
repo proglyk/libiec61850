@@ -353,11 +353,20 @@
                     <state>$WS_DIR$\include</state>
                     <state>$WS_DIR$\include\sys</state>
                     <state>$WS_DIR$\..\..\include</state>
-                    <state>$WS_DIR$\..\..\lib\HAL\inc</state>
-                    <state>$WS_DIR$\..\..\third\FreeRTOS</state>
-                    <state>$WS_DIR$\..\..\third\FreeRTOS\port</state>
-                    <state>$WS_DIR$\..\..\third\FreeRTOS\core\header</state>
-                    <state>$WS_DIR$\..\..\lib\NET</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\1 ASN1\include\asn1</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\1 ASN1\include</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\2 ISO8823\include</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\3 ISO8650\include</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\4 ISO9506\include</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\6 LwIP\include</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\6 LwIP\include\LwIP</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\7 HAL\include</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\7 HAL\include\HAL</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\5 FreeRTOS\include</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\5 FreeRTOS\src</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\5 FreeRTOS\src\core</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\5 FreeRTOS\src\port</state>
+                    <state>$WS_DIR$\..\..\third\net\src</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -772,11 +781,11 @@
                 </option>
                 <option>
                     <name>IlinkIcfOverride</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$TOOLKIT_DIR$\config\linker\ST\stm32f407xG.icf</state>
+                    <state>$PROJ_DIR$\stm32f407xG-user.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -827,7 +836,12 @@
                 </option>
                 <option>
                     <name>IlinkAdditionalLibs</name>
-                    <state>$WS_DIR$\..\..\lib\HAL\HAL.a</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\1 ASN1\bin\asn1.a</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\3 ISO8650\bin\ISO8650.a</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\4 ISO9506\bin\ISO9506.a</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\7 HAL\bin\HAL.a</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\5 FreeRTOS\bin\FreeRTOSLib.a</state>
+                    <state>$WS_DIR$\..\..\..\2 Separately compiled libraries\6 LwIP\bin\LwIPLib.a</state>
                 </option>
                 <option>
                     <name>IlinkOverrideProgramEntryLabel</name>
@@ -2139,6 +2153,9 @@
             <file>
                 <name>$PROJ_DIR$\..\src\sys\system_stm32f4xx.c</name>
             </file>
+            <file>
+                <name>$PROJ_DIR$\..\src\sys\time_hal.c</name>
+            </file>
         </group>
         <file>
             <name>$PROJ_DIR$\..\src\debug3.c</name>
@@ -2151,42 +2168,96 @@
         <name>lib</name>
         <group>
             <name>HAL</name>
+            <group>
+                <name>src</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\2 Separately compiled libraries\7 HAL\src\stm32f4xx_hal_eth.c</name>
+                </file>
+            </group>
+        </group>
+    </group>
+    <group>
+        <name>src</name>
+        <group>
+            <name>libiec61850</name>
+            <group>
+                <name>ied</name>
+            </group>
+            <group>
+                <name>mms</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\mms\mms_server.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\mms\mms_server_common.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\mms\mms_server_conn.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\mms\mms_service_read.c</name>
+                </file>
+            </group>
+            <group>
+                <name>utils</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\utils\byte_buffer.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\utils\byte_stream.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\utils\linked_list.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\src\libiec61850\utils\SBuffer.c</name>
+                </file>
+            </group>
             <file>
-                <name>$PROJ_DIR$\..\..\..\lib\HAL\stm32f4xx_hal_eth.c</name>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\AcseConnection.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\CotpConnection.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\IsoConnection.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\IsoPresentation.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\IsoServer.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\src\libiec61850\IsoSession.c</name>
             </file>
         </group>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\IsoServerConn.c</name>
+        </file>
     </group>
     <group>
         <name>third</name>
         <group>
-            <name>core</name>
+            <name>net</name>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\core\source\list.c</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\core\source\queue.c</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net_clt.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\core\source\tasks.c</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net_conn.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\core\source\timers.c</name>
-            </file>
-        </group>
-        <group>
-            <name>port</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\port\heap_4.c</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net_eth.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\port\port.c</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net_netif.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\port\portasm.s</name>
+                <name>$PROJ_DIR$\..\..\..\third\net\src\net_srv.c</name>
             </file>
         </group>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\third\FreeRTOS\cmsis_os.c</name>
-        </file>
     </group>
 </project>
