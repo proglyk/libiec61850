@@ -111,3 +111,66 @@ MmsServer_getValueFromCache(MmsServer self, MmsDomain* domain, char* itemId)
 
 	return NULL;
 }
+
+///////// ВПЛЕТЕНЫ В КОД ..
+
+MmsValue*
+MmsServer_getValue(MmsServer self, MmsDomain* domain, char* itemId)
+{
+	MmsValue* value = NULL;
+
+	value = MmsServer_getValueFromCache(self, domain, itemId);
+
+	if (value == NULL)
+		if (self->readHandler != NULL) {
+			//LWIP_DEBUGF(ISO9506_DEBUG, ("MmsServer_getValue: ...\r\n"));
+			value = self->readHandler(self->readHandlerParameter, domain, itemId);
+		}
+
+	return value;
+}
+
+MmsValue*
+MmsServer_getValueFromCache(MmsServer self, MmsDomain* domain, char* itemId)
+{
+	MmsValueCache cache = Map_getEntry(self->valueCaches, domain);
+
+	if (cache != NULL) {
+		return MmsValueCache_lookupValue(cache, itemId);
+	}
+
+	return NULL;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief связывает MmsMapping */
+void
+  MmsServer_installReadHandler( MmsServer self,
+                                ReadVariableHandler handler,
+                                void* parameter) {
+/*----------------------------------------------------------------------------*/
+	self->readHandler = handler;
+	self->readHandlerParameter = parameter;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief связывает MmsMapping */
+void
+  MmsServer_installWriteHandler( MmsServer self,
+                                 WriteVariableHandler handler,
+                                 void* parameter) {
+/*----------------------------------------------------------------------------*/
+	self->writeHandler = handler;
+	self->writeHandlerParameter = parameter;
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief связывает MmsMapping */
+void
+  MmsServer_installConnectionHandler( MmsServer self, 
+                                      MmsConnectionHandler handler,
+                                      void* parameter) {
+/*----------------------------------------------------------------------------*/
+	self->connectionHandler = handler;
+	self->connectionHandlerParameter = parameter;
+}

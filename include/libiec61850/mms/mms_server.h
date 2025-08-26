@@ -33,10 +33,10 @@ typedef struct sMmsServer* MmsServer;
 struct sMmsServer {
  	//IsoServerPtr isoServer;
 	MmsDevice* device;
-	/*ReadVariableHandler readHandler;
+	ReadVariableHandler readHandler;
 	void* readHandlerParameter;
 	WriteVariableHandler writeHandler;
-	void* writeHandlerParameter;*/
+	void* writeHandlerParameter;
 	MmsConnectionHandler connectionHandler;
 	void* connectionHandlerParameter;
 	/*Map openConnections;
@@ -67,6 +67,12 @@ void	    MmsServer_Deinit( MmsServer );
 
 MmsDevice* MmsServer_getDevice(MmsServer self);
 MmsValue*	MmsServer_getValueFromCache(MmsServer self, MmsDomain* domain, char* itemId);
+MmsValue*	MmsServer_getValue(MmsServer self, MmsDomain* domain, char* itemId);
+
+void MmsServer_installReadHandler(MmsServer, ReadVariableHandler, void*);
+void MmsServer_installWriteHandler(MmsServer, WriteVariableHandler, void*);
+// A connection handler will be invoked whenever a new client connection is opened or closed
+void MmsServer_installConnectionHandler(MmsServer, MmsConnectionHandler, void*);
 
 /*void
 	MmsServer_insertIntoCache(MmsServer self, MmsDomain* domain, char* itemId, 
@@ -84,8 +90,7 @@ void
 void
 	MmsServer_unlockModel(MmsServer self);
 	
-MmsValue*
-	MmsServer_getValue(MmsServer self, MmsDomain* domain, char* itemId);
+
 	
 bool
 	MmsServer_isLocked(MmsServer self);
@@ -94,18 +99,6 @@ bool
 
 MmsValueIndication
 MmsServer_setValue(MmsServer self, MmsDomain* domain, char* itemId, MmsValue* value, MmsServerConnection* connection);
-	
-void
-	MmsServer_installReadHandler(MmsServer self, ReadVariableHandler, void* 
-		parameter);
-
-void
-	MmsServer_installWriteHandler(MmsServer self, WriteVariableHandler, void* 
-		parameter);
-
-// A connection handler will be invoked whenever a new client connection is opened or closed
-MmsServer_installConnectionHandler(MmsServer self, MmsConnectionHandler, void*
-  parameter);
 		
 #ifdef MMS_SERVER_HAS_VALUE_CACHE
 

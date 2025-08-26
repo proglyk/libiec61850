@@ -6,6 +6,7 @@
   *****************************************************************************/
 
 #include "libiec61850/mms/mms_common_internal.h"
+#include "libiec61850/mms/mms_server_internal.h"
 //#include "platform_endian.h"
 #include "lwip/opt.h"
 #include <stdlib.h>

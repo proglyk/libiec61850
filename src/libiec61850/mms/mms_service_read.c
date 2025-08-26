@@ -175,8 +175,8 @@ alternateArrayAccess(MmsServerConnection* connection,
 		int lowIndex = mmsServer_getLowIndex(alternateAccess);
 		int numberOfElements = mmsServer_getNumberOfElements(alternateAccess);
 
-		if (IEDREAD_DEBUG) printf("Alternate access index: %i elements %i\r\n",
-				lowIndex, numberOfElements);
+		//if (IEDREAD_DEBUG) printf("Alternate access index: %i elements %i\r\n",
+		//		lowIndex, numberOfElements);
 
 		int index = lowIndex;
 
