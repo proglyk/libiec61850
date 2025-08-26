@@ -7,6 +7,8 @@
 
 extern void mmsServer_handleGetNameListRequest(	MmsServerConnection* connection,
 	GetNameListRequest_t* getNameList, int invokeId, ByteBuffer* response);
+extern int mmsServer_handleGetVariableAccessAttributesRequest(MmsServerConnection *,
+  GetVariableAccessAttributesRequest_t *, int, ByteBuffer *);
 
 static MmsIndication parseMmsPdu(MmsServerConnection *, ByteBuffer *, SBuffer*);
 static int handleInitiateRequestPdu(MmsServerConnection *, InitiateRequestPdu_t *, ByteBuffer *);
@@ -323,9 +325,9 @@ handleConfirmedRequestPdu( MmsServerConnection* self,ConfirmedRequestPdu_t*
 		break;
 	case ConfirmedServiceRequest_PR_getVariableAccessAttributes:
 	// временно
-	//	mmsServer_handleGetVariableAccessAttributesRequest(self, &(request->
-	//		confirmedServiceRequest.choice.getVariableAccessAttributes), invokeId, 
-	//		(ByteBufferPtr)response);
+		mmsServer_handleGetVariableAccessAttributesRequest(self, &(request->
+			confirmedServiceRequest.choice.getVariableAccessAttributes), invokeId, 
+			(ByteBufferPtr)response);
 		break;
 	case ConfirmedServiceRequest_PR_defineNamedVariableList:
 		// не знаю для чего
