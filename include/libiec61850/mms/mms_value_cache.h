@@ -9,8 +9,8 @@
 #define MMS_VARIABLE_CACHE_H_
 
 #include "libiec61850/mms/mms_device.h"
-//#include "libiec61850/mms/mms_value_cache.h"
-//#include "ied/map.h"
+#include "libiec61850/mms/mms_value_cache.h"
+#include "libiec61850/ied/map.h"
 
 
 /*******************************************************************************
@@ -20,7 +20,7 @@
 
 typedef struct sMmsValueCache {
 	MmsDomain* domain;
-	//Map map;
+	Map map;
 } * MmsValueCache;
 
 typedef struct sMmsValueCacheEntry {

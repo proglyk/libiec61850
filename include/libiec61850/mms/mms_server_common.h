@@ -1,3 +1,10 @@
+/**
+	******************************************************************************
+  * @file    mms_server_common.h
+  * @author  Michael Zillgith
+  * @brief   This file is part of libIEC61850.
+  *****************************************************************************/
+
 #ifndef __MMS_SERVER_COMMON_H__
 #define __MMS_SERVER_COMMON_H__
 

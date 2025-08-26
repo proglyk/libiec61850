@@ -1,13 +1,10 @@
 /**
 	******************************************************************************
-  * @file    ???
-  * @author  Ilia Proniashin
-  * @version V1.0.0
-  * @date    26-August-2025
-  * @brief   Implementation of industrial standard IEC61850 for ARM Cortex-M
-  *   devices runned under RTOS
+  * @file    mms_server.h
+  * @author  Michael Zillgith
+  * @brief   This file is part of libIEC61850.
   *****************************************************************************/
-  
+
 #ifndef __MMS_SERVER_H__
 #define __MMS_SERVER_H__
 

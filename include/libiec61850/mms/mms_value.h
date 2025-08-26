@@ -1,3 +1,10 @@
+/**
+	******************************************************************************
+  * @file    mms_value.h
+  * @author  Michael Zillgith
+  * @brief   This file is part of libIEC61850.
+  *****************************************************************************/
+
 #ifndef __MMS_VALUE_H__
 #define __MMS_VALUE_H__
 

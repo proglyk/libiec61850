@@ -1,3 +1,10 @@
+/**
+	******************************************************************************
+  * @file    mms_common.h
+  * @author  Michael Zillgith
+  * @brief   This file is part of libIEC61850.
+  *****************************************************************************/
+
 #ifndef _MMS_COMMON_H_
 #define _MMS_COMMON_H_
 
@@ -15,9 +22,5 @@ typedef struct sMmsAccessSpecifier* MmsNamedVariableListEntry;
 typedef struct sMmsNamedVariableList* MmsNamedVariableList;
 
 typedef struct sMmsServerConnection MmsServerConnection;
-// temp
-//struct sMmsServerConnection {
-//	void* null;
-//};
 
 #endif /* _MMS_COMMON_H_ */
