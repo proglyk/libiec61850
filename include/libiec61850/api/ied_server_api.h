@@ -11,7 +11,7 @@ typedef struct sIedServer {
 	IedModel* model;
 	MmsDevice* mmsDevice;
 	MmsServer mmsServer;
-	IsoServer isoServer;
+	//IsoServer isoServer;
 	MmsMapping* mmsMapping;
 } * IedServer;
 

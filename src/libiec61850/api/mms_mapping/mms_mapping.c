@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "libiec61850/api/mms_mapping/mms_mapping.h"
 #include "libiec61850/api/mms_mapping/mms_mapping_internal.h"
-#include "libiec61850/utility/array_list.h"
+#include "libiec61850/utils/array_list.h"
 #include "stack_config.h"
 
 #include "libiec61850/api/mms_mapping/reporting.h"
@@ -15,6 +15,7 @@
 //#include "lwip/netif.h"
 #include "goose_raw.h"
 #include "hardware/thread.h"
+#include "libiec61850.h"
 
 //extern struct netif gnetif;
 
@@ -390,7 +391,7 @@ MmsMapping_startEventWorkerThread(MmsMapping* self)
 
     //Thread thread = Thread_create((void(*)(void*))eventWorkerThread, self, false);
     Thread thread = 
-			Thread_create2((void(*)(void*))eventWorkerThread, self, 2, osPriorityHigh);
+			Thread_create2((void(*)(void*))eventWorkerThread, self, 2, NULL);
 
 		self->reportWorkerThread = thread;
 }
@@ -1113,7 +1114,7 @@ mmsReadHandler(void* parameter, MmsDomain* domain, char* variableId)
     //if (DEBUG) printf("Requested %s\r\n", variableId);
 		
 		if (!strcmp(variableId, "LLN01$GO$Control1$DstAddress$Addr")) {
-			__NOP();
+			asm("nop");
 		}
 
     char* separator = strchr(variableId, '$');

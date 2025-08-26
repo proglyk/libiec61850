@@ -161,7 +161,7 @@ void
 	MmsGooseControlBlock_checkAndPublish(MmsGooseControlBlock self) {
 	
 	uint32_t timestamp[2] = {0,0};
-	GET_SYSTEM_TIME((timestamp+0),(timestamp+1));
+	//GET_SYSTEM_TIME((timestamp+0),(timestamp+1)); TODO
 	
 	if (timestamp[0] >= self->nextPublishTime) {
 
@@ -185,7 +185,7 @@ MmsGooseControlBlock_observedObjectChanged(MmsGooseControlBlock self)
     //uint64_t currentTime = Hal_getTimeInMs();
 		//uint64_t currentTime = (uint64_t)HAL_GetTick();
 		uint32_t timestamp[2] = {0,0};
-		GET_SYSTEM_TIME((timestamp+0),(timestamp+1));
+		//GET_SYSTEM_TIME((timestamp+0),(timestamp+1)); TODO
 
     Semaphore_wait(self->publisherMutex);
 
@@ -364,7 +364,7 @@ GOOSE_createGOOSEControlBlocks(MmsMapping* self, MmsDomain* domain,
 
     int currentGCB = 0;
 		
-		LWIP_DEBUGF(ISO9506_DEBUG, ("GOOSE_createGOOSEControlBlocks\r\n"));
+		//LWIP_DEBUGF(ISO9506_DEBUG, ("GOOSE_createGOOSEControlBlocks\r\n"));
 
     while (currentGCB < gseCount) {
         GSEControlBlockPtr gooseControlBlock = getGCBForLogicalNodeWithIndex(

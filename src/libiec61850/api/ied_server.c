@@ -86,7 +86,7 @@ IedServer
 
 	//self->isoServer = IsoServer_create();
 
-	self->mmsServer = MmsServer_create(NULL, self->mmsDevice);
+	self->mmsServer = MmsServer_create(self->mmsDevice);
 	
 	MmsMapping_setMmsServer(self->mmsMapping, self->mmsServer);
 
@@ -121,7 +121,7 @@ void
 	
 //	ldataElement = mmsMsg_createBasicDataElement(mms);
 		
-	__NOP();
+  asm("nop");
 }
 
 
@@ -160,7 +160,7 @@ void
 	
 	cach = self->mmsServer->valueCaches;
 	
-	__NOP();
+	asm("nop");
 	
 	//self->mmsServer->valueCaches->entries
 	
@@ -174,7 +174,7 @@ void
 	
 //	mms = MmsValueCache_lookupValue(cache, "UPGId");
 	
-	__NOP();
+	asm("nop");
 }
 
 
@@ -220,10 +220,10 @@ IedServer_getMmsServer(IedServer self){
 	return self->mmsServer;
 }
 
-IsoServer
-IedServer_getIsoServer(IedServer self){
-	return self->isoServer;
-}
+//IsoServer
+//IedServer_getIsoServer(IedServer self){
+//	return self->isoServer;
+//}
 
 
 /**	----------------------------------------------------------------------------
@@ -414,7 +414,7 @@ createControlObjects(IedServer self, MmsDomain* domain, char* lnName, MmsTypeSpe
                     ControlObject_setSBOw(controlObject, sbowVal);
                 }
                 else {
-                    printf("createControlObjects: Unknown element in CO!\n");
+                    //printf("createControlObjects: Unknown element in CO!\n");
                 }
             }
 
@@ -480,7 +480,7 @@ static void
 	installDefaultValuesForDataAttribute(IedServer self, DataAttribute* dataAttribute,
 		char* objectReference, int position) {
 	
-	sprintf(objectReference + position, ".%s", dataAttribute->name);
+	//sprintf(objectReference + position, ".%s", dataAttribute->name);
 
 	char mmsVariableName[255]; //TODO check for optimal size
 
@@ -496,7 +496,7 @@ static void
 	MmsDomain* domain = MmsDevice_getDomain(self->mmsDevice, domainName);
 
 	if (domain == NULL) {
-		printf("Error domain (%s) not found!\n", domainName);
+		//printf("Error domain (%s) not found!\n", domainName);
 		return;
 	}
 
@@ -524,7 +524,7 @@ static void
 static void
 	installDefaultValuesForDataObject(IedServer self, DataObject* dataObject,
 		char* objectReference, int position) {
-	sprintf(objectReference + position, ".%s", dataObject->name);
+	//sprintf(objectReference + position, ".%s", dataObject->name);
 
 	ModelNode* childNode = dataObject->firstChild;
 
@@ -553,14 +553,14 @@ installDefaultValuesInCache(IedServer self)
 	LogicalDevice* logicalDevice = model->firstChild;
 
 	while (logicalDevice != NULL) {
-		sprintf(objectReference, "%s", logicalDevice->name);
+		//sprintf(objectReference, "%s", logicalDevice->name);
 
 		LogicalNode* logicalNode = logicalDevice->firstChild;
 
 		char* nodeReference = objectReference + strlen(objectReference);
 
 		while (logicalNode != NULL) {
-			sprintf(nodeReference, "/%s", logicalNode->name);
+			//sprintf(nodeReference, "/%s", logicalNode->name);
 
 			DataObject* dataObject = (DataObject*)logicalNode->firstChild;
 
@@ -598,8 +598,9 @@ static void
 
 			MmsValue* value = MmsServer_getValueFromCache(self->mmsServer, domain, ((DataSetPtr)*(dataSets+i))->fcda[j]->variableName);
 
-			if (value == NULL)
-				printf("error cannot get value from cache!\n");
+			if (value == NULL) {
+				//printf("error cannot get value from cache!\n");
+      }
 			else
 				((DataSetPtr)*(dataSets+i))->fcda[j]->value = value;
 
