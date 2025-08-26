@@ -6,54 +6,54 @@
 
 
 //CHANGE _V_0_3_0_
-// void
-// mmsServer_createConfirmedErrorPdu(int invokeId, ByteBuffer* response,
-	// MmsConfirmedErrorType errorType){
+void
+mmsServer_createConfirmedErrorPdu(int invokeId, ByteBuffer* response,
+	MmsConfirmedErrorType errorType){
 
-	// MmsPdu_t* mmsPdu = calloc(1, sizeof(MmsPdu_t));
-	// mmsPdu->present = MmsPdu_PR_confirmedErrorPDU;
+	MmsPdu_t* mmsPdu = calloc(1, sizeof(MmsPdu_t));
+	mmsPdu->present = MmsPdu_PR_confirmedErrorPDU;
 
-	// asn_long2INTEGER(&(mmsPdu->choice.confirmedErrorPDU.invokeID),
-			// invokeId);
+	asn_long2INTEGER(&(mmsPdu->choice.confirmedErrorPDU.invokeID),
+			invokeId);
 
-	// if (errorType == MMS_ERROR_TYPE_OBJECT_NON_EXISTENT) {
-		// mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.present =
-				// errorClass_PR_access;
+	if (errorType == MMS_ERROR_TYPE_OBJECT_NON_EXISTENT) {
+		mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.present =
+				errorClass_PR_access;
 
-	// //mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access =
-	// //		access_objectnonexistent;
-	// asn_long2INTEGER(&mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access,
-		// access_objectnonexistent);
-	// }
-	// else if (errorType == MMS_ERROR_TYPE_ACCESS_DENIED) {
-		// mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.present =
-				// errorClass_PR_access;
+	//mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access =
+	//		access_objectnonexistent;
+	asn_long2INTEGER(&mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access,
+		access_objectnonexistent);
+	}
+	else if (errorType == MMS_ERROR_TYPE_ACCESS_DENIED) {
+		mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.present =
+				errorClass_PR_access;
 
-		// //mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access =
-		// //	access_objectaccessdenied;
-		// asn_long2INTEGER(&mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access,
-			// access_objectaccessdenied);
-	// }
-	// else if (errorType == MMS_ERROR_TYPE_OBJECT_ACCESS_UNSUPPORTED) {
-		// mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.present =
-				// errorClass_PR_access;
-		// //mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access =
-		// //	access_objectaccessunsupported;
-		// asn_long2INTEGER(&mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access,
-			// access_objectaccessunsupported);
-	// } 
-	// else if (errorType == MMS_ERROR_TYPE_RESPONSE_EXCEEDS_MAX_PDU_SIZE) {
-		// mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.present =
-			// errorClass_PR_service;
-						// //ServiceError__errorClass_PR_service;
-		// asn_long2INTEGER(&mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access,
-						// service_other);
-	// }
+		//mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access =
+		//	access_objectaccessdenied;
+		asn_long2INTEGER(&mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access,
+			access_objectaccessdenied);
+	}
+	else if (errorType == MMS_ERROR_TYPE_OBJECT_ACCESS_UNSUPPORTED) {
+		mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.present =
+				errorClass_PR_access;
+		//mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access =
+		//	access_objectaccessunsupported;
+		asn_long2INTEGER(&mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access,
+			access_objectaccessunsupported);
+	} 
+	else if (errorType == MMS_ERROR_TYPE_RESPONSE_EXCEEDS_MAX_PDU_SIZE) {
+		mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.present =
+			errorClass_PR_service;
+						//ServiceError__errorClass_PR_service;
+		asn_long2INTEGER(&mmsPdu->choice.confirmedErrorPDU.serviceError.errorClass.choice.access,
+						service_other);
+	}
 
-	// der_encode(&asn_DEF_MmsPdu, mmsPdu, mmsServer_write_out, (void*) response);
+	der_encode(&asn_DEF_MmsPdu, mmsPdu, mmsServer_write_out, (void*) response);
 
-	// asn_DEF_MmsPdu.free_struct(&asn_DEF_MmsPdu, mmsPdu, 0);
-// }
+	asn_DEF_MmsPdu.free_struct(&asn_DEF_MmsPdu, mmsPdu, 0);
+}
 
 
 int

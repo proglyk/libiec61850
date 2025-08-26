@@ -94,3 +94,8 @@ void
 		if (mmsCon != NULL)	MmsServerConnection_destroy(mmsCon);
 	} */
 }
+
+// Заглушки, требуют реализации
+MmsDevice*	MmsServer_getDevice(MmsServer self) {
+	return self->device;
+}

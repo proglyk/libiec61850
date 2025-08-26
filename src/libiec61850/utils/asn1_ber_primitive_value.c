@@ -1,6 +1,6 @@
 #include <string.h>
-#include "ied/utility/asn1_ber_primitive_value.h"
-#include "stdlib.h"
+#include "libiec61850/utils/asn1_ber_primitive_value.h"
+#include <stdlib.h>
 #include "asn_integer.h"
 
 static INTEGER_t mmsvalue;

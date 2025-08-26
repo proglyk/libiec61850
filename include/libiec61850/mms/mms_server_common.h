@@ -32,9 +32,7 @@ typedef enum {
 *******************************************************************************/
 
 
-// void
-	// mmsServer_createConfirmedErrorPdu(int invokeId, ByteBuffer* response,
-		// MmsConfirmedErrorType errorType);
+void mmsServer_createConfirmedErrorPdu(int invokeId, ByteBuffer* response, MmsConfirmedErrorType errorType);
 
 int	mmsServer_write_out(const void *buffer, size_t size, void *app_key);
 	

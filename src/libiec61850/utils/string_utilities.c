@@ -1,4 +1,4 @@
-#include "ied/utility/string_utilities.h"
+#include "libiec61850/utils/string_utilities.h"
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>

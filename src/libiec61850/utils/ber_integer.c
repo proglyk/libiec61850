@@ -1,7 +1,7 @@
 #include <string.h>
 //#include "platform_endian.h"
-#include "ied/utility/ber_integer.h"
-#include "ied/utility/ber_encoder.h"
+#include "libiec61850/utils/ber_integer.h"
+#include "libiec61850/utils/ber_encoder.h"
 
 
 static int

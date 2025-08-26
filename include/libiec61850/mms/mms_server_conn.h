@@ -31,6 +31,8 @@
 MmsServerConnection* MmsServerConnection_init( MmsServerConnection*, MmsServer/* , IsoConnection */ );
 void MmsServerConnection_destroy(MmsServerConnection*);
 MmsIndication MmsServerConnection_parseMessage(MmsServerConnection*,ByteBuffer*, SBuffer*);
+LinkedList
+MmsServerConnection_getNamedVariableLists(MmsServerConnection* self);
 
 /* 
 bool
@@ -38,9 +40,6 @@ MmsServerConnection_addNamedVariableList(MmsServerConnection* self, MmsNamedVari
 
 MmsNamedVariableList
 MmsServerConnection_getNamedVariableList(MmsServerConnection* self, char* variableListName);
-
-LinkedList
-MmsServerConnection_getNamedVariableLists(MmsServerConnection* self);
 
 void
 MmsServerConnection_deleteNamedVariableList(MmsServerConnection* self, char* listName);

@@ -57,13 +57,18 @@ struct sMmsServerConnection {
 	//IsoConnection isoConnection;
 	MmsServer server;
   // aa-specific named variable lists
-	//LinkedList namedVariableLists;
+	LinkedList namedVariableLists;
 };
 
 MmsServer	MmsServer_create(/* void IsoServerPtr,  */MmsDevice *);
 void      MmsServer_destroy(MmsServer);
 void	    MmsServer_Init( MmsServer );
 void	    MmsServer_Deinit( MmsServer );
+
+
+// далее заглушки
+
+MmsDevice*	MmsServer_getDevice(MmsServer self);
 
 /*void
 	MmsServer_insertIntoCache(MmsServer self, MmsDomain* domain, char* itemId, 
@@ -74,9 +79,6 @@ void
 	
 void
 MmsServer_startListening(MmsServer self, int tcpPort);
-	
-MmsDevice*
-	MmsServer_getDevice(MmsServer self);
 	
 void
 	MmsServer_lockModel(MmsServer self);

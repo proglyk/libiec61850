@@ -16,23 +16,10 @@ static int handleConfirmedRequestPdu( MmsServerConnection*,	ConfirmedRequestPdu_
 static void	freeInitiateResponsePdu(InitiateResponsePdu_t);
 
 static uint8_t servicesSupported[] = {
-		0x00
-		| MMS_SERVICE_GET_NAME_LIST
-		| MMS_SERVICE_READ
-		| MMS_SERVICE_WRITE
-		| MMS_SERVICE_GET_VARIABLE_ACCESS_ATTRIBUTES
-		| MMS_SERVICE_GET_NAMED_VARIABLE_LIST_ATTRIBUTES
-		,
-		0x00,
-		0x00,
-		0x00,
-		0x00,
-		0x00,
-		0x00,
-		0x00,
-		0x00,
-		0x00,
-		0x00
+  MMS_SERVICE_GET_NAME_LIST | MMS_SERVICE_READ | MMS_SERVICE_WRITE | 
+    MMS_SERVICE_GET_VARIABLE_ACCESS_ATTRIBUTES | 
+    MMS_SERVICE_GET_NAMED_VARIABLE_LIST_ATTRIBUTES,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
 // Public 
@@ -78,6 +65,11 @@ MmsIndication
                                     ByteBuffer* message, SBuffer* response) {
 /*----------------------------------------------------------------------------*/
 	return parseMmsPdu(self, message, response);
+}
+
+LinkedList
+	MmsServerConnection_getNamedVariableLists(MmsServerConnection* self){
+	return self->namedVariableLists;
 }
 
 // Static 
