@@ -338,9 +338,9 @@ handleConfirmedRequestPdu( MmsServerConnection* self,ConfirmedRequestPdu_t*
 		break;
 	case ConfirmedServiceRequest_PR_getNamedVariableListAttributes:
 		// временно
-		//mmsServer_handleGetNamedVariableListAttributesRequest(self,
-		//	&(request->confirmedServiceRequest.choice.getNamedVariableListAttributes),
-		//	invokeId, (ByteBufferPtr)response);
+		mmsServer_handleGetNamedVariableListAttributesRequest(self,
+			&(request->confirmedServiceRequest.choice.getNamedVariableListAttributes),
+			invokeId, (ByteBufferPtr)response);
 		asm("nop");
 		break;
 	case ConfirmedServiceRequest_PR_deleteNamedVariableList:
