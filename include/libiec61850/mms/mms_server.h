@@ -68,7 +68,8 @@ void	    MmsServer_Deinit( MmsServer );
 
 // далее заглушки
 
-MmsDevice*	MmsServer_getDevice(MmsServer self);
+MmsDevice* MmsServer_getDevice(MmsServer self);
+MmsValue*	MmsServer_getValueFromCache(MmsServer self, MmsDomain* domain, char* itemId);
 
 /*void
 	MmsServer_insertIntoCache(MmsServer self, MmsDomain* domain, char* itemId, 
@@ -92,8 +93,7 @@ MmsValue*
 bool
 	MmsServer_isLocked(MmsServer self);
 	
-MmsValue*
-	MmsServer_getValueFromCache(MmsServer self, MmsDomain* domain, char* itemId);
+
 
 MmsValueIndication
 MmsServer_setValue(MmsServer self, MmsDomain* domain, char* itemId, MmsValue* value, MmsServerConnection* connection);

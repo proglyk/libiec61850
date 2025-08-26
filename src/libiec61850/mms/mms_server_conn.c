@@ -3,6 +3,7 @@
 #include "iso9506/MmsPdu.h"
 #include "libiec61850/mms/mms_server_common.h"
 #include "libiec61850/mms/mms_service_read.h"
+#include "libiec61850/mms/mms_service_write.h"
 
 extern void mmsServer_handleGetNameListRequest(	MmsServerConnection* connection,
 	GetNameListRequest_t* getNameList, int invokeId, ByteBuffer* response);
@@ -317,8 +318,8 @@ handleConfirmedRequestPdu( MmsServerConnection* self,ConfirmedRequestPdu_t*
 		break;
 	case ConfirmedServiceRequest_PR_write:
 	// временно
-	//	mmsServer_handleWriteRequest(self, &(request->confirmedServiceRequest.choice.write),
-	//		invokeId, (ByteBufferPtr)response);
+		mmsServer_handleWriteRequest(self, &(request->confirmedServiceRequest.choice.write),
+			invokeId, (ByteBufferPtr)response);
 		break;
 	case ConfirmedServiceRequest_PR_getVariableAccessAttributes:
 	// временно

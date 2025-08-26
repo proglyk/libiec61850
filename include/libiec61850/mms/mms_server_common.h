@@ -36,17 +36,17 @@ void mmsServer_createConfirmedErrorPdu(int invokeId, ByteBuffer* response, MmsCo
 
 int	mmsServer_write_out(const void *buffer, size_t size, void *app_key);
 	
-// MmsPdu_t*
-	// mmsServer_createConfirmedResponse(int invokeId);
+MmsPdu_t*
+	mmsServer_createConfirmedResponse(int invokeId);
 
-// int
-	// mmsServer_isIndexAccess(AlternateAccess_t* alternateAccess);
+int
+	mmsServer_isIndexAccess(AlternateAccess_t* alternateAccess);
 	
-// int
-	// mmsServer_getLowIndex(AlternateAccess_t* alternateAccess);
+int
+	mmsServer_getLowIndex(AlternateAccess_t* alternateAccess);
 	
-// int
-	// mmsServer_getNumberOfElements(AlternateAccess_t* alternateAccess);
+int
+	mmsServer_getNumberOfElements(AlternateAccess_t* alternateAccess);
 	
 void mmsServer_deleteVariableList(LinkedList, char*);
 

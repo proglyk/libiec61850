@@ -64,87 +64,87 @@ mmsServer_write_out(const void *buffer, size_t size, void *app_key)
 }
 
 
-// MmsPdu_t*
-// mmsServer_createConfirmedResponse(int invokeId)
-// {
-	// MmsPdu_t* mmsPdu = calloc(1, sizeof(MmsPdu_t));
+MmsPdu_t*
+mmsServer_createConfirmedResponse(int invokeId)
+{
+	MmsPdu_t* mmsPdu = calloc(1, sizeof(MmsPdu_t));
 
-	// mmsPdu->present = MmsPdu_PR_confirmedResponsePdu;
+	mmsPdu->present = MmsPdu_PR_confirmedResponsePdu;
 
-	// asn_long2INTEGER(&(mmsPdu->choice.confirmedResponsePdu.invokeID),
-		// invokeId);
+	asn_long2INTEGER(&(mmsPdu->choice.confirmedResponsePdu.invokeID),
+		invokeId);
 
-	// return mmsPdu;
-// }
-
-
-// //CHANGE _V_0_3_0_
-// int
-// mmsServer_isIndexAccess(AlternateAccess_t* alternateAccess)
-// {
-	// if (alternateAccess->list.array[0]->present == AlternateAccessChoice_PR_unnamed) {
-		// if ((alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.present
-				// == selectAccess_PR_index) ||
-			// (alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.present
-				// == selectAccess_PR_indexRange))
-		// {
-			// return 1;
-		// }
-		// else
-			// return 0;
-	// }
-	// else
-		// return 0;
-// }
-
-// //CHANGE _V_0_3_0_
-// int
-// mmsServer_getLowIndex(AlternateAccess_t* alternateAccess)
-// {
-	// if (alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.present
-				// == selectAccess_PR_index)
-	// {
-		// long index;
-		// asn_INTEGER2long(
-				// &alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.choice.index,
-				// &index);
-
-		// return (int) index;
-	// }
-
-	// if (alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.present
-				// == selectAccess_PR_indexRange)
-	// {
-		// long index;
-		// asn_INTEGER2long(
-				// &alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.choice.indexRange.lowIndex,
-				// &index);
-
-		// return (int) index;
-	// }
-
-	// return -1;
-// }
+	return mmsPdu;
+}
 
 
-// //CHANGE _V_0_3_0_
-// int
-// mmsServer_getNumberOfElements(AlternateAccess_t* alternateAccess)
-// {
-	// if (alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.present
-				// == selectAccess_PR_indexRange)
-	// {
-		// long number;
+//CHANGE _V_0_3_0_
+int
+mmsServer_isIndexAccess(AlternateAccess_t* alternateAccess)
+{
+	if (alternateAccess->list.array[0]->present == AlternateAccessChoice_PR_unnamed) {
+		if ((alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.present
+				== selectAccess_PR_index) ||
+			(alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.present
+				== selectAccess_PR_indexRange))
+		{
+			return 1;
+		}
+		else
+			return 0;
+	}
+	else
+		return 0;
+}
 
-		// asn_INTEGER2long(
-				// &alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.choice.indexRange.numberOfElements,
-				// &number);
+//CHANGE _V_0_3_0_
+int
+mmsServer_getLowIndex(AlternateAccess_t* alternateAccess)
+{
+	if (alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.present
+				== selectAccess_PR_index)
+	{
+		long index;
+		asn_INTEGER2long(
+				&alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.choice.index,
+				&index);
 
-		// return (int) number;
-	// }
+		return (int) index;
+	}
 
-	// return 0;
-// }
+	if (alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.present
+				== selectAccess_PR_indexRange)
+	{
+		long index;
+		asn_INTEGER2long(
+				&alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.choice.indexRange.lowIndex,
+				&index);
+
+		return (int) index;
+	}
+
+	return -1;
+}
+
+
+//CHANGE _V_0_3_0_
+int
+mmsServer_getNumberOfElements(AlternateAccess_t* alternateAccess)
+{
+	if (alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.present
+				== selectAccess_PR_indexRange)
+	{
+		long number;
+
+		asn_INTEGER2long(
+				&alternateAccess->list.array[0]->choice.unnamed.choice.selectAccess.choice.indexRange.numberOfElements,
+				&number);
+
+		return (int) number;
+	}
+
+	return 0;
+}
 
 
 void

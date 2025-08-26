@@ -12,6 +12,7 @@
 #include "libiec61850/mms/mms_server_conn.h"
 #include "libiec61850/mms/mms_common.h"
 #include "libiec61850/mms/mms_server.h"
+#include "libiec61850/mms/mms_value_cache.h"
 
 
 /**	----------------------------------------------------------------------------
@@ -95,7 +96,18 @@ void
 	} */
 }
 
-// Заглушки, требуют реализации
 MmsDevice*	MmsServer_getDevice(MmsServer self) {
 	return self->device;
+}
+
+MmsValue*
+MmsServer_getValueFromCache(MmsServer self, MmsDomain* domain, char* itemId)
+{
+	MmsValueCache cache = NULL; //TODO //Map_getEntry(self->valueCaches, domain);
+
+	if (cache != NULL) {
+		return MmsValueCache_lookupValue(cache, itemId);
+	}
+
+	return NULL;
 }
