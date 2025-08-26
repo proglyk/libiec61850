@@ -13,6 +13,7 @@
 #include "libiec61850/mms/mms_common.h"
 #include "libiec61850/mms/mms_server.h"
 #include "libiec61850/mms/mms_value_cache.h"
+#include "libiec61850/mms/mms_value.h"
 
 
 /**	----------------------------------------------------------------------------
@@ -96,23 +97,38 @@ void
 	} */
 }
 
+///////// ВПЛЕТЕНЫ В КОД ..
+
+/**	----------------------------------------------------------------------------
+	* @brief Функция обновления полей подписок
+			CHANGE _V_0_3_0_MYSELF
+	* @param dataset: Номер текущего датасета посылки.
+	* @param cargpage: Номер текущей страницы каретки.
+	* @param ptr: Указатель на структуру со значениями из посылки.
+	* @retval none: Нет */
+MmsValueIndication
+MmsServer_setValue(MmsServer self, MmsDomain* domain, char* itemId, MmsValue* value,
+	MmsServerConnection* connection) {
+/*----------------------------------------------------------------------------*/
+	MmsValueIndication indication = MMS_VALUE_ACCESS_DENIED;
+	// 
+	MmsValue* cachedValue = MmsServer_getValueFromCache(self, domain, itemId);
+	//
+	if (cachedValue != NULL) {
+		MmsValue_update(cachedValue, value); // проверить на возврат.знач
+		indication = MMS_VALUE_OK;
+	} else {
+		if (self->writeHandler != NULL) {
+			indication = self->writeHandler(self->writeHandlerParameter, domain, itemId, value, connection);
+		}
+	}
+	
+	return indication;
+}
+
 MmsDevice*	MmsServer_getDevice(MmsServer self) {
 	return self->device;
 }
-
-MmsValue*
-MmsServer_getValueFromCache(MmsServer self, MmsDomain* domain, char* itemId)
-{
-	MmsValueCache cache = NULL; //TODO //Map_getEntry(self->valueCaches, domain);
-
-	if (cache != NULL) {
-		return MmsValueCache_lookupValue(cache, itemId);
-	}
-
-	return NULL;
-}
-
-///////// ВПЛЕТЕНЫ В КОД ..
 
 MmsValue*
 MmsServer_getValue(MmsServer self, MmsDomain* domain, char* itemId)
@@ -173,4 +189,13 @@ void
 /*----------------------------------------------------------------------------*/
 	self->connectionHandler = handler;
 	self->connectionHandlerParameter = parameter;
+}
+
+void MmsServer_lockModel(MmsServer self) {
+	//Semaphore_wait(self->modelMutex);
+}
+
+
+void MmsServer_unlockModel(MmsServer self) {
+	//Semaphore_post(self->modelMutex);
 }

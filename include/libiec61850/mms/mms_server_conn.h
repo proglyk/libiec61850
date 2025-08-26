@@ -34,15 +34,15 @@ MmsIndication MmsServerConnection_parseMessage(MmsServerConnection*,ByteBuffer*,
 LinkedList
 MmsServerConnection_getNamedVariableLists(MmsServerConnection* self);
 
+// вплетена в код - запрос со стороны read
+MmsNamedVariableList MmsServerConnection_getNamedVariableList(MmsServerConnection*, char*);
+void MmsServerConnection_deleteNamedVariableList(MmsServerConnection* self, char* listName);
+
+
 /* 
 bool
 MmsServerConnection_addNamedVariableList(MmsServerConnection* self, MmsNamedVariableList variableList);
 
-MmsNamedVariableList
-MmsServerConnection_getNamedVariableList(MmsServerConnection* self, char* variableListName);
-
-void
-MmsServerConnection_deleteNamedVariableList(MmsServerConnection* self, char* listName);
 
 char*
 MmsServerConnection_getClientAddress(MmsServerConnection* self); */

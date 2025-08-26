@@ -10,17 +10,17 @@
 
 
 #include "libiec61850/mms/mms_device.h"
-//#include "ied/map.h"
+#include "libiec61850/ied/map.h"
 #include "libiec61850/IsoConnection.h"
 #include "libiec61850/mms/mms_common.h"
 #include <stdbool.h>
 
-// typedef MmsValue* (*ReadVariableHandler) (void* parameter, MmsDomain* domain, char*
-	// variableId);
+typedef MmsValue* (*ReadVariableHandler) (void* parameter, MmsDomain* domain, char*
+	variableId);
 	
-// typedef MmsValueIndication (*WriteVariableHandler)
-		// (void* parameter, MmsDomain* domain, char* variableId, MmsValue* value, 
-		// MmsServerConnection* connection);
+typedef MmsValueIndication (*WriteVariableHandler)
+		(void* parameter, MmsDomain* domain, char* variableId, MmsValue* value, 
+		MmsServerConnection* connection);
 
 typedef enum {
 	MMS_SERVER_NEW_CONNECTION,
@@ -39,8 +39,8 @@ struct sMmsServer {
 	void* writeHandlerParameter;
 	MmsConnectionHandler connectionHandler;
 	void* connectionHandlerParameter;
-	/*Map openConnections;
-	Map valueCaches;*/
+	Map openConnections;
+	Map valueCaches;
 	bool isLocked;
 	//Semaphore modelMutex;
 };
@@ -74,6 +74,10 @@ void MmsServer_installWriteHandler(MmsServer, WriteVariableHandler, void*);
 // A connection handler will be invoked whenever a new client connection is opened or closed
 void MmsServer_installConnectionHandler(MmsServer, MmsConnectionHandler, void*);
 
+void MmsServer_lockModel(MmsServer self);
+void MmsServer_unlockModel(MmsServer self);
+MmsValueIndication MmsServer_setValue(MmsServer, MmsDomain*, char*, MmsValue*, MmsServerConnection*);
+
 /*void
 	MmsServer_insertIntoCache(MmsServer self, MmsDomain* domain, char* itemId, 
 		MmsValue* value);
@@ -83,13 +87,6 @@ void
 	
 void
 MmsServer_startListening(MmsServer self, int tcpPort);
-	
-void
-	MmsServer_lockModel(MmsServer self);
-	
-void
-	MmsServer_unlockModel(MmsServer self);
-	
 
 	
 bool
@@ -97,8 +94,7 @@ bool
 	
 
 
-MmsValueIndication
-MmsServer_setValue(MmsServer self, MmsDomain* domain, char* itemId, MmsValue* value, MmsServerConnection* connection);
+
 		
 #ifdef MMS_SERVER_HAS_VALUE_CACHE
 

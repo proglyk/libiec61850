@@ -4,6 +4,7 @@
 #include "libiec61850/mms/mms_server_common.h"
 #include "libiec61850/mms/mms_service_read.h"
 #include "libiec61850/mms/mms_service_write.h"
+#include "libiec61850/mms/mms_service_named_variable_list.h"
 
 extern void mmsServer_handleGetNameListRequest(	MmsServerConnection* connection,
 	GetNameListRequest_t* getNameList, int invokeId, ByteBuffer* response);
@@ -365,4 +366,33 @@ static void
 	free(response.negotiatedDataStructureNestingLevel);
 	free(response.mmsInitResponseDetail.negotiatedParameterCBB.buf);
 	free(response.mmsInitResponseDetail.servicesSupportedCalled.buf);
+}
+
+// вплетена в код - запрос со стороны read
+MmsNamedVariableList
+	MmsServerConnection_getNamedVariableList(MmsServerConnection* self, char* 
+		variableListName){
+	//TODO remove code duplication - similar to MmsDomain_getNamedVariableList !
+	MmsNamedVariableList variableList = NULL;
+
+	LinkedList element = LinkedList_getNext(self->namedVariableLists);
+
+	while (element != NULL) {
+		MmsNamedVariableList varList = (MmsNamedVariableList) element->data;
+
+		if (strcmp(MmsNamedVariableList_getName(varList), variableListName) == 0) {
+			variableList = varList;
+			break;
+		}
+
+		element = LinkedList_getNext(element);
+	}
+
+	return variableList;
+}
+
+void
+	MmsServerConnection_deleteNamedVariableList(MmsServerConnection* self, char* 
+		listName) {
+	mmsServer_deleteVariableList(self->namedVariableLists, listName);
 }

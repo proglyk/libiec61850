@@ -232,7 +232,7 @@ alternateArrayAccess(MmsServerConnection* connection,
 
 	}
 	else { // invalid access
-		if (IEDREAD_DEBUG) printf("Invalid alternate access\r\n");
+		//if (IEDREAD_DEBUG) printf("Invalid alternate access\r\n");
 		mmsMsg_addResultToResultList(accessResult, NULL);
 	}
 }
@@ -263,7 +263,7 @@ static void
 		accessResult->choice.structure.list.array[i] =
 				addNamedVariableValue(namedVariable->typeSpec.structure.elements[i],
 						connection, domain, newNameIdStr,typedValues);
-		if (IEDREAD_DEBUG) printf("addComplexValueToResultList: ...\r\n");
+		//if (IEDREAD_DEBUG) printf("addComplexValueToResultList: ...\r\n");
 		free(newNameIdStr);
 	}
 }
@@ -312,7 +312,7 @@ static void
 				MmsDomain* domain = MmsDevice_getDomain(MmsServer_getDevice(connection->server), domainIdStr);
 
 				if (domain == NULL) {
-					if (IEDREAD_DEBUG) printf("MMS read: domain %s not found!\r\n", domainIdStr);
+					//if (IEDREAD_DEBUG) printf("MMS read: domain %s not found!\r\n", domainIdStr);
 					mmsMsg_addResultToResultList(resultListEntry, NULL);
 					break;
 				}
@@ -328,21 +328,21 @@ static void
 			else {
 				//TODO should we send a ConfirmedErrorPdu here?
 				mmsMsg_addResultToResultList(resultListEntry, NULL);
-				if (IEDREAD_DEBUG) printf("MMS read: object name type not supported!\r\n");
+				//if (IEDREAD_DEBUG) printf("MMS read: object name type not supported!\r\n");
 			}
 		}
 		else {
 			//TODO should we send a ConfirmedErrorPdu here?
 			mmsMsg_addResultToResultList(resultListEntry, NULL);
-			if (IEDREAD_DEBUG) printf("MMS read: varspec type not supported!\r\n");
+			//if (IEDREAD_DEBUG) printf("MMS read: varspec type not supported!\r\n");
 		}
 	}
 	
 	if (invokeId == 5) {
-		__NOP();
+		asm("nop");
 	}
 	if (invokeId == 7) {
-		__NOP();
+		asm("nop");
 	}
 
 	MmsServer_unlockModel(connection->server);
@@ -389,7 +389,7 @@ handleReadNamedVariableListRequest(
 		MmsDomain* domain = MmsDevice_getDomain(MmsServer_getDevice(connection->server), domainId);
 
 		if (domain == NULL) {
-			if (IEDREAD_DEBUG) printf("MMS read: domain %s not found!\r\n", domainId);
+			//if (IEDREAD_DEBUG) printf("MMS read: domain %s not found!\r\n", domainId);
 			mmsServer_createConfirmedErrorPdu(invokeId, response, MMS_ERROR_TYPE_OBJECT_NON_EXISTENT);
 		}
 		else {
@@ -399,7 +399,7 @@ handleReadNamedVariableListRequest(
 				createNamedVariableListResponse(connection, namedList, invokeId, response, read);
 			}
 			else {
-				if (IEDREAD_DEBUG) printf("MMS read: named variable list %s not found!\r\n", listName);
+				//if (IEDREAD_DEBUG) printf("MMS read: named variable list %s not found!\r\n", listName);
 				mmsServer_createConfirmedErrorPdu(invokeId, response, MMS_ERROR_TYPE_OBJECT_NON_EXISTENT);
 			}
 		}
@@ -477,7 +477,7 @@ static Data_t*
 	MmsValue* value = NULL;
 	
 	if (!namedVariable) {
-		__NOP();
+		asm("nop");
 	}
 
 	if (namedVariable->type == MMS_STRUCTURE) {
@@ -498,7 +498,7 @@ static Data_t*
 					namedVariable->typeSpec.structure.elements[i]->name);
 			
 			if (!strcmp("LLN01$GO$Control1$NdsCom", newNameIdStr)){
-				__NOP();
+				asm("nop");
 			}
 
 			dataElement->choice.structure->list.array[i] =
