@@ -1,3 +1,10 @@
+/**
+	******************************************************************************
+  * @file    mms_value.c
+  * @author  Michael Zillgith
+  * @brief   This file is part of libIEC61850.
+  *****************************************************************************/
+
 #include "libiec61850/mms/mms_value.h"
 #include <stdlib.h>
 #include "libiec61850/utils/string_utilities.h"
