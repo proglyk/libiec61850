@@ -1,3 +1,13 @@
+/**
+	******************************************************************************
+  * @file    ???
+  * @author  Ilia Proniashin
+  * @version V1.0.0
+  * @date    26-August-2025
+  * @brief   Implementation of industrial standard IEC61850 for ARM Cortex-M
+  *   devices runned under RTOS
+  *****************************************************************************/
+  
 //#include "mms_server.h"
 #include "libiec61850/mms/mms_server_conn.h"
 #include "libiec61850/mms/mms_common.h"
@@ -7,12 +17,12 @@
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
 MmsServer
-MmsServer_create(void/* IsoServer isoServer, MmsDevice* device*/) {
+MmsServer_create(/*void IsoServer isoServer,*/ MmsDevice* device) {
 /*----------------------------------------------------------------------------*/
 	MmsServer self = calloc(1, sizeof(struct sMmsServer));
 
 	//self->isoServer = isoServer;
-	//self->device = device;
+	self->device = device;
 	//self->openConnections = Map_create();
 	//self->valueCaches = createValueCachesForDomains(device);
 	self->isLocked = false;

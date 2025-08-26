@@ -1,9 +1,19 @@
+/**
+	******************************************************************************
+  * @file    ???
+  * @author  Ilia Proniashin
+  * @version V1.0.0
+  * @date    26-August-2025
+  * @brief   Implementation of industrial standard IEC61850 for ARM Cortex-M
+  *   devices runned under RTOS
+  *****************************************************************************/
+  
 #ifndef __MMS_SERVER_H__
 #define __MMS_SERVER_H__
 
 
-/*#include "ied/mms/mms_device.h"
-#include "ied/map.h"*/
+#include "libiec61850/mms/mms_device.h"
+//#include "ied/map.h"
 #include "libiec61850/IsoConnection.h"
 #include "libiec61850/mms/mms_common.h"
 #include <stdbool.h>
@@ -25,7 +35,7 @@ typedef void (*MmsConnectionHandler) (void* parameter, MmsServerConnection* conn
 typedef struct sMmsServer* MmsServer;
 struct sMmsServer {
  	//IsoServerPtr isoServer;
-	//MmsDevice* device;
+	MmsDevice* device;
 	/*ReadVariableHandler readHandler;
 	void* readHandlerParameter;
 	WriteVariableHandler writeHandler;
@@ -50,7 +60,7 @@ struct sMmsServerConnection {
 	//LinkedList namedVariableLists;
 };
 
-MmsServer	MmsServer_create(void/* IsoServerPtr, MmsDevice * */);
+MmsServer	MmsServer_create(/* void IsoServerPtr,  */MmsDevice *);
 void      MmsServer_destroy(MmsServer);
 void	    MmsServer_Init( MmsServer );
 void	    MmsServer_Deinit( MmsServer );

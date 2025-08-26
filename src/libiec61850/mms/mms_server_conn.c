@@ -1,8 +1,8 @@
 #include "stack_config.h"
 #include "libiec61850/mms/mms_server_conn.h"
-
 #include "iso9506/MmsPdu.h"
 #include "libiec61850/mms/mms_server_common.h"
+#include "libiec61850/mms/mms_service_read.h"
 
 extern void mmsServer_handleGetNameListRequest(	MmsServerConnection* connection,
 	GetNameListRequest_t* getNameList, int invokeId, ByteBuffer* response);
@@ -320,8 +320,8 @@ handleConfirmedRequestPdu( MmsServerConnection* self,ConfirmedRequestPdu_t*
 		break;
 	case ConfirmedServiceRequest_PR_read:
 	// временно
-	//	mmsServer_handleReadRequest(self, &(request->confirmedServiceRequest.choice.read),
-	//		invokeId, (ByteBufferPtr)response);
+		mmsServer_handleReadRequest(self, &(request->confirmedServiceRequest.choice.read),
+			invokeId, (ByteBufferPtr)response);
 		break;
 	case ConfirmedServiceRequest_PR_write:
 	// временно

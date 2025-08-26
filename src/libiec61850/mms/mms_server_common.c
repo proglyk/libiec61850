@@ -1,8 +1,8 @@
 #include "libiec61850/mms/mms_server_common.h"
 #include "iso9506/ServiceError.h"
-// #include "ied/utility/linked_list.h"
-// #include "ied/mms/mms_common.h"
-// #include "ied/mms/mms_named_variable_list.h"
+#include "libiec61850/utils/linked_list.h"
+#include "libiec61850/mms/mms_common.h"
+#include "libiec61850/mms/mms_named_variable_list.h"
 
 
 //CHANGE _V_0_3_0_
@@ -147,26 +147,26 @@ mmsServer_write_out(const void *buffer, size_t size, void *app_key)
 // }
 
 
-// void
-// mmsServer_deleteVariableList(LinkedList namedVariableLists, char* variableListName)
-// {
-	// LinkedList previousElement = namedVariableLists;
-	// LinkedList element = LinkedList_getNext(namedVariableLists);
+void
+mmsServer_deleteVariableList(LinkedList namedVariableLists, char* variableListName)
+{
+	LinkedList previousElement = namedVariableLists;
+	LinkedList element = LinkedList_getNext(namedVariableLists);
 
-	// while (element != NULL ) {
-		// MmsNamedVariableList varList = (MmsNamedVariableList) element->data;
+	while (element != NULL ) {
+		MmsNamedVariableList varList = (MmsNamedVariableList) element->data;
 
-		// if (strcmp(MmsNamedVariableList_getName(varList), variableListName)
-				// == 0) {
-			// previousElement->next = element->next;
-			// free(element);
-			// MmsNamedVariableList_destroy(varList);
+		if (strcmp(MmsNamedVariableList_getName(varList), variableListName)
+				== 0) {
+			previousElement->next = element->next;
+			free(element);
+			MmsNamedVariableList_destroy(varList);
 
-			// break;
-		// }
+			break;
+		}
 
-		// previousElement = element;
-		// element = LinkedList_getNext(element);
-	// }
-// }
+		previousElement = element;
+		element = LinkedList_getNext(element);
+	}
+}
 

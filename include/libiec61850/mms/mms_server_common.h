@@ -10,7 +10,7 @@
 #include "iso9506/MmsPdu.h"
 #include "libiec61850/utils/byte_buffer.h" //#include "server/byte_buffer.h"
 //#include "server/mms_server_internal.h" // закоменчен ранее
-//#include "ied/utility/linked_list.h"
+#include "libiec61850/utils/linked_list.h"
 
 
 /*******************************************************************************
@@ -50,7 +50,6 @@ int	mmsServer_write_out(const void *buffer, size_t size, void *app_key);
 // int
 	// mmsServer_getNumberOfElements(AlternateAccess_t* alternateAccess);
 	
-	// void
-// mmsServer_deleteVariableList(LinkedList namedVariableLists, char* variableListName);
+void mmsServer_deleteVariableList(LinkedList, char*);
 
 #endif /*__MMS_SERVER_COMMON_H__*/
