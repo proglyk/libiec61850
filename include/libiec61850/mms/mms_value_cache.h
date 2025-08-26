@@ -10,7 +10,7 @@
 
 #include "libiec61850/mms/mms_device.h"
 #include "libiec61850/mms/mms_value_cache.h"
-#include "libiec61850/ied/map.h"
+#include "libiec61850/api/map.h"
 
 
 /*******************************************************************************

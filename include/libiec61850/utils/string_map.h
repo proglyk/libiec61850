@@ -5,7 +5,7 @@
   * @brief   This file is part of libIEC61850.
   *****************************************************************************/
 
-#include "libiec61850/ied/map.h"
+#include "libiec61850/api/map.h"
 
 Map StringMap_create();
 
