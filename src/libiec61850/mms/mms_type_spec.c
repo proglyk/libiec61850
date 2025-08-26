@@ -1,6 +1,12 @@
+/**
+	******************************************************************************
+  * @file    mms_type_spec.c
+  * @author  Michael Zillgith
+  * @brief   This file is part of libIEC61850.
+  *****************************************************************************/
+
 #include <stdlib.h>
 #include <string.h>
-
 #include "libiec61850/mms/mms_type_spec.h"
 
 void

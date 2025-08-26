@@ -1,6 +1,6 @@
 /**
 	******************************************************************************
-  * @file    mms_domain.h
+  * @file    mms_service_get_namelist.c
   * @author  Michael Zillgith
   * @brief   This file is part of libIEC61850.
   *****************************************************************************/

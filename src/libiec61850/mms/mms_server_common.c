@@ -1,3 +1,10 @@
+/**
+	******************************************************************************
+  * @file    mms_server_common.c
+  * @author  Michael Zillgith
+  * @brief   This file is part of libIEC61850.
+  *****************************************************************************/
+
 #include "libiec61850/mms/mms_server_common.h"
 #include "iso9506/ServiceError.h"
 #include "libiec61850/utils/linked_list.h"

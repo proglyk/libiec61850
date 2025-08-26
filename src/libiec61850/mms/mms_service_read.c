@@ -1,3 +1,10 @@
+/**
+	******************************************************************************
+  * @file    mms_service_read.c
+  * @author  Michael Zillgith
+  * @brief   This file is part of libIEC61850.
+  *****************************************************************************/
+
 #include "libiec61850/mms/mms_service_read.h"
 #include "libiec61850/mms/mms_server_common.h"
 #include "libiec61850/mms/mms_server.h"
