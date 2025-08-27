@@ -39,7 +39,7 @@ struct sMmsServer {
 	void* writeHandlerParameter;
 	MmsConnectionHandler connectionHandler;
 	void* connectionHandlerParameter;
-	Map openConnections;
+	//Map openConnections;
 	Map valueCaches;
 	bool isLocked;
 	//Semaphore modelMutex;
@@ -77,16 +77,13 @@ void MmsServer_installConnectionHandler(MmsServer, MmsConnectionHandler, void*);
 void MmsServer_lockModel(MmsServer self);
 void MmsServer_unlockModel(MmsServer self);
 MmsValueIndication MmsServer_setValue(MmsServer, MmsDomain*, char*, MmsValue*, MmsServerConnection*);
+void MmsServer_insertIntoCache(MmsServer, MmsDomain*, char*, MmsValue*);
+void MmsServer_stopListening(MmsServer);
+void MmsServer_startListening(MmsServer, int);
 
-/*void
-	MmsServer_insertIntoCache(MmsServer self, MmsDomain* domain, char* itemId, 
-		MmsValue* value);
+/*
 		
-void
-	MmsServer_stopListening(MmsServer server);
-	
-void
-MmsServer_startListening(MmsServer self, int tcpPort);
+
 
 	
 bool

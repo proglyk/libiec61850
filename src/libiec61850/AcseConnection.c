@@ -51,7 +51,8 @@ AcseConnectionPtr
   // Top layers creating
   self->mmsConn = MmsServerConnection_init(NULL, NULL/* mmsServer */);
   if (!self->mmsConn) return NULL;
-  //Map_addEntry(NULL, /* mmsServer->openConnections, */ NULL, self->mmsConn);
+  //Map_addEntry(mmsServer->openConnections, NULL, self->mmsConn);
+  MmsServerConnection_up(self->mmsConn);
   
   return self;
 }
@@ -65,6 +66,7 @@ void
   if (self->mmsConn) {
     //MmsServer_Deinit(self->mmsServ);
     //MmsServer_destroy(self->mmsServ);
+    MmsServerConnection_down(self->mmsConn);
     MmsServerConnection_destroy(self->mmsConn);
   }
 	free(self); self = NULL;

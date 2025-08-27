@@ -38,9 +38,9 @@ MmsServer_create(/*void IsoServer isoServer,*/ MmsDevice* device) {
 void
   MmsServer_Init(MmsServer self) {
 /*----------------------------------------------------------------------------*/
-  MmsServerConnection* mmsCon;
+  //MmsServerConnection* mmsCon;
   
-  mmsCon = MmsServerConnection_init(0, self);
+  //mmsCon = MmsServerConnection_init(0, self);
   //Map_addEntry(self->openConnections, conn, mmsCon);
   // if (self->connectionHandler != NULL)
     // self->connectionHandler(self->connectionHandlerParameter,
@@ -52,13 +52,13 @@ void
 void
   MmsServer_Deinit(MmsServer self) {
 /*----------------------------------------------------------------------------*/
-  MmsServerConnection* mmsCon;
+  //MmsServerConnection* mmsCon;
   
   //MmsServerConnection* mmsCon = (MmsServerConnection*) Map_removeEntry(mmsServer->openConnections, conn, false);
   // if (mmsServer->connectionHandler != NULL)
       // mmsServer->connectionHandler(mmsServer->connectionHandlerParameter,
         // mmsCon, MMS_SERVER_CONNECTION_CLOSED);
-  if (mmsCon != NULL)	MmsServerConnection_destroy(mmsCon);
+  //if (mmsCon != NULL)	MmsServerConnection_destroy(mmsCon);
 }
 
 /**	----------------------------------------------------------------------------
@@ -198,4 +198,31 @@ void MmsServer_lockModel(MmsServer self) {
 
 void MmsServer_unlockModel(MmsServer self) {
 	//Semaphore_post(self->modelMutex);
+}
+
+void
+MmsServer_insertIntoCache(MmsServer self, MmsDomain* domain, char* itemId, MmsValue* value)
+{
+	MmsValueCache cache = Map_getEntry(self->valueCaches, domain);
+
+	if (cache != NULL) {
+		MmsValueCache_insertValue(cache, itemId, value);
+	}
+}
+
+//CHANGE _V_0_3_0_
+void
+MmsServer_startListening(MmsServer server, int tcpPort)
+{
+	// пока не исп. закоменчиваем
+	//IsoServer_setConnectionHandler(server->isoServer, isoConnectionIndicationHandler, (void*) server);
+	//IsoServer_setTcpPort(server->isoServer, tcpPort);
+	//IsoServer_startListening(server->isoServer);
+}
+
+void
+MmsServer_stopListening(MmsServer server)
+{
+	// пока не исп. закоменчиваем
+	//IsoServer_stopListening(server->isoServer);
 }

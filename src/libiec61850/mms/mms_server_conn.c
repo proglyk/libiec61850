@@ -29,7 +29,7 @@ static uint8_t servicesSupported[] = {
 // Public 
 
 /**	----------------------------------------------------------------------------
-	* @brief Acse Connection layer constructor */
+	* @brief MMS server conn layer constructor */
 MmsServerConnection*
   MmsServerConnection_init( MmsServerConnection* connection, 
                             MmsServer server/* , IsoConnection isoCon */ ) {
@@ -47,19 +47,43 @@ MmsServerConnection*
 	self->dataStructureNestingLevel = 0;
 	self->server = server;
 	//self->isoConnection = isoCon;
-	//self->namedVariableLists = LinkedList_create();
+	self->namedVariableLists = LinkedList_create();
 
 	//IsoConnection_installListener(isoCon, messageReceived, (void*) self);
 
 	return self;
 }
 
+/**	----------------------------------------------------------------------------
+	* @brief MMS server conn layer destructor */
 void
-	MmsServerConnection_destroy(MmsServerConnection* self){
-	
-	//LinkedList_destroyDeep(self->namedVariableLists, 
-	//	(void (*)(void *))MmsNamedVariableList_destroy);
+  MmsServerConnection_destroy(MmsServerConnection* self) {
+/*----------------------------------------------------------------------------*/
+	LinkedList_destroyDeep( self->namedVariableLists,
+                          (void (*)(void *))MmsNamedVariableList_destroy );
 	free(self);
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief MMS server conn layer destructor */
+void
+  MmsServerConnection_up(MmsServerConnection* self) {
+/*----------------------------------------------------------------------------*/
+  if (self->connectionHandler != NULL) {
+    self->connectionHandler( self->connectionHandlerParameter,
+                             mmsCon, MMS_SERVER_NEW_CONNECTION );
+  }
+}
+
+/**	----------------------------------------------------------------------------
+	* @brief MMS server conn layer destructor */
+void
+  MmsServerConnection_down(MmsServerConnection* self) {
+/*----------------------------------------------------------------------------*/
+  if (self->connectionHandler != NULL) {
+    self->connectionHandler( self->connectionHandlerParameter,
+                             mmsCon, MMS_SERVER_CONNECTION_CLOSED );
+  }
 }
 
 /**	----------------------------------------------------------------------------

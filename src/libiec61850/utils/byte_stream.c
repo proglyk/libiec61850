@@ -1,6 +1,6 @@
 #include "stack_config.h"
 #include "libiec61850/utils/byte_stream.h"
-//#include "server\hal.h"
+#include "hal.h"
 //#include "server\stack_config.h."
 //#include "lwip/opt.h"
 #include "time_hal.h"

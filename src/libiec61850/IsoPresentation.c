@@ -151,7 +151,7 @@ static IsoPresStatus
 //  	cptype->modeSelector.modeValue);
 
 	pdvListEntries =
-    cptype->normalModeParameters.contextDefinitionList->list.count;
+    cptype->normalModeParametersCptype.contextDefinitionList->list.count;
 	if (pdvListEntries != 2) {
 		//if (ISO8823_DEBUG) printf("iso_presentation: 2 pdv list items required"
     //  " found: %i\r\n", pdvListEntries);
@@ -163,17 +163,17 @@ static IsoPresStatus
 	int i;
 	for (i = 0; i < pdvListEntries; i++) {
 		ContextListSeq_t* member =
-				cptype->normalModeParameters.contextDefinitionList->list.array[i];
+				cptype->normalModeParametersCptype.contextDefinitionList->list.array[i];
 
 		if (setContextDefinition(self, i, member) == PRESENTATION_ERROR)
 			goto error;
 	}
 
-	if (cptype->normalModeParameters.userData->present ==
+	if (cptype->normalModeParametersCptype.userData->present ==
     Userdata_PR_fullyencodeddata){
-		dataListEntries = cptype->normalModeParameters.userData->choice.
+		dataListEntries = cptype->normalModeParametersCptype.userData->choice.
       fullyencodeddata.list.count;
-		PDVlist_t* pdvListEntry = cptype->normalModeParameters.userData->choice.
+		PDVlist_t* pdvListEntry = cptype->normalModeParametersCptype.userData->choice.
       fullyencodeddata.list.array[0];
 		userDataSize = pdvListEntry->presentationdatavalues.choice.singleASN1type.
       size;
@@ -427,11 +427,11 @@ static IsoPresStatus
 
 	pdvResultList->list.array[1]->transfersyntaxname = transfersyntax;
 
-  cpatype->normalModeParameters.protocolVersion = 0; //protocolversion;
-	cpatype->normalModeParameters.respondingSelector = respondingSelector;
-  cpatype->normalModeParameters.contextDefResList = pdvResultList;
-  cpatype->normalModeParameters.requirements = 0;
-  cpatype->normalModeParameters.userSessionRequirements = 0;
+  cpatype->normalModeParametersCpappdu.protocolVersion = 0; //protocolversion;
+	cpatype->normalModeParametersCpappdu.respondingSelector = respondingSelector;
+  cpatype->normalModeParametersCpappdu.contextDefResList = pdvResultList;
+  cpatype->normalModeParametersCpappdu.requirements = 0;
+  cpatype->normalModeParametersCpappdu.userSessionRequirements = 0;
 
   Userdata_t* userdata = calloc(1, sizeof(Userdata_t));
 
@@ -453,7 +453,7 @@ static IsoPresStatus
   pdvList->presentationdatavalues.choice.singleASN1type.buf = apduCopy;
 
   userdata->choice.fullyencodeddata.list.array[0] = pdvList;
-  cpatype->normalModeParameters.userData = userdata;
+  cpatype->normalModeParametersCpappdu.userData = userdata;
 
 	writer(&asn_DEF_CPAPPDU, cpatype, sbuf);
 

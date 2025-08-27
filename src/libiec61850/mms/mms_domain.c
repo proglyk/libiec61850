@@ -12,6 +12,7 @@
 #include <string.h>
 #include "libiec61850/mms/mms_named_variable_list.h"
 #include <stdbool.h>
+#include "libiec61850/mms/mms_server_common.h"
 //#include "heap_user.h"
 
 
