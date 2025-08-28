@@ -19,8 +19,7 @@ struct sIsoServer {
 /**	----------------------------------------------------------------------------
 	* @brief Iso Server layer constructor */
 IsoServerPtr
-	IsoServer_Create( s32_t socket, IndicationHandler handler,
-                    void *parameter ) {
+	IsoServer_Create( s32_t socket, void *pld ) {
 /*----------------------------------------------------------------------------*/
 	// Self creating
   IsoServerPtr self = calloc(1, sizeof(struct sIsoServer));
@@ -28,7 +27,7 @@ IsoServerPtr
   // Self configurating
 	self->state = ISO_SVR_STATE_IDLE; 
   // Top layers creating
-  self->isoConn = IsoConnection_Create(socket, handler, parameter);
+  self->isoConn = IsoConnection_Create(socket, pld);
   if (self->isoConn) return NULL;
   // Set connection handler to Mms server instance
 

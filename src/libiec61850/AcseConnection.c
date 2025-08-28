@@ -34,7 +34,7 @@ static asn_enc_rval_t rval;
 /**	----------------------------------------------------------------------------
 	* @brief Acse Connection layer constructor */
 AcseConnectionPtr
-	AcseConnection_Create(SBufferPtr sbuf) {
+	AcseConnection_Create(SBufferPtr sbuf, void *pld) {
 /*----------------------------------------------------------------------------*/
 	// Self creating
   AcseConnectionPtr self = calloc(1, sizeof(struct sAcseConnection));
@@ -49,10 +49,9 @@ AcseConnectionPtr
   self->msgPassedHandler = NULL;
   self->msgPassedParam = NULL;
   // Top layers creating
-  self->mmsConn = MmsServerConnection_init(NULL, NULL/* mmsServer */);
+  self->mmsConn = MmsServerConnection_init(pld/* mmsServer */);
   if (!self->mmsConn) return NULL;
   //Map_addEntry(mmsServer->openConnections, NULL, self->mmsConn);
-  MmsServerConnection_up(self->mmsConn);
   
   return self;
 }
@@ -66,7 +65,7 @@ void
   if (self->mmsConn) {
     //MmsServer_Deinit(self->mmsServ);
     //MmsServer_destroy(self->mmsServ);
-    MmsServerConnection_down(self->mmsConn);
+    //MmsServerConnection_down(self->mmsConn);
     MmsServerConnection_destroy(self->mmsConn);
   }
 	free(self); self = NULL;

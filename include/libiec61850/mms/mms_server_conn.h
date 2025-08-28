@@ -28,7 +28,7 @@
 
 
 
-MmsServerConnection* MmsServerConnection_init( MmsServerConnection*, MmsServer/* , IsoConnection */ );
+MmsServerConnection* MmsServerConnection_init( void */* , IsoConnection */ );
 void MmsServerConnection_destroy(MmsServerConnection*);
 MmsIndication MmsServerConnection_parseMessage(MmsServerConnection*,ByteBuffer*, SBuffer*);
 LinkedList

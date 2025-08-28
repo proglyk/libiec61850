@@ -34,14 +34,14 @@ static ByteBuffer receiveBuffer; // TODO разместить потом в ку
 /**	----------------------------------------------------------------------------
 	* @brief Iso Connection layer constructor */
 IsoConnectionPtr
-	IsoConnection_Create(s32_t socket, IndicationHandler handler, void *parameter) {
+	IsoConnection_Create(s32_t socket, void *pld) {
 /*----------------------------------------------------------------------------*/
 	// Self creating and configurating
   IsoConnectionPtr self = calloc(1, sizeof(struct sIsoConnection));
   if (!self) return NULL;
   self->socket = socket;
-  self->connHandler = handler;
-	self->connHandlerParameter = parameter;
+  //self->connHandler = handler;
+	//self->connHandlerParameter = parameter;
   self->receive_buf = malloc(RECEIVE_BUF_SIZE);
   self->send_buf = malloc(SEND_BUF_SIZE);
 	self->state = ISO_CON_STATE_STOPPED;
@@ -49,11 +49,11 @@ IsoConnectionPtr
   self->sbuf = calloc(1, sizeof(struct sSBuffer));
 	SBuffer_Init(self->sbuf, self->send_buf, SEND_BUF_SIZE);
   // Top layers creating
-  self->cotpConn = CotpConnection_Create(socket, &receiveBuffer, self->sbuf);
+  self->cotpConn = CotpConnection_Create(socket, &receiveBuffer, self->sbuf, pld);
   if (!self->cotpConn) return NULL;
   // Notify the Mms server connection about some event
-  self->connHandler( ISO_CONNECTION_OPENED,
-                     self->connHandlerParameter, self);
+  //self->connHandler( ISO_CONNECTION_OPENED,
+  //                   self->connHandlerParameter, self);
   
 /*   self->xLayer.Cotp.px = calloc(1, sizeof(CotpConnection));
   self->xLayer.Session.px = calloc(1, sizeof(IsoSession));
@@ -94,8 +94,8 @@ void
 /*   free(self->xLayer.Present.px);
 	free(self->xLayer.Session.px);
   free(self->xLayer.Cotp.px); */
-  self->connHandler( ISO_CONNECTION_CLOSED,
-                     self->connHandlerParameter, self);
+  //self->connHandler( ISO_CONNECTION_CLOSED,
+  //                   self->connHandlerParameter, self);
   if (self->cotpConn) CotpConnection_Delete(self->cotpConn);
 	if (self->receive_buf) free(self->receive_buf);
   if (self->send_buf) free(self->send_buf);

@@ -22,7 +22,7 @@ typedef struct sIsoPresentation *IsoPresPtr;
 
 // Function declarations
 
-IsoPresPtr IsoPresentation_Create(SBufferPtr);
+IsoPresPtr IsoPresentation_Create(SBufferPtr, void *);
 void       IsoPresentation_Delete(IsoPresPtr);
 s32_t      IsoPresentation_Connect(IsoPresPtr, ByteBuffer *);
 s32_t      IsoPresentation_ProcessData(IsoPresPtr, ByteBuffer *);

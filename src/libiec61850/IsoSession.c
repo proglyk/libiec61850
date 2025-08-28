@@ -31,7 +31,7 @@ static s32_t encodeSessionUserData(IsoSessPtr, u8_t *, s32_t, u8_t);
 /**	----------------------------------------------------------------------------
 	* @brief Iso Session layer constructor */
 IsoSessPtr
-	IsoSession_Create(SBufferPtr sbuf) {
+	IsoSession_Create(SBufferPtr sbuf, void *pld) {
 /*----------------------------------------------------------------------------*/
 	// Self creating
   IsoSessPtr self = calloc(1, sizeof(struct sIsoSession));
@@ -42,7 +42,7 @@ IsoSessPtr
   // линкуем SBuffer
   self->sbuf = sbuf;
   // Top layers creating
-  self->isoPres = IsoPresentation_Create(self->sbuf);
+  self->isoPres = IsoPresentation_Create(self->sbuf, pld);
   if (!self->isoPres) return NULL;
   
   return self;

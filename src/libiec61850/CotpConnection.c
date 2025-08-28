@@ -55,7 +55,7 @@ static int cotp_parse_options(CotpConnectionPtr, int);
 	* @brief Cotp Connection layer constructor */
 CotpConnectionPtr
 	CotpConnection_Create(s32_t socket, ByteBuffer* payloadBuffer,
-                        SBufferPtr sbuf) {
+                        SBufferPtr sbuf, void *pld) {
 /*----------------------------------------------------------------------------*/
 	// Self creating
   CotpConnectionPtr self = calloc(1, sizeof(struct sCotpConnection));
@@ -71,7 +71,7 @@ CotpConnectionPtr
   // линкуем SBuffer
   self->sbuf = sbuf;
   // Top layers creating
-  self->isoSess = IsoSession_Create(self->sbuf);
+  self->isoSess = IsoSession_Create(self->sbuf, pld);
   if (!self->isoSess) return NULL;
 	
 	/* default TPDU size is maximum size */

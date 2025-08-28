@@ -18,7 +18,7 @@ typedef struct sIsoServer *IsoServerPtr;
 
 // Function declarations
 
-IsoServerPtr IsoServer_Create(s32_t, IndicationHandler, void *);
+IsoServerPtr IsoServer_Create(s32_t, void *);
 s32_t        IsoServer_Init(void);
 void         IsoServer_Delete(IsoServerPtr);
 void         IsoServer_Listen(IsoServerPtr);

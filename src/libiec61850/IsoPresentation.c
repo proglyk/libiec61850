@@ -36,7 +36,7 @@ static IsoPresStatus codeSCPAMessage(SBuffer* sbuf);
 /**	----------------------------------------------------------------------------
 	* @brief Iso Presentation layer constructor */
 IsoPresPtr
-	IsoPresentation_Create(SBufferPtr sbuf) {
+	IsoPresentation_Create(SBufferPtr sbuf, void *pld) {
 /*----------------------------------------------------------------------------*/
 	// Self creating
   IsoPresPtr self = calloc(1, sizeof(struct sIsoPresentation));
@@ -44,7 +44,7 @@ IsoPresPtr
   // линкуем SBuffer
   self->sbuf = sbuf;
   // Top layers creating
-  self->acseConn = AcseConnection_Create(self->sbuf);
+  self->acseConn = AcseConnection_Create(self->sbuf, pld);
   if (!self->acseConn) return NULL;
   
   return self;

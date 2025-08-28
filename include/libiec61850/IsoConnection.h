@@ -24,7 +24,7 @@ typedef void (*IndicationHandler) ( IsoConnIndication,
 
 // Function declarations
 
-IsoConnectionPtr IsoConnection_Create(s32_t, IndicationHandler, void *);
+IsoConnectionPtr IsoConnection_Create(s32_t, void *);
 s32_t            IsoConnection_Init(IsoConnectionPtr);
 void	           IsoConnection_Deinit(IsoConnectionPtr);
 void	           IsoConnection_Delete(IsoConnectionPtr);
