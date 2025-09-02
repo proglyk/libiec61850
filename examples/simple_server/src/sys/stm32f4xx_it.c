@@ -1,6 +1,6 @@
 #include "stm32f4xx_it.h"
 #include "stm32f4xx_hal_msp.h"
-//#include "net.h"
+#include "net.h"
 
 #if (defined _TEST_) & (defined SERV_IS_407IC)
 extern UART_HandleTypeDef * pxDebug;
@@ -20,7 +20,7 @@ extern void	xPortSysTickHandler(void);
 void 
   ETH_IRQHandler(void) {
 /*----------------------------------------------------------------------------*/
-	//net__irq(net__inst());
+	net__irq(net__inst());
 }
 
 /**

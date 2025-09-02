@@ -4,21 +4,19 @@
 #include "task.h"
 #include "userint.h"
 #include "net.h"
+#include "lwipopts.h"
+//
+#include "IsoServerConn.h"
+#include "libiec61850/api/ied_server_api.h"
 
 static int internet_config( void );
 
-// Внешний код - Сервер UPVS
 extern net_if_fn_t xFnSrvIec61850;
-//static IsoServerPld_t xPldMms;
-// static IsoServerPld_t xPldMms = {
-//   .pvMmsHandler = isoConnectionIndicationHandler,
-//   .pvMmsPayload = NULL
-// };
 
 static void task_main(void *argument);
 static void SystemClock_Config( void );
 
-// Область памяти RAM, выделенная для раcположения в ней HEAP FreeRTOS
+//Область памяти RAM, выделенная для раcположения в ней HEAP FreeRTOS
 #pragma data_alignment=4 
 __ALIGN_BEGIN
 __attribute__((__section__(".heap"))) uint8_t ucHeap[ configTOTAL_HEAP_SIZE ]
@@ -30,7 +28,7 @@ __ALIGN_BEGIN
 __attribute__((__section__(".heap"))) uint8_t lwip_heap_user[MEM_SIZE + 0x14]
 __ALIGN_END;
 
-u8_t inbox[32]; // для it_cb.c
+//u8_t inbox[32]; // для it_cb.c
 
 /**	----------------------------------------------------------------------------
 	* @brief Точка входа в программу */
@@ -40,6 +38,10 @@ int main(void) {
   
   HAL_Init();
 	SystemClock_Config();
+  
+  IedServer iedServer = IedServer_create(NULL/* &iedModel */);
+  IedServer_start(iedServer, 102);
+  xFnSrvIec61850.pvUpper = (void *)iedServer;
   
   internet_config();
   
@@ -59,18 +61,53 @@ int main(void) {
 /**	----------------------------------------------------------------------------
 	* @brief  Запуск очередного измерения АЦП, работа регулятора, проверка связи
 	* @retval none: Нет */
-static void
-	task_main(void *argument) {
-/*----------------------------------------------------------------------------*/   
-  //GPIOE->ODR &= ~(1<<6);
-  // задержка / переключение контекста
-  vTaskDelay(100);
+static int internet_config(void) {
+/*----------------------------------------------------------------------------*/
+  s32_t rc;
+  net_init_t init_str;
+
+  //
+  rc = net__init(net__inst());
+  if (rc<0) {
+   //LWIP_DEBUGF( NET_DEBUG, ("ETH couldn't be started, in '%s' /NET/net_netif.c:%d\r\n", 
+   //  __FUNCTION__, __LINE__) );
+   goto exit;
+  }
+
+  //
+  init_str.pcName = "iec61850_srv";
+  init_str.pxFn = NULL;//init_str.pxFn = &xFnSrvIec61850;
+  init_str.bEnabled = true;
+  init_str.ulPort = 102;
+  init_str.pvTopPld = NULL; //(void *)&xPldMms;
+  rc = net__add_srv(net__inst(), &init_str);
+  if (rc < 0) {
+   goto exit;
+  }
+
+  // запуск
+  net__run(net__inst());
+  return 0;
+
+  exit:
+  return -1;
 }
 
 /**	----------------------------------------------------------------------------
-	* @brief  Контроль выделения стэка
-	* @param xTask: Указатель на задачу
-	* @param pcTaskName: Имя задачи */
+	* @brief  Запуск очередного измерения АЦП, работа регулятора, проверка связи
+	* @retval none: Нет */
+static void
+	task_main(void *argument) {
+/*----------------------------------------------------------------------------*/   
+  GPIOE->ODR &= ~(1<<6);
+  //задержка / переключение контекста
+  vTaskDelay(100);
+}
+
+///**	----------------------------------------------------------------------------
+//	* @brief  Контроль выделения стэка
+//	* @param xTask: Указатель на задачу
+//	* @param pcTaskName: Имя задачи */
 void
 	vApplicationStackOverflowHook( TaskHandle_t xTask, signed char *pcTaskName ) {
 /*----------------------------------------------------------------------------*/	
@@ -139,38 +176,4 @@ static void
   //HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_PLLCLK, RCC_MCODIV_3);
 }
 
-static int internet_config(void) {
-  s32_t rc;
-	net_init_t init_str;
 
-	//
-	rc = net__init(net__inst());
-  if (rc<0) {
-    //LWIP_DEBUGF( NET_DEBUG, ("ETH couldn't be started, in '%s' /NET/net_netif.c:%d\r\n", 
-    //  __FUNCTION__, __LINE__) );
-    goto exit;
-  }
-  
-  //
-  //xPldMms.pvMmsHandler = isoConnectionIndicationHandler;
-  //xPldMms.pvMmsPayload = NULL;
-	//
-	init_str.pcName = "iec61850_srv";
-	init_str.pxFn = &xFnSrvIec61850;
-  init_str.bEnabled = true;
-	init_str.ulPort = 102;
-  init_str.pvTopPld = NULL; //(void *)&xPldMms;
-	rc = net__add_srv(net__inst(), &init_str);
-  if (rc < 0) {
-    //LWIP_DEBUGF( NET_DEBUG, ("\"%s\" hasn't added...Err=%01d, in '%s' /main.c:%d\r\n", 
-    //  init_str.pcName, rc, __FUNCTION__, __LINE__) );
-    goto exit;
-  }
-  
-	// запуск
-	net__run(net__inst());
-  return 0;
-  
-exit:
-  return -1;
-}

@@ -1,14 +1,14 @@
 #include "stm32f4xx_it_cb.h"
-//#include "net.h"
-#include "proj_conf.h"
-#include "cmsis_os.h"
+#include "net.h"
+//#include "proj_conf.h"
+//#include "cmsis_os.h"
 
 volatile uint32_t ulHighFrequencyTimerCounts;
-#if (defined _TEST_) & (defined SERV_IS_407IC)
-extern UART_HandleTypeDef * pxDebug;
-extern osMessageQId message_q_id;
-extern u8_t inbox[32];
-#endif //_TEST_
+//#if (defined _TEST_) & (defined SERV_IS_407IC)
+//extern UART_HandleTypeDef * pxDebug;
+//extern osMessageQId message_q_id;
+////extern u8_t inbox[32];
+//#endif //_TEST_
 
 /**	----------------------------------------------------------------------------
 	* @brief обработчик прерывания по приему can-сообщения с линии
@@ -28,13 +28,13 @@ HAL_CAN_RxCpltCallback(CAN_HandleTypeDef *CanHandle) {
 
 void
 	HAL_UART_RxCpltCallback(UART_HandleTypeDef * huart) {
-#if (defined _TEST_) & (defined SERV_IS_407IC)
-	if(huart->Instance == pxDebug->Instance) {
-		osMessagePut(message_q_id, (uint32_t)inbox[0], osWaitForever);
-	}
-	// Для всех случаев прин¤того байта вновь включить UART в работу
-	HAL_UART_Receive_IT(huart, (uint8_t *)inbox, 1);
-#endif //_TEST_
+//#if (defined _TEST_) & (defined SERV_IS_407IC)
+//	if(huart->Instance == pxDebug->Instance) {
+//		osMessagePut(message_q_id, (uint32_t)inbox[0], osWaitForever);
+//	}
+//	// Для всех случаев прин¤того байта вновь включить UART в работу
+//	HAL_UART_Receive_IT(huart, (uint8_t *)inbox, 1);
+//#endif //_TEST_
 }
 
 
@@ -50,6 +50,6 @@ void
 void
   HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth) {
 		
-	//net__input(net__inst());
+	net__input(net__inst());
 }
 
