@@ -9,7 +9,7 @@
   *****************************************************************************/
   
 //#include "mms_server.h"
-#include "libiec61850/mms/mms_server_conn.h"
+//#include "libiec61850/mms/mms_server_conn.h"
 #include "libiec61850/mms/mms_common.h"
 #include "libiec61850/mms/mms_server.h"
 #include "libiec61850/mms/mms_value_cache.h"
@@ -72,29 +72,24 @@ MmsServer_destroy(MmsServer self) {
 	free(self);
 }
 
-static void isoConnectionIndicationHandler( IsoConnIndication, void* );
 /**	----------------------------------------------------------------------------
-	* @brief ??? */
+	* @brief MMS server conn layer destructor */
 void
-  isoConnectionIndicationHandler( IsoConnIndication indication,
-                                  void* parameter/*, IsoConnectionPtr conn*/) {
+  MmsServer_conn_opened(MmsServer self, void *pld) {
 /*----------------------------------------------------------------------------*/
-/* 	MmsServer mmsServer = (MmsServer) parameter;
-	MmsServerConnection* mmsCon;
+  if (self->connHandler != NULL) {
+    self->connHandler( self->connParam, pld, MMS_SERVER_NEW_CONNECTION );
+  }
+}
 
-	if (indication == ISO_CONNECTION_OPENED) {
-		mmsCon = MmsServerConnection_init(0, mmsServer);
-		//Map_addEntry(mmsServer->openConnections, conn, mmsCon);
-		if (mmsServer->connectionHandler != NULL)
-			mmsServer->connectionHandler(mmsServer->connectionHandlerParameter,
-					mmsCon, MMS_SERVER_NEW_CONNECTION);
-	} else {
-		//MmsServerConnection* mmsCon = (MmsServerConnection*) Map_removeEntry(mmsServer->openConnections, conn, false);
-		if (mmsServer->connectionHandler != NULL)
-				mmsServer->connectionHandler(mmsServer->connectionHandlerParameter,
-					mmsCon, MMS_SERVER_CONNECTION_CLOSED);
-		if (mmsCon != NULL)	MmsServerConnection_destroy(mmsCon);
-	} */
+/**	----------------------------------------------------------------------------
+	* @brief MMS server conn layer destructor */
+void
+  MmsServer_conn_closed(MmsServer self, void *pld) {
+/*----------------------------------------------------------------------------*/
+  if (self->connHandler != NULL) {
+    self->connHandler( self->connParam, pld, MMS_SERVER_CONNECTION_CLOSED );
+  }
 }
 
 ///////// ÂÏËÅÒÅÍÛ Â ÊÎÄ ..
@@ -180,15 +175,25 @@ void
 	self->writeHandlerParameter = parameter;
 }
 
+// /**	----------------------------------------------------------------------------
+	// * @brief ñâÿçûâàåò MmsMapping */
+// void
+  // MmsServer_installConnectionHandler( MmsServer self, 
+                                      // MmsConnectionHandler handler,
+                                      // void* parameter) {
+// /*----------------------------------------------------------------------------*/
+	// self->connectionHandler = handler;
+	// self->connectionHandlerParameter = parameter;
+// }
+
 /**	----------------------------------------------------------------------------
 	* @brief ñâÿçûâàåò MmsMapping */
 void
-  MmsServer_installConnectionHandler( MmsServer self, 
-                                      MmsConnectionHandler handler,
-                                      void* parameter) {
+  MmsServer_installConnHandler( MmsServer self, MmsConnHandler handler,
+                                void *param) {
 /*----------------------------------------------------------------------------*/
-	self->connectionHandler = handler;
-	self->connectionHandlerParameter = parameter;
+	self->connHandler = handler;
+	self->connParam = param;
 }
 
 void MmsServer_lockModel(MmsServer self) {

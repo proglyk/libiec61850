@@ -6,6 +6,8 @@
 #include "libiec61850/mms/mms_types.h"
 #include "libiec61850/mms/mms_common.h"
 //#include "SBuffer2.h"
+#include "libiec61850/utils/byte_buffer.h"
+#include "libiec61850/utils/SBuffer.h"
 
 #define MMS_SERVICE_STATUS 0x80
 #define MMS_SERVICE_GET_NAME_LIST 0x40

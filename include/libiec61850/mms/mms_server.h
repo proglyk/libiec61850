@@ -11,9 +11,11 @@
 
 #include "libiec61850/mms/mms_device.h"
 #include "libiec61850/api/map.h"
-#include "libiec61850/IsoConnection.h"
+//#include "libiec61850/IsoConnection.h"
 #include "libiec61850/mms/mms_common.h"
 #include <stdbool.h>
+
+typedef struct sMmsServer* MmsServer;
 
 typedef MmsValue* (*ReadVariableHandler) (void* parameter, MmsDomain* domain, char*
 	variableId);
@@ -27,9 +29,11 @@ typedef enum {
 	MMS_SERVER_CONNECTION_CLOSED
 } MmsServerEvent;
 	
-typedef void (*MmsConnectionHandler) (void* parameter, MmsServerConnection* connection, MmsServerEvent event);
+//typedef void (*MmsConnectionHandler)( void *, MmsServerConnection *,
+//                                      MmsServerEvent );
+// was added later //TODO
+typedef void (*MmsConnHandler)( void *, void *, MmsServerEvent );
 
-typedef struct sMmsServer* MmsServer;
 struct sMmsServer {
  	//IsoServerPtr isoServer;
 	MmsDevice* device;
@@ -37,8 +41,8 @@ struct sMmsServer {
 	void* readHandlerParameter;
 	WriteVariableHandler writeHandler;
 	void* writeHandlerParameter;
-	MmsConnectionHandler connectionHandler;
-	void* connectionHandlerParameter;
+	MmsConnHandler connHandler; //MmsConnectionHandler connectionHandler;
+	void* connParam; //void* connectionHandlerParameter;
 	//Map openConnections;
 	Map valueCaches;
 	bool isLocked;
@@ -72,7 +76,7 @@ MmsValue*	MmsServer_getValue(MmsServer self, MmsDomain* domain, char* itemId);
 void MmsServer_installReadHandler(MmsServer, ReadVariableHandler, void*);
 void MmsServer_installWriteHandler(MmsServer, WriteVariableHandler, void*);
 // A connection handler will be invoked whenever a new client connection is opened or closed
-void MmsServer_installConnectionHandler(MmsServer, MmsConnectionHandler, void*);
+//void MmsServer_installConnectionHandler(MmsServer, MmsConnectionHandler, void*);
 
 void MmsServer_lockModel(MmsServer self);
 void MmsServer_unlockModel(MmsServer self);
@@ -80,6 +84,11 @@ MmsValueIndication MmsServer_setValue(MmsServer, MmsDomain*, char*, MmsValue*, M
 void MmsServer_insertIntoCache(MmsServer, MmsDomain*, char*, MmsValue*);
 void MmsServer_stopListening(MmsServer);
 void MmsServer_startListening(MmsServer, int);
+
+// new
+void MmsServer_installConnHandler(MmsServer, MmsConnHandler, void *);
+void MmsServer_conn_opened(MmsServer, void *);
+void MmsServer_conn_closed(MmsServer, void *);
 
 /*
 		
