@@ -28,7 +28,7 @@ IsoServerPtr
 	self->state = ISO_SVR_STATE_IDLE; 
   // Top layers creating
   self->isoConn = IsoConnection_Create(socket, pld);
-  if (self->isoConn) return NULL;
+  if (!self->isoConn) return NULL;
   // Set connection handler to Mms server instance
 
 	return self;

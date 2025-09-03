@@ -125,7 +125,7 @@ s32_t
  rc = CotpConnection_Do(self->cotpConn);
   
   
-  return 0;
+  return rc;
   
   exit:
   self->state = ISO_CON_STATE_ERROR;
