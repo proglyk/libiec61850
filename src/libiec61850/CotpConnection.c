@@ -80,7 +80,7 @@ CotpConnectionPtr
 	self->writeBuffer = NULL;
 	//ByteBuffer_create(self->writeBuffer, 512);
 
-//	self->stream = ByteStream_create(self->socket, self->writeBuffer);
+	self->stream = ByteStream_create(self->socket, self->writeBuffer);
   
   return self;
 }
