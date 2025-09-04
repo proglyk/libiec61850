@@ -86,7 +86,7 @@ GoosePublisher_create(CommParameters* parameters, char* interfaceID)
     }
 
 		//GOOSE_NO_ETH
-    self->ethernetSocket = Ethernet_createSocket("eth0", dstAddr);
+    // TODO self->ethernetSocket = Ethernet_createSocket("eth0", dstAddr);
 		
 		memset(buffer, 0, GOOSE_MAX_MESSAGE_SIZE*sizeof(uint8_t));
 

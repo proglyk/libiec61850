@@ -78,8 +78,8 @@ static MmsValueIndication
 static void
 deactivateReportsForConnection(MmsMapping* self, MmsServerConnection* connection);
 
-static void
-mmsConnectionHandler (void* parameter, MmsServerConnection* connection, MmsServerEvent event);
+static void mmsConnectionHandler (void* parameter, MmsServerConnection* connection, MmsServerEvent event);
+static void mmsConnHandler(void *, void *, MmsServerEvent);
 
 static bool
 isMemberValueRecursive(MmsValue* container, MmsValue* value) ;
@@ -208,7 +208,8 @@ void
 		
   MmsServer_installReadHandler(self->mmsServer, mmsReadHandler, (void*) self);
   MmsServer_installWriteHandler(self->mmsServer, mmsWriteHandler, (void*) self);
-  MmsServer_installConnectionHandler(self->mmsServer, mmsConnectionHandler, (void*) self);
+  //MmsServer_installConnectionHandler(self->mmsServer, mmsConnectionHandler, (void*) self);
+  MmsServer_installConnHandler(self->mmsServer, mmsConnHandler, (void*) self);
 }
 
 
@@ -1325,6 +1326,17 @@ mmsConnectionHandler (void* parameter, MmsServerConnection* connection, MmsServe
 
     if (event == MMS_SERVER_CONNECTION_CLOSED) {
         deactivateReportsForConnection(self, connection);
+    }
+}
+
+static void
+mmsConnHandler (void* param1, void* param2, MmsServerEvent event)
+{
+    MmsMapping *self = (MmsMapping*)param1;
+    MmsServerConnection *conn = (MmsServerConnection *)param2;
+
+    if (event == MMS_SERVER_CONNECTION_CLOSED) {
+        deactivateReportsForConnection(self, conn);
     }
 }
 
