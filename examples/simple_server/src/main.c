@@ -39,9 +39,9 @@ int main(void) {
   HAL_Init();
 	SystemClock_Config();
   
-  IedServer iedServer = IedServer_create(NULL/* &iedModel */);
-  IedServer_start(iedServer, 102);
-  xFnSrvIec61850.pvUpper = (void *)iedServer;
+//  IedServer iedServer = IedServer_create(NULL/* &iedModel */);
+//  IedServer_start(iedServer, 102);
+//  xFnSrvIec61850.pvUpper = (void *)iedServer;
   
   internet_config();
   
@@ -76,7 +76,7 @@ static int internet_config(void) {
 
   //
   init_str.pcName = "iec61850_srv";
-  init_str.pxFn = NULL;//init_str.pxFn = &xFnSrvIec61850;
+  init_str.pxFn = &xFnSrvIec61850;
   init_str.bEnabled = true;
   init_str.ulPort = 102;
   init_str.pvTopPld = NULL; //(void *)&xPldMms;
@@ -99,9 +99,12 @@ static int internet_config(void) {
 static void
 	task_main(void *argument) {
 /*----------------------------------------------------------------------------*/   
-  GPIOE->ODR &= ~(1<<6);
-  //задержка / переключение контекста
-  vTaskDelay(100);
+  for(;;)	{
+    //GPIOE->ODR &= ~(1<<6);
+    USLED4_TOG();
+    //задержка / переключение контекста
+    vTaskDelay(250);
+	}
 }
 
 ///**	----------------------------------------------------------------------------

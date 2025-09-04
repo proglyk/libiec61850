@@ -1,5 +1,6 @@
 #include "hal.h"
 #include <time.h>
+#include "stm32f4xx_hal.h"
 
 #if defined __linux__ || defined __APPLE__ /*__linux__WIN32__STM32__*/
 
