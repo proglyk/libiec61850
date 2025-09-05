@@ -96,9 +96,9 @@ IedServer
 
 	iedModel->initializer();
 
-	installDefaultValuesInCache(self);
+	// TODO "restore" installDefaultValuesInCache(self);
 
-	updateDataSetsWithCachedValues(self);
+	// TODO "restore" updateDataSetsWithCachedValues(self);
 
 	return self;
 }

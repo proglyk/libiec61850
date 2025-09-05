@@ -15,6 +15,8 @@
 #include "libiec61850/mms/mms_value_cache.h"
 #include "libiec61850/mms/mms_value.h"
 
+static Map createValueCachesForDomains(MmsDevice* device);
+
 
 /**	----------------------------------------------------------------------------
 	* @brief ??? */
@@ -26,7 +28,7 @@ MmsServer_create(/*void IsoServer isoServer,*/ MmsDevice* device) {
 	//self->isoServer = isoServer;
 	self->device = device;
 	//self->openConnections = Map_create();
-	//self->valueCaches = createValueCachesForDomains(device);
+	self->valueCaches = createValueCachesForDomains(device);
 	self->isLocked = false;
 	//self->modelMutex = Semaphore_create(1);
 
@@ -230,4 +232,18 @@ MmsServer_stopListening(MmsServer server)
 {
 	// пока не исп. закоменчиваем
 	//IsoServer_stopListening(server->isoServer);
+}
+
+static Map
+	createValueCachesForDomains(MmsDevice* device) {
+	
+	Map valueCaches =  Map_create();
+
+	int i;
+	for (i = 0; i < device->domainCount; i++) {
+		MmsValueCache valueCache = MmsValueCache_create(device->domains[i]);
+		Map_addEntry(valueCaches, device->domains[i], valueCache);
+	}
+
+	return valueCaches;
 }
