@@ -12,6 +12,7 @@
 static int internet_config( void );
 
 extern net_if_fn_t xFnSrvIec61850;
+extern IedModel iedModel;
 
 static void task_main(void *argument);
 static void SystemClock_Config( void );
@@ -29,6 +30,7 @@ __attribute__((__section__(".heap"))) uint8_t lwip_heap_user[MEM_SIZE + 0x14]
 __ALIGN_END;
 
 //u8_t inbox[32]; // для it_cb.c
+static IedServer iedServer;
 
 /**	----------------------------------------------------------------------------
 	* @brief Точка входа в программу */
@@ -39,9 +41,9 @@ int main(void) {
   HAL_Init();
 	SystemClock_Config();
   
-//  IedServer iedServer = IedServer_create(NULL/* &iedModel */);
-//  IedServer_start(iedServer, 102);
-//  xFnSrvIec61850.pvUpper = (void *)iedServer;
+  /*IedServer*/ iedServer = IedServer_create(&iedModel);
+  IedServer_start(iedServer, 102);
+  xFnSrvIec61850.pvUpper = (void *)iedServer->mmsServer;
   
   internet_config();
   
