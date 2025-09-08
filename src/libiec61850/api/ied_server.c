@@ -97,6 +97,7 @@ IedServer
 	iedModel->initializer();
 
 	// TODO "restore" installDefaultValuesInCache(self);
+  //installDefaultValuesInCache(self);
 
 	// TODO "restore" updateDataSetsWithCachedValues(self);
 
@@ -480,16 +481,16 @@ static void
 	installDefaultValuesForDataAttribute(IedServer self, DataAttribute* dataAttribute,
 		char* objectReference, int position) {
 	
+  static char mmsVariableName[255]; // TODO check for optimal buffer size;
+  static char domainName[100]; //TODO check for optimal size
+  memset(mmsVariableName, 0, sizeof(mmsVariableName));
+  memset(mmsVariableName, 0, sizeof(domainName));
 	//sprintf(objectReference + position, ".%s", dataAttribute->name);
-
-	char mmsVariableName[255]; //TODO check for optimal size
 
 	MmsValue* value = dataAttribute->mmsValue;
 
 	MmsMapping_createMmsVariableNameFromObjectReference(objectReference, 
 		dataAttribute->fc, mmsVariableName);
-
-	char domainName[100]; //TODO check for optimal size
 
 	MmsMapping_getMmsDomainFromObjectReference(objectReference, domainName);
 
@@ -546,9 +547,10 @@ static void
 static void
 installDefaultValuesInCache(IedServer self)
 {
-	IedModel* model = self->model;
-
-	char objectReference[255]; // TODO check for optimal buffer size;
+	static IedModel* model;
+	static char objectReference[255]; // TODO check for optimal buffer size;
+  model = self->model;
+  memset(objectReference, 0, sizeof(objectReference));
 
 	LogicalDevice* logicalDevice = model->firstChild;
 

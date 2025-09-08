@@ -46,7 +46,7 @@ MmsServerConnection*
 	//IsoConnection_installListener(isoCon, messageReceived, (void*) self);
   
   //TODO "заменить NUUL на mmsServer"
-  // MmsServer_conn_opened(NULL, (void *)self);
+  MmsServer_conn_opened((MmsServer)pld, (void *)self);
 
 	return self;
 }
@@ -56,7 +56,7 @@ MmsServerConnection*
 void
   MmsServerConnection_destroy(MmsServerConnection* self) {
 /*----------------------------------------------------------------------------*/
-	MmsServer_conn_closed(NULL, (void *)self);
+	MmsServer_conn_closed(NULL, (void *)self); // TODO заменить NULL
   LinkedList_destroyDeep( self->namedVariableLists,
                           (void (*)(void *))MmsNamedVariableList_destroy );
 	free(self);
